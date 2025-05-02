@@ -1,14 +1,16 @@
 
 import { useState } from 'react';
-import { Menu, ShoppingCart, X } from 'lucide-react';
+import { Menu, ShoppingCart, X, Heart } from 'lucide-react';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 import { useCart } from '@/context/CartContext';
+import { useFavorites } from '@/context/FavoritesContext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { totalItems } = useCart();
+  const { totalFavorites } = useFavorites();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -31,14 +33,28 @@ const Navbar = () => {
             <Link to="/contact" className="nav-link">Contact</Link>
           </div>
 
-          {/* Cart and Mobile Menu Button */}
+          {/* Cart, Favorites, and Mobile Menu Button */}
           <div className="flex items-center space-x-4">
+            {/* Favorites icon */}
+            <Link to="/favorites" className="relative p-2">
+              <Heart className="h-6 w-6 text-gray-700 hover:text-brand-accent transition-colors" />
+              {totalFavorites > 0 && (
+                <span className="absolute top-0 right-0 bg-brand-accent text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {totalFavorites}
+                </span>
+              )}
+            </Link>
+            
+            {/* Cart icon */}
             <Link to="/cart" className="relative p-2">
               <ShoppingCart className="h-6 w-6 text-gray-700 hover:text-brand-accent transition-colors" />
-              <span className="absolute top-0 right-0 bg-brand-accent text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                {totalItems}
-              </span>
+              {totalItems > 0 && (
+                <span className="absolute top-0 right-0 bg-brand-accent text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
             </Link>
+            
             <button
               className="md:hidden p-2"
               onClick={toggleMenu}
@@ -76,9 +92,14 @@ const Navbar = () => {
             <Link to="/about" className="text-xl font-medium" onClick={toggleMenu}>About</Link>
             <Link to="/contact" className="text-xl font-medium" onClick={toggleMenu}>Contact</Link>
           </div>
-          <div className="mt-auto">
+          <div className="mt-auto flex flex-col gap-3">
+            <Link to="/favorites" onClick={toggleMenu}>
+              <Button className="w-full bg-brand-DEFAULT hover:bg-brand-DEFAULT/90">
+                <Heart className="mr-2 h-5 w-5" /> Favorites ({totalFavorites})
+              </Button>
+            </Link>
             <Link to="/cart" onClick={toggleMenu}>
-              <Button className="w-full mt-6 bg-brand-accent hover:bg-brand-accent/90">
+              <Button className="w-full bg-brand-accent hover:bg-brand-accent/90">
                 <ShoppingCart className="mr-2 h-5 w-5" /> View Cart ({totalItems})
               </Button>
             </Link>

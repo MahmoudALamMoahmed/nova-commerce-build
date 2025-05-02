@@ -1,56 +1,39 @@
 
 import { useState } from 'react';
-import { ShoppingCart } from 'lucide-react';
-import { Button } from './ui/button';
-import { useToast } from '@/hooks/use-toast';
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  category: string;
-}
+import ProductCard from './ProductCard';
+import { Product } from '@/data/products';
 
 const FeaturedProducts = () => {
-  const { toast } = useToast();
   const [products] = useState<Product[]>([
     {
-      id: 1,
+      id: "featured1",
       name: "Minimalist Watch",
       price: 129.99,
       image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80",
-      category: "Accessories"
+      description: "A sleek minimalist watch with a leather band and modern design. Perfect for everyday wear and special occasions."
     },
     {
-      id: 2,
+      id: "featured2",
       name: "Leather Handbag",
       price: 89.99,
       image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=80",
-      category: "Bags"
+      description: "Handcrafted premium leather handbag with ample storage and elegant design. Features a comfortable shoulder strap and secure closure."
     },
     {
-      id: 3,
+      id: "featured3",
       name: "Wireless Headphones",
       price: 149.99,
       image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80",
-      category: "Electronics"
+      description: "High-quality wireless headphones with noise cancellation technology. Enjoy crystal clear sound and extended battery life."
     },
     {
-      id: 4,
+      id: "featured4",
       name: "Designer Sunglasses",
       price: 79.99,
       image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&q=80",
-      category: "Accessories"
+      description: "UV-protected stylish sunglasses with durable frames. Modern design suitable for all face shapes."
     }
   ]);
-
-  const handleAddToCart = (product: Product) => {
-    toast({
-      title: "Added to cart",
-      description: `${product.name} has been added to your cart.`,
-    });
-  };
 
   return (
     <section className="py-16 bg-gray-50">
@@ -64,30 +47,7 @@ const FeaturedProducts = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {products.map((product) => (
-            <div key={product.id} className="product-card">
-              <div className="product-image-container">
-                <img 
-                  src={product.image} 
-                  alt={product.name}
-                  className="product-image"
-                />
-                <div className="absolute top-3 left-3">
-                  <span className="bg-brand-accent text-white text-xs font-bold px-3 py-1 rounded-full">
-                    {product.category}
-                  </span>
-                </div>
-              </div>
-              <div className="p-4">
-                <h3 className="font-medium text-lg mb-2">{product.name}</h3>
-                <p className="font-bold text-brand-accent mb-4">${product.price.toFixed(2)}</p>
-                <Button 
-                  className="w-full bg-brand-DEFAULT hover:bg-brand-DEFAULT/90 text-white"
-                  onClick={() => handleAddToCart(product)}
-                >
-                  <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
-                </Button>
-              </div>
-            </div>
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </div>

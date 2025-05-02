@@ -11,27 +11,32 @@ import Cart from "./pages/Cart";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import { CartProvider } from "./context/CartContext";
+import { FavoritesProvider } from "./context/FavoritesContext";
+import Favorites from "./pages/Favorites";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <CartProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/products/:id" element={<ProductDetails />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/about" element={<About />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+      <FavoritesProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/products/:id" element={<ProductDetails />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/favorites" element={<Favorites />} />
+              <Route path="/about" element={<About />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </FavoritesProvider>
     </CartProvider>
   </QueryClientProvider>
 );
