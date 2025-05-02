@@ -72,13 +72,22 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <div className="flex justify-between items-center mb-3">
           <span className="text-brand-accent font-semibold">${product.price.toFixed(2)}</span>
         </div>
-        <Button 
-          onClick={handleAddToCart}
-          variant="default" 
-          className="w-full bg-brand-accent hover:bg-brand-accent/90"
-        >
-          <ShoppingCart size={16} className="mr-2" /> Add to Cart
-        </Button>
+        <div className="flex flex-col gap-2">
+          <Link
+            to={`/products/${product.id}`}
+            className="text-center text-sm py-1.5 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+            onClick={(e) => e.stopPropagation()}
+          >
+            View Details
+          </Link>
+          <Button 
+            onClick={handleAddToCart}
+            variant="default" 
+            className="w-full bg-brand-accent hover:bg-brand-accent/90"
+          >
+            <ShoppingCart size={16} className="mr-2" /> Add to Cart
+          </Button>
+        </div>
       </div>
     </Link>
   );
