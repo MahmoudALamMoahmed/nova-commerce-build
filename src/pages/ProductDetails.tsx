@@ -1,5 +1,4 @@
 
-import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, ShoppingCart } from 'lucide-react';
 import Navbar from '../components/Navbar';
@@ -7,10 +6,12 @@ import Footer from '../components/Footer';
 import { products } from '../data/products';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { useCart } from '@/context/CartContext';
 
 const ProductDetails = () => {
   const { id } = useParams<{ id: string }>();
   const product = products.find(p => p.id === id);
+  const { addToCart } = useCart();
   
   if (!product) {
     return (
@@ -28,6 +29,7 @@ const ProductDetails = () => {
   }
 
   const handleAddToCart = () => {
+    addToCart(product);
     toast.success(`${product.name} added to cart!`);
   };
 

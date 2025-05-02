@@ -4,9 +4,11 @@ import { Menu, ShoppingCart, X } from 'lucide-react';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
+import { useCart } from '@/context/CartContext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { totalItems } = useCart();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -34,7 +36,7 @@ const Navbar = () => {
             <Link to="/cart" className="relative p-2">
               <ShoppingCart className="h-6 w-6 text-gray-700 hover:text-brand-accent transition-colors" />
               <span className="absolute top-0 right-0 bg-brand-accent text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                0
+                {totalItems}
               </span>
             </Link>
             <button
@@ -75,9 +77,11 @@ const Navbar = () => {
             <Link to="/contact" className="text-xl font-medium" onClick={toggleMenu}>Contact</Link>
           </div>
           <div className="mt-auto">
-            <Button className="w-full mt-6 bg-brand-accent hover:bg-brand-accent/90">
-              <ShoppingCart className="mr-2 h-5 w-5" /> View Cart (0)
-            </Button>
+            <Link to="/cart" onClick={toggleMenu}>
+              <Button className="w-full mt-6 bg-brand-accent hover:bg-brand-accent/90">
+                <ShoppingCart className="mr-2 h-5 w-5" /> View Cart ({totalItems})
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
