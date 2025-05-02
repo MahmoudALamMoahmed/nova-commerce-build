@@ -1,5 +1,6 @@
 
 import { ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
   return (
@@ -13,9 +14,9 @@ const Hero = () => {
           <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-md">
             Discover the latest trends and timeless classics from our curated selection of premium products.
           </p>
-          <a href="/shop" className="btn-primary inline-flex items-center">
+          <Link to="/products" className="btn-primary inline-flex items-center">
             Shop Now <ArrowRight className="ml-2 h-5 w-5" />
-          </a>
+          </Link>
         </div>
         <div className="md:w-1/2 md:pl-12">
           <div className="relative">

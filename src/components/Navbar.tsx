@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Menu, ShoppingCart, X } from 'lucide-react';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,26 +17,26 @@ const Navbar = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <a href="/" className="text-2xl font-bold text-brand-DEFAULT">
+          <Link to="/" className="text-2xl font-bold text-brand-DEFAULT">
             NOVA<span className="text-brand-accent">SHOP</span>
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-8">
-            <a href="/" className="nav-link">Home</a>
-            <a href="/shop" className="nav-link">Shop</a>
-            <a href="/about" className="nav-link">About</a>
-            <a href="/contact" className="nav-link">Contact</a>
+            <Link to="/" className="nav-link">Home</Link>
+            <Link to="/products" className="nav-link">Products</Link>
+            <Link to="/about" className="nav-link">About</Link>
+            <Link to="/contact" className="nav-link">Contact</Link>
           </div>
 
           {/* Cart and Mobile Menu Button */}
           <div className="flex items-center space-x-4">
-            <a href="/cart" className="relative p-2">
+            <Link to="/cart" className="relative p-2">
               <ShoppingCart className="h-6 w-6 text-gray-700 hover:text-brand-accent transition-colors" />
               <span className="absolute top-0 right-0 bg-brand-accent text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                 0
               </span>
-            </a>
+            </Link>
             <button
               className="md:hidden p-2"
               onClick={toggleMenu}
@@ -60,18 +61,18 @@ const Navbar = () => {
       >
         <div className="flex flex-col h-full p-6">
           <div className="flex justify-between items-center mb-8">
-            <a href="/" className="text-2xl font-bold text-brand-DEFAULT">
+            <Link to="/" className="text-2xl font-bold text-brand-DEFAULT">
               NOVA<span className="text-brand-accent">SHOP</span>
-            </a>
+            </Link>
             <Button variant="ghost" size="icon" onClick={toggleMenu}>
               <X className="h-6 w-6" />
             </Button>
           </div>
           <div className="flex flex-col space-y-6">
-            <a href="/" className="text-xl font-medium" onClick={toggleMenu}>Home</a>
-            <a href="/shop" className="text-xl font-medium" onClick={toggleMenu}>Shop</a>
-            <a href="/about" className="text-xl font-medium" onClick={toggleMenu}>About</a>
-            <a href="/contact" className="text-xl font-medium" onClick={toggleMenu}>Contact</a>
+            <Link to="/" className="text-xl font-medium" onClick={toggleMenu}>Home</Link>
+            <Link to="/products" className="text-xl font-medium" onClick={toggleMenu}>Products</Link>
+            <Link to="/about" className="text-xl font-medium" onClick={toggleMenu}>About</Link>
+            <Link to="/contact" className="text-xl font-medium" onClick={toggleMenu}>Contact</Link>
           </div>
           <div className="mt-auto">
             <Button className="w-full mt-6 bg-brand-accent hover:bg-brand-accent/90">
