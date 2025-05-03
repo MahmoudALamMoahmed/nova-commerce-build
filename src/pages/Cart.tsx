@@ -1,9 +1,22 @@
+
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
 import { toast } from 'sonner';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { useState } from 'react';
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 import { useUser } from '@/context/UserContext';
 import { useOrders } from '@/context/OrderContext';
@@ -14,6 +27,7 @@ const Cart = () => {
   const { user } = useUser();
   const { createOrder } = useOrders();
   const navigate = useNavigate();
+  const [itemToRemove, setItemToRemove] = useState<string | null>(null);
 
   const handleCheckout = async () => {
     if (!user) {
@@ -27,6 +41,21 @@ const Cart = () => {
     if (newOrder) {
       navigate('/orders');
     }
+  };
+
+  const confirmRemoveFromCart = (itemId: string) => {
+    setItemToRemove(itemId);
+  };
+
+  const handleRemoveConfirmed = () => {
+    if (itemToRemove) {
+      removeFromCart(itemToRemove);
+      setItemToRemove(null);
+    }
+  };
+
+  const handleCancelRemove = () => {
+    setItemToRemove(null);
   };
 
   return (
@@ -83,7 +112,7 @@ const Cart = () => {
                       <Button 
                         variant="ghost" 
                         size="sm" 
-                        onClick={() => removeFromCart(item.id)}
+                        onClick={() => confirmRemoveFromCart(item.id)}
                         className="text-red-500 hover:text-red-700 hover:bg-red-50"
                       >
                         Remove
@@ -123,6 +152,27 @@ const Cart = () => {
             </div>
           </div>
         )}
+        
+        {/* Removal confirmation dialog */}
+        <AlertDialog open={itemToRemove !== null} onOpenChange={() => setItemToRemove(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Remove Item</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to remove this item from the cart?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={handleCancelRemove}>Cancel</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={handleRemoveConfirmed}
+                className="bg-red-500 hover:bg-red-600"
+              >
+                Yes, remove
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
       <Footer />
     </div>

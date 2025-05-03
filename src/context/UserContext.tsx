@@ -38,38 +38,55 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const login = async (email: string, password: string): Promise<{ success: boolean; message: string }> => {
-    // Simulate API call
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        // For demo purposes, accept any non-empty email and password
-        if (email && password) {
-          // Generate a random ID for the user (in a real app, this would come from the backend)
-          const newUser = { id: `user_${Date.now()}`, name: email.split('@')[0], email };
-          setUser(newUser);
-          localStorage.setItem('user', JSON.stringify(newUser));
-          resolve({ success: true, message: 'Login successful!' });
-        } else {
-          resolve({ success: false, message: 'Email and password are required.' });
-        }
-      }, 1000);
-    });
+    // Get registered users from localStorage
+    const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+    
+    // Find user with matching email
+    const foundUser = registeredUsers.find((user: any) => user.email === email);
+    
+    // Check if user exists and password matches
+    if (foundUser && foundUser.password === password) {
+      const userToLogin = { 
+        id: foundUser.id, 
+        name: foundUser.name, 
+        email: foundUser.email 
+      };
+      
+      setUser(userToLogin);
+      localStorage.setItem('user', JSON.stringify(userToLogin));
+      return { success: true, message: 'Login successful!' };
+    } else {
+      return { success: false, message: 'Invalid email or password.' };
+    }
   };
 
   const register = async (name: string, email: string, password: string): Promise<{ success: boolean; message: string }> => {
-    // Simulate API call
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        // In a real app, we would check if the user already exists
-        if (name && email && password) {
-          const newUser = { id: `user_${Date.now()}`, name, email };
-          setUser(newUser);
-          localStorage.setItem('user', JSON.stringify(newUser));
-          resolve({ success: true, message: 'Registration successful!' });
-        } else {
-          resolve({ success: false, message: 'All fields are required.' });
-        }
-      }, 1000);
-    });
+    // Get existing users or initialize empty array
+    const existingUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+    
+    // Check if user with this email already exists
+    if (existingUsers.some((user: any) => user.email === email)) {
+      return { success: false, message: 'Email already in use.' };
+    }
+    
+    // Create new user
+    const newUser = { 
+      id: `user_${Date.now()}`, 
+      name, 
+      email, 
+      password 
+    };
+    
+    // Add to registered users
+    existingUsers.push(newUser);
+    localStorage.setItem('registeredUsers', JSON.stringify(existingUsers));
+    
+    // Log user in
+    const userToLogin = { id: newUser.id, name, email };
+    setUser(userToLogin);
+    localStorage.setItem('user', JSON.stringify(userToLogin));
+    
+    return { success: true, message: 'Registration successful!' };
   };
 
   const logout = () => {
