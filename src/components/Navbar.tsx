@@ -1,16 +1,26 @@
 
 import { useState } from 'react';
-import { Menu, ShoppingCart, X, Heart } from 'lucide-react';
+import { Menu, ShoppingCart, X, Heart, User, LogOut, Package } from 'lucide-react';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
+import { useUser } from '@/context/UserContext';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from './ui/avatar';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { totalItems } = useCart();
   const { totalFavorites } = useFavorites();
+  const { user, logout } = useUser();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -33,7 +43,7 @@ const Navbar = () => {
             <Link to="/contact" className="nav-link">Contact</Link>
           </div>
 
-          {/* Cart, Favorites, and Mobile Menu Button */}
+          {/* Cart, Favorites, and User Menu */}
           <div className="flex items-center space-x-4">
             {/* Favorites icon */}
             <Link to="/favorites" className="relative p-2">
@@ -54,6 +64,54 @@ const Navbar = () => {
                 </span>
               )}
             </Link>
+            
+            {/* User Menu - Only show when logged in */}
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="p-2 relative" aria-label="User menu">
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback className="bg-brand-DEFAULT text-white">
+                        {user.name.slice(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <div className="px-4 py-2 text-sm">
+                    <p className="font-medium">Hello, {user.name}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{user.email}</p>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/profile" className="flex items-center cursor-pointer">
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/orders" className="flex items-center cursor-pointer">
+                      <Package className="mr-2 h-4 w-4" />
+                      <span>Orders</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="cursor-pointer" onClick={logout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Sign out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <div className="hidden md:flex space-x-2">
+                <Link to="/login">
+                  <Button variant="ghost">Log in</Button>
+                </Link>
+                <Link to="/register">
+                  <Button>Sign up</Button>
+                </Link>
+              </div>
+            )}
             
             <button
               className="md:hidden p-2"
@@ -91,6 +149,48 @@ const Navbar = () => {
             <Link to="/products" className="text-xl font-medium" onClick={toggleMenu}>Products</Link>
             <Link to="/about" className="text-xl font-medium" onClick={toggleMenu}>About</Link>
             <Link to="/contact" className="text-xl font-medium" onClick={toggleMenu}>Contact</Link>
+            
+            {/* User specific links */}
+            {user ? (
+              <>
+                <div className="pt-4 border-t">
+                  <div className="flex items-center mb-4">
+                    <Avatar className="h-10 w-10 mr-3">
+                      <AvatarFallback className="bg-brand-DEFAULT text-white">
+                        {user.name.slice(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-medium">{user.name}</p>
+                      <p className="text-sm text-muted-foreground">{user.email}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col space-y-4 pl-2">
+                    <Link to="/profile" className="flex items-center text-base" onClick={toggleMenu}>
+                      <User className="mr-2 h-5 w-5" />
+                      <span>Profile</span>
+                    </Link>
+                    <Link to="/orders" className="flex items-center text-base" onClick={toggleMenu}>
+                      <Package className="mr-2 h-5 w-5" />
+                      <span>Orders</span>
+                    </Link>
+                    <button onClick={logout} className="flex items-center text-base text-red-600">
+                      <LogOut className="mr-2 h-5 w-5" />
+                      <span>Sign out</span>
+                    </button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="pt-4 border-t flex flex-col gap-3">
+                <Link to="/login" onClick={toggleMenu}>
+                  <Button className="w-full" variant="outline">Log in</Button>
+                </Link>
+                <Link to="/register" onClick={toggleMenu}>
+                  <Button className="w-full">Sign up</Button>
+                </Link>
+              </div>
+            )}
           </div>
           <div className="mt-auto flex flex-col gap-3">
             <Link to="/favorites" onClick={toggleMenu}>
