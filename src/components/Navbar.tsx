@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Menu, ShoppingCart, X, Heart, User, LogOut, Package } from 'lucide-react';
 import { Button } from './ui/button';
@@ -14,7 +13,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from './ui/avatar';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -65,11 +63,11 @@ const Navbar = () => {
               )}
             </Link>
             
-            {/* User Menu - Only show when logged in */}
+            {/* User Menu */}
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="p-1 h-auto" aria-label="User menu">
+                  <Button variant="ghost" className="p-2 relative" aria-label="User menu">
                     <User className="h-6 w-6 text-gray-700 hover:text-brand-accent transition-colors" />
                   </Button>
                 </DropdownMenuTrigger>
