@@ -69,12 +69,8 @@ const Navbar = () => {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="p-2 relative" aria-label="User menu">
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback className="bg-brand-DEFAULT text-white">
-                        {user.name.slice(0, 2).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
+                  <Button variant="ghost" className="p-1 h-auto" aria-label="User menu">
+                    <User className="h-6 w-6 text-gray-700 hover:text-brand-accent transition-colors" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -155,11 +151,7 @@ const Navbar = () => {
               <>
                 <div className="pt-4 border-t">
                   <div className="flex items-center mb-4">
-                    <Avatar className="h-10 w-10 mr-3">
-                      <AvatarFallback className="bg-brand-DEFAULT text-white">
-                        {user.name.slice(0, 2).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
+                    <User className="h-6 w-6 text-gray-700 mr-3" />
                     <div>
                       <p className="font-medium">{user.name}</p>
                       <p className="text-sm text-muted-foreground">{user.email}</p>
