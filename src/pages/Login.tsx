@@ -5,9 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useUser } from '@/context/UserContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import { Layout } from '@/components/Layout';
 import {
   Card,
   CardContent,
@@ -63,9 +61,8 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <div className="container mx-auto py-24 px-4 flex justify-center items-center flex-grow">
+    <Layout>
+      <div className="container mx-auto py-24 px-4 flex justify-center items-center">
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle className="text-2xl text-center">Login</CardTitle>
@@ -133,8 +130,7 @@ const Login = () => {
           </CardFooter>
         </Card>
       </div>
-      <Footer />
-    </div>
+    </Layout>
   );
 };
 

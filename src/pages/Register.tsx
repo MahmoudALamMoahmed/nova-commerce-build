@@ -1,11 +1,11 @@
+
 import { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useUser } from '@/context/UserContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import { Layout } from '@/components/Layout';
 import {
   Card,
   CardContent,
@@ -68,9 +68,8 @@ const Register = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <div className="container mx-auto py-24 px-4 flex justify-center items-center flex-grow">
+    <Layout>
+      <div className="container mx-auto py-24 px-4 flex justify-center items-center">
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle className="text-2xl text-center">Create Account</CardTitle>
@@ -173,8 +172,7 @@ const Register = () => {
           </CardFooter>
         </Card>
       </div>
-      <Footer />
-    </div>
+    </Layout>
   );
 };
 

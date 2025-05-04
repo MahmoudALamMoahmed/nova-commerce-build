@@ -3,9 +3,8 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
 import { toast } from 'sonner';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
 import { useState } from 'react';
+import { Layout } from '@/components/Layout';
 
 import {
   AlertDialog,
@@ -59,9 +58,8 @@ const Cart = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <div className="container mx-auto py-24 px-4 flex-grow">
+    <Layout>
+      <div className="container mx-auto py-24 px-4">
         <h1 className="text-3xl font-bold mb-8 text-center">Your Cart</h1>
 
         {cartItems.length === 0 ? (
@@ -174,8 +172,7 @@ const Cart = () => {
           </AlertDialogContent>
         </AlertDialog>
       </div>
-      <Footer />
-    </div>
+    </Layout>
   );
 };
 
