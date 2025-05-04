@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Menu, ShoppingCart, X, Heart, User, LogOut, Package } from 'lucide-react';
 import { Button } from './ui/button';
@@ -14,7 +15,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const Navbar = () => {
+interface NavbarProps {
+  currentPath: string;
+}
+
+const Navbar = ({ currentPath }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { totalItems } = useCart();
   const { totalFavorites } = useFavorites();
@@ -22,6 +27,10 @@ const Navbar = () => {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const isActive = (path: string) => {
+    return currentPath === path;
   };
 
   return (
@@ -35,10 +44,30 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-8">
-            <Link to="/" className="nav-link">Home</Link>
-            <Link to="/products" className="nav-link">Products</Link>
-            <Link to="/about" className="nav-link">About</Link>
-            <Link to="/contact" className="nav-link">Contact</Link>
+            <Link 
+              to="/" 
+              className={`nav-link ${isActive('/') ? 'text-brand-accent font-semibold border-b-2 border-brand-accent' : ''}`}
+            >
+              Home
+            </Link>
+            <Link 
+              to="/products" 
+              className={`nav-link ${isActive('/products') ? 'text-brand-accent font-semibold border-b-2 border-brand-accent' : ''}`}
+            >
+              Products
+            </Link>
+            <Link 
+              to="/about" 
+              className={`nav-link ${isActive('/about') ? 'text-brand-accent font-semibold border-b-2 border-brand-accent' : ''}`}
+            >
+              About
+            </Link>
+            <Link 
+              to="/contact" 
+              className={`nav-link ${isActive('/contact') ? 'text-brand-accent font-semibold border-b-2 border-brand-accent' : ''}`}
+            >
+              Contact
+            </Link>
           </div>
 
           {/* Cart, Favorites, and User Menu */}
@@ -139,10 +168,34 @@ const Navbar = () => {
             </Button>
           </div>
           <div className="flex flex-col space-y-6">
-            <Link to="/" className="text-xl font-medium" onClick={toggleMenu}>Home</Link>
-            <Link to="/products" className="text-xl font-medium" onClick={toggleMenu}>Products</Link>
-            <Link to="/about" className="text-xl font-medium" onClick={toggleMenu}>About</Link>
-            <Link to="/contact" className="text-xl font-medium" onClick={toggleMenu}>Contact</Link>
+            <Link 
+              to="/" 
+              className={`text-xl font-medium ${isActive('/') ? 'text-brand-accent font-semibold' : ''}`} 
+              onClick={toggleMenu}
+            >
+              Home
+            </Link>
+            <Link 
+              to="/products" 
+              className={`text-xl font-medium ${isActive('/products') ? 'text-brand-accent font-semibold' : ''}`} 
+              onClick={toggleMenu}
+            >
+              Products
+            </Link>
+            <Link 
+              to="/about" 
+              className={`text-xl font-medium ${isActive('/about') ? 'text-brand-accent font-semibold' : ''}`} 
+              onClick={toggleMenu}
+            >
+              About
+            </Link>
+            <Link 
+              to="/contact" 
+              className={`text-xl font-medium ${isActive('/contact') ? 'text-brand-accent font-semibold' : ''}`} 
+              onClick={toggleMenu}
+            >
+              Contact
+            </Link>
             
             {/* User specific links */}
             {user ? (

@@ -49,5 +49,33 @@ export const products: Product[] = [
     price: 45.99,
     image: "https://images.unsplash.com/photo-1509114397022-ed747cca3f65?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=770&q=80",
     description: "This sleek wall clock combines functionality with modern design. Its silent movement ensures peace and quiet, while its minimalist face makes reading the time effortless."
+  },
+  {
+    id: "7",
+    name: "Smart Home Speaker",
+    price: 129.99,
+    image: "https://images.unsplash.com/photo-1589003077984-894e133f8885?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
+    description: "A powerful smart speaker with voice control capabilities. Stream music, control your smart home devices, and get information with simple voice commands."
+  },
+  {
+    id: "8",
+    name: "Ergonomic Office Chair",
+    price: 249.99,
+    image: "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
+    description: "This ergonomic office chair provides all-day comfort with adjustable features. Perfect for your home office or workspace, it promotes good posture and reduces fatigue."
+  },
+  {
+    id: "9",
+    name: "Handwoven Throw Blanket",
+    price: 89.99,
+    image: "https://images.unsplash.com/photo-1578898887932-dce23a595ad4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
+    description: "This luxurious handwoven blanket is crafted from 100% sustainable materials. Perfect for cool evenings, it adds warmth and texture to your living space."
+  },
+  {
+    id: "10",
+    name: "Artisan Coffee Mug Set",
+    price: 39.99,
+    image: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
+    description: "A set of four handcrafted ceramic coffee mugs, each with unique glazing. These artisan mugs are microwave and dishwasher safe, perfect for your morning coffee ritual."
   }
 ];
