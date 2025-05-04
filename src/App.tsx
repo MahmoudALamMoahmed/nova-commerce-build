@@ -32,9 +32,9 @@ const App = () => (
           <FavoritesProvider>
             <OrderProvider>
               <TooltipProvider>
-                <Toaster />
-                <Sonner />
                 <Layout>
+                  <Toaster />
+                  <Sonner />
                   <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/products" element={<Products />} />
