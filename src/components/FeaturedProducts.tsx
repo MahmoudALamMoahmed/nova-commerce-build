@@ -19,7 +19,7 @@ const FeaturedProducts = () => {
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
       try {
-        // Fetch products without authentication requirements
+        // Fetch products for everyone - no authentication required
         const { data, error } = await supabase
           .from('products')
           .select('*')
