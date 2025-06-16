@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Menu, ShoppingCart, X, Heart, User, LogOut, Package } from 'lucide-react';
+import { Menu, ShoppingCart, X, Heart, User, LogOut, Package, Shield } from 'lucide-react';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
@@ -23,7 +23,7 @@ const Navbar = ({ currentPath }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { totalItems } = useCart();
   const { totalFavorites } = useFavorites();
-  const { user, logout } = useUser();
+  const { user, userProfile, logout } = useUser();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -68,6 +68,15 @@ const Navbar = ({ currentPath }: NavbarProps) => {
             >
               Contact
             </Link>
+            {/* Admin link for admin users */}
+            {userProfile?.is_admin && (
+              <Link 
+                to="/admin" 
+                className={`nav-link ${isActive('/admin') ? 'text-brand-accent font-semibold border-b-2 border-brand-accent' : ''}`}
+              >
+                Admin
+              </Link>
+            )}
           </div>
 
           {/* Cart, Favorites, and User Menu */}
@@ -102,8 +111,10 @@ const Navbar = ({ currentPath }: NavbarProps) => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <div className="px-4 py-2 text-sm">
-                    <p className="font-medium">Hello, {user.name}</p>
-                    <p className="text-xs text-muted-foreground mt-1">{user.email}</p>
+                    <p className="font-medium">Hello, {user.email}</p>
+                    {userProfile?.is_admin && (
+                      <p className="text-xs text-brand-accent mt-1">Administrator</p>
+                    )}
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
@@ -118,6 +129,14 @@ const Navbar = ({ currentPath }: NavbarProps) => {
                       <span>Orders</span>
                     </Link>
                   </DropdownMenuItem>
+                  {userProfile?.is_admin && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin" className="flex items-center cursor-pointer">
+                        <Shield className="mr-2 h-4 w-4" />
+                        <span>Admin Panel</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem className="cursor-pointer" onClick={logout}>
                     <LogOut className="mr-2 h-4 w-4" />
@@ -204,8 +223,10 @@ const Navbar = ({ currentPath }: NavbarProps) => {
                   <div className="flex items-center mb-4">
                     <User className="h-6 w-6 text-gray-700 mr-3" />
                     <div>
-                      <p className="font-medium">{user.name}</p>
-                      <p className="text-sm text-muted-foreground">{user.email}</p>
+                      <p className="font-medium">{user.email}</p>
+                      {userProfile?.is_admin && (
+                        <p className="text-sm text-brand-accent">Administrator</p>
+                      )}
                     </div>
                   </div>
                   <div className="flex flex-col space-y-4 pl-2">
@@ -217,6 +238,12 @@ const Navbar = ({ currentPath }: NavbarProps) => {
                       <Package className="mr-2 h-5 w-5" />
                       <span>Orders</span>
                     </Link>
+                    {userProfile?.is_admin && (
+                      <Link to="/admin" className="flex items-center text-base" onClick={toggleMenu}>
+                        <Shield className="mr-2 h-5 w-5" />
+                        <span>Admin Panel</span>
+                      </Link>
+                    )}
                     <button onClick={logout} className="flex items-center text-base text-red-600">
                       <LogOut className="mr-2 h-5 w-5" />
                       <span>Sign out</span>
