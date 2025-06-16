@@ -131,7 +131,8 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         options: {
           emailRedirectTo: `${window.location.origin}/`,
           data: {
-            name: name
+            name: name,
+            full_name: name
           }
         }
       });
@@ -141,6 +142,20 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       if (data.user) {
+        // The trigger will automatically create the user profile
+        // But we can also manually ensure it's created with the name
+        try {
+          await supabase
+            .from('users')
+            .upsert({
+              id: data.user.id,
+              email: data.user.email!,
+              is_admin: false
+            });
+        } catch (profileError) {
+          console.log('Profile creation handled by trigger:', profileError);
+        }
+
         return { success: true, message: 'Registration successful! Please check your email to confirm your account.' };
       }
 

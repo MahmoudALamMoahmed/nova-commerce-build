@@ -18,6 +18,7 @@ const Products = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        // Fetch products without any authentication requirements
         const { data, error } = await supabase
           .from('products')
           .select('*')
@@ -28,6 +29,7 @@ const Products = () => {
           return;
         }
 
+        console.log('Products fetched:', data);
         setProducts(data || []);
       } catch (error) {
         console.error('Error fetching products:', error);
