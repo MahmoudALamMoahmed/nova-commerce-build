@@ -32,7 +32,7 @@ const Profile = () => {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      name: user?.name || '',
+      name: user?.user_metadata?.name || user?.user_metadata?.full_name || '',
       email: user?.email || '',
     },
   });
