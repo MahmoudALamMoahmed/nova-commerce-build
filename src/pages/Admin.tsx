@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { toast } from 'sonner';
-import { Trash2, Edit, Plus, Package, Users, ShoppingCart } from 'lucide-react';
+import { Trash2, Edit, Plus, Package, Users, ShoppingCart, Upload, X } from 'lucide-react';
 
 interface Product {
   id: string;
@@ -39,6 +39,8 @@ const Admin = () => {
     description: '',
     image: ''
   });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   // Check if user is admin
   if (isLoading) {
@@ -98,6 +100,62 @@ const Admin = () => {
     fetchStats();
   }, []);
 
+  const uploadImage = async (file: File): Promise<string | null> => {
+    try {
+      setIsUploading(true);
+      
+      // Generate unique filename with timestamp
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      
+      console.log('Uploading file:', fileName);
+      
+      const { data, error } = await supabase.storage
+        .from('product-images')
+        .upload(fileName, file);
+
+      if (error) {
+        console.error('Upload error:', error);
+        throw error;
+      }
+
+      console.log('Upload successful:', data);
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('product-images')
+        .getPublicUrl(fileName);
+
+      console.log('Public URL:', publicUrl);
+      return publicUrl;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast.error('Failed to upload image');
+      return null;
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        toast.error('Please select an image file');
+        return;
+      }
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('Image size must be less than 5MB');
+        return;
+      }
+      
+      setSelectedFile(file);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -107,11 +165,22 @@ const Admin = () => {
     }
 
     try {
+      let imageUrl = formData.image;
+
+      // Upload new image if file is selected
+      if (selectedFile) {
+        const uploadedUrl = await uploadImage(selectedFile);
+        if (!uploadedUrl) {
+          return; // Upload failed, error already shown
+        }
+        imageUrl = uploadedUrl;
+      }
+
       const productData = {
         title: formData.title,
         price: parseFloat(formData.price),
         description: formData.description || null,
-        image: formData.image || null
+        image: imageUrl || null
       };
 
       if (editingProduct) {
@@ -132,6 +201,7 @@ const Admin = () => {
       }
 
       setFormData({ title: '', price: '', description: '', image: '' });
+      setSelectedFile(null);
       setEditingProduct(null);
       setShowForm(false);
       fetchProducts();
@@ -150,6 +220,7 @@ const Admin = () => {
       description: product.description || '',
       image: product.image || ''
     });
+    setSelectedFile(null);
     setShowForm(true);
   };
 
@@ -175,8 +246,13 @@ const Admin = () => {
 
   const resetForm = () => {
     setFormData({ title: '', price: '', description: '', image: '' });
+    setSelectedFile(null);
     setEditingProduct(null);
     setShowForm(false);
+  };
+
+  const removeSelectedFile = () => {
+    setSelectedFile(null);
   };
 
   return (
@@ -261,14 +337,49 @@ const Admin = () => {
                     />
                   </div>
                 </div>
+                
                 <div>
-                  <label className="block text-sm font-medium mb-2">Image URL</label>
-                  <Input
-                    value={formData.image}
-                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                    placeholder="https://example.com/image.jpg"
-                  />
+                  <label className="block text-sm font-medium mb-2">Product Image</label>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-4">
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileSelect}
+                        className="flex-1"
+                      />
+                      {selectedFile && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={removeSelectedFile}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                    
+                    {selectedFile && (
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <Upload className="h-4 w-4" />
+                        <span>Selected: {selectedFile.name}</span>
+                      </div>
+                    )}
+                    
+                    {formData.image && !selectedFile && (
+                      <div className="flex items-center gap-2">
+                        <img 
+                          src={formData.image} 
+                          alt="Current product" 
+                          className="w-16 h-16 object-cover rounded"
+                        />
+                        <span className="text-sm text-gray-600">Current image</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
+                
                 <div>
                   <label className="block text-sm font-medium mb-2">Description</label>
                   <Textarea
@@ -279,8 +390,19 @@ const Admin = () => {
                   />
                 </div>
                 <div className="flex gap-2">
-                  <Button type="submit" className="bg-brand-accent hover:bg-brand-accent/90">
-                    {editingProduct ? 'Update Product' : 'Create Product'}
+                  <Button 
+                    type="submit" 
+                    className="bg-brand-accent hover:bg-brand-accent/90"
+                    disabled={isUploading}
+                  >
+                    {isUploading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Uploading...
+                      </>
+                    ) : (
+                      editingProduct ? 'Update Product' : 'Create Product'
+                    )}
                   </Button>
                   <Button type="button" variant="outline" onClick={resetForm}>
                     Cancel
