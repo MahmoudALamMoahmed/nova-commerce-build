@@ -55,8 +55,8 @@ const App = () => (
                   <Route path="/profile" element={<Layout><Profile /></Layout>} />
                   <Route path="/orders" element={<Layout><Orders /></Layout>} />
                   
-                  {/* Admin routes with separate layout */}
-                  <Route path="/admin" element={<AdminLayout />}>
+                  {/* Admin routes with main layout + admin layout */}
+                  <Route path="/admin" element={<Layout><AdminLayout /></Layout>}>
                     <Route index element={<Dashboard />} />
                     <Route path="products" element={<AdminProducts />} />
                     <Route path="orders" element={<AdminOrders />} />

@@ -54,9 +54,9 @@ const AdminLayout = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="bg-gray-50 flex min-h-[calc(100vh-5rem)]">
       {/* Sidebar */}
-      <div className="w-64 bg-white shadow-sm border-r border-gray-200 fixed h-full">
+      <div className="w-64 bg-white shadow-sm border-r border-gray-200 fixed h-[calc(100vh-5rem)] top-20">
         <div className="flex flex-col h-full">
           {/* Logo/Header */}
           <div className="p-6 border-b border-gray-200">
