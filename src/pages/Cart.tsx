@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
 import { useUser } from '@/context/UserContext';
+import { useOrders } from '@/context/OrderContext';
 import { toast } from 'sonner';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import {
   AlertDialog,
@@ -17,26 +19,26 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-import { useOrders } from '@/context/OrderContext';
-import { useNavigate } from 'react-router-dom';
-
 const Cart = () => {
   const { cartItems, removeFromCart, updateQuantity, totalPrice, isLoading } = useCart();
   const { user } = useUser();
   const { createOrder } = useOrders();
   const navigate = useNavigate();
   const [itemToRemove, setItemToRemove] = useState<string | null>(null);
+  const [isCreatingOrder, setIsCreatingOrder] = useState(false);
 
   const handleCheckout = async () => {
     if (!user) {
-      // Redirect to login if not logged in
       toast.error("Please login to complete your purchase");
       navigate('/login');
       return;
     }
     
-    const newOrder = await createOrder();
-    if (newOrder) {
+    setIsCreatingOrder(true);
+    const success = await createOrder();
+    setIsCreatingOrder(false);
+    
+    if (success) {
       navigate('/orders');
     }
   };
@@ -169,8 +171,9 @@ const Cart = () => {
               <Button 
                 className="w-full mt-6 bg-brand-accent hover:bg-brand-accent/90"
                 onClick={handleCheckout}
+                disabled={isCreatingOrder}
               >
-                Proceed to Checkout
+                {isCreatingOrder ? 'Processing...' : 'Proceed to Checkout'}
               </Button>
               <p className="text-sm text-muted-foreground mt-4 text-center">
                 Secure checkout with 100% buyer protection

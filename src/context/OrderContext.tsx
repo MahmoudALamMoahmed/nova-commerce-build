@@ -1,82 +1,139 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useCart } from './CartContext';
+import { useUser } from './UserContext';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 export interface Order {
   id: string;
-  date: string;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered';
-  items: {
+  user_id: string;
+  product_id: string;
+  quantity: number;
+  status: 'pending' | 'confirmed' | 'shipped' | 'cancelled';
+  created_at: string;
+  products?: {
     id: string;
-    name: string;
+    title: string;
     price: number;
-    quantity: number;
-    image: string;
-  }[];
-  total: number;
+    image?: string;
+  };
 }
 
 interface OrderContextType {
   orders: Order[];
-  createOrder: () => Promise<Order | null>;
+  createOrder: () => Promise<boolean>;
+  fetchOrders: () => Promise<void>;
+  isLoading: boolean;
 }
 
 const OrderContext = createContext<OrderContextType | undefined>(undefined);
 
 export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
   const [orders, setOrders] = useState<Order[]>([]);
-  const { cartItems, totalPrice, clearCart } = useCart();
+  const [isLoading, setIsLoading] = useState(false);
+  const { cartItems, clearCart } = useCart();
+  const { user } = useUser();
 
-  // Load orders from localStorage on initial mount
+  // Fetch orders when user logs in
   useEffect(() => {
-    const storedOrders = localStorage.getItem('orders');
-    if (storedOrders) {
-      try {
-        setOrders(JSON.parse(storedOrders));
-      } catch (error) {
-        console.error('Error parsing orders from localStorage:', error);
-      }
+    if (user) {
+      fetchOrders();
+    } else {
+      setOrders([]);
     }
-  }, []);
+  }, [user]);
 
-  // Save orders to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem('orders', JSON.stringify(orders));
-  }, [orders]);
+  const fetchOrders = async () => {
+    if (!user) return;
 
-  const createOrder = async (): Promise<Order | null> => {
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from('orders')
+        .select(`
+          id,
+          user_id,
+          product_id,
+          quantity,
+          status,
+          created_at,
+          products (
+            id,
+            title,
+            price,
+            image
+          )
+        `)
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching orders:', error);
+        toast.error('Failed to load orders');
+        return;
+      }
+
+      setOrders(data || []);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      toast.error('Failed to load orders');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const createOrder = async (): Promise<boolean> => {
+    if (!user) {
+      toast.error('Please log in to place an order');
+      return false;
+    }
+
     if (cartItems.length === 0) {
       toast.error('Your cart is empty');
-      return null;
+      return false;
     }
 
-    // Generate a random order ID
-    const orderId = `ORD-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
-    
-    const newOrder: Order = {
-      id: orderId,
-      date: new Date().toISOString(),
-      status: 'pending',
-      items: cartItems.map(item => ({
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity,
-        image: item.image
-      })),
-      total: totalPrice
-    };
+    try {
+      setIsLoading(true);
 
-    setOrders(prevOrders => [newOrder, ...prevOrders]);
-    clearCart();
-    toast.success('Order placed successfully!');
-    
-    return newOrder;
+      // Create order entries for each cart item
+      const orderEntries = cartItems.map(item => ({
+        user_id: user.id,
+        product_id: item.id,
+        quantity: item.quantity,
+        status: 'pending' as const
+      }));
+
+      const { error } = await supabase
+        .from('orders')
+        .insert(orderEntries);
+
+      if (error) {
+        console.error('Error creating order:', error);
+        toast.error('Failed to place order');
+        return false;
+      }
+
+      // Clear cart after successful order
+      await clearCart();
+      
+      // Refresh orders
+      await fetchOrders();
+      
+      toast.success('Order placed successfully!');
+      return true;
+    } catch (error) {
+      console.error('Error creating order:', error);
+      toast.error('Failed to place order');
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <OrderContext.Provider value={{ orders, createOrder }}>
+    <OrderContext.Provider value={{ orders, createOrder, fetchOrders, isLoading }}>
       {children}
     </OrderContext.Provider>
   );

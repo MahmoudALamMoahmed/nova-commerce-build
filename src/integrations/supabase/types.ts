@@ -77,7 +77,7 @@ export type Database = {
           product_id: string
           quantity: number
           status: string
-          user_email: string
+          user_id: string
         }
         Insert: {
           created_at?: string
@@ -85,7 +85,7 @@ export type Database = {
           product_id: string
           quantity?: number
           status?: string
-          user_email: string
+          user_id: string
         }
         Update: {
           created_at?: string
@@ -93,7 +93,7 @@ export type Database = {
           product_id?: string
           quantity?: number
           status?: string
-          user_email?: string
+          user_id?: string
         }
         Relationships: [
           {
@@ -158,7 +158,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
