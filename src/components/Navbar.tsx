@@ -46,7 +46,7 @@ const Navbar = ({ currentPath }: NavbarProps) => {
           <div className="hidden md:flex space-x-8">
             <Link 
               to="/" 
-              className={`nav-link ${isActive('/') ? 'text-brand-accent font-semibold' : ''}`}
+              className={`nav-link ${isActive('/') ? 'text-brand-accent font-semibold border-b-2 border-brand-accent' : ''}`}
             >
               Home
             </Link>
