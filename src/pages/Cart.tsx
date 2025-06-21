@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
+import { useUser } from '@/context/UserContext';
 import { toast } from 'sonner';
 import { useState } from 'react';
 
@@ -16,12 +17,11 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-import { useUser } from '@/context/UserContext';
 import { useOrders } from '@/context/OrderContext';
 import { useNavigate } from 'react-router-dom';
 
 const Cart = () => {
-  const { cartItems, removeFromCart, updateQuantity, totalPrice } = useCart();
+  const { cartItems, removeFromCart, updateQuantity, totalPrice, isLoading } = useCart();
   const { user } = useUser();
   const { createOrder } = useOrders();
   const navigate = useNavigate();
@@ -45,9 +45,9 @@ const Cart = () => {
     setItemToRemove(itemId);
   };
 
-  const handleRemoveConfirmed = () => {
+  const handleRemoveConfirmed = async () => {
     if (itemToRemove) {
-      removeFromCart(itemToRemove);
+      await removeFromCart(itemToRemove);
       setItemToRemove(null);
     }
   };
@@ -55,6 +55,37 @@ const Cart = () => {
   const handleCancelRemove = () => {
     setItemToRemove(null);
   };
+
+  // Show login prompt if user is not authenticated
+  if (!user) {
+    return (
+      <div className="container mx-auto py-24 px-4">
+        <div className="text-center py-12">
+          <div className="text-6xl mb-4">🔒</div>
+          <h2 className="text-2xl font-medium mb-4">Please log in to view your cart</h2>
+          <p className="text-muted-foreground mb-8">You need to be logged in to access your shopping cart.</p>
+          <div className="flex gap-4 justify-center">
+            <Link to="/login">
+              <Button>Log In</Button>
+            </Link>
+            <Link to="/register">
+              <Button variant="outline">Sign Up</Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto py-24 px-4">
+        <div className="flex justify-center py-8">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-accent"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-24 px-4">

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
+import { useUser } from '@/context/UserContext';
 import { Product } from '@/data/products';
 
 interface ProductCardProps {
@@ -14,23 +15,37 @@ interface ProductCardProps {
 const ProductCard = ({ product }: ProductCardProps) => {
   const { addToCart } = useCart();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
+  const { user } = useUser();
 
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    addToCart(product);
-    toast.success(`${product.name} added to cart!`);
-  };
-
-  const handleToggleFavorite = (e: React.MouseEvent) => {
+  const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
+    if (!user) {
+      toast.error('Please log in to add items to cart');
+      return;
+    }
+    
+    await addToCart(product);
+    toast.success(`${product.name} added to cart!`);
+  };
+
+  const handleToggleFavorite = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!user) {
+      toast.error('Please log in to manage favorites');
+      return;
+    }
+    
     if (isFavorite(product.id)) {
-      removeFromFavorites(product.id);
-      toast.info(`${product.name} removed from favorites`);
+      const removed = await removeFromFavorites(product.id);
+      if (removed) {
+        toast.info(`${product.name} removed from favorites`);
+      }
     } else {
-      addToFavorites(product);
+      await addToFavorites(product);
       toast.success(`${product.name} added to favorites!`);
     }
   };
@@ -54,15 +69,15 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <button
             onClick={handleToggleFavorite}
             className={`absolute top-3 right-3 p-2 rounded-full ${
-              isFavorite(product.id) 
+              user && isFavorite(product.id) 
                 ? 'bg-red-50 text-red-500' 
                 : 'bg-gray-50 text-gray-400 hover:text-red-500'
             }`}
-            aria-label={isFavorite(product.id) ? "Remove from favorites" : "Add to favorites"}
+            aria-label={user && isFavorite(product.id) ? "Remove from favorites" : "Add to favorites"}
           >
             <Heart 
               size={20} 
-              fill={isFavorite(product.id) ? "currentColor" : "none"}
+              fill={user && isFavorite(product.id) ? "currentColor" : "none"}
             />
           </button>
         </div>
