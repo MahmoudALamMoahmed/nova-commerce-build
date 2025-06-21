@@ -7,6 +7,7 @@ import { useOrders } from '@/context/OrderContext';
 import { toast } from 'sonner';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AddressSelector from '@/components/AddressSelector';
 
 import {
   AlertDialog,
@@ -26,6 +27,7 @@ const Cart = () => {
   const navigate = useNavigate();
   const [itemToRemove, setItemToRemove] = useState<string | null>(null);
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
 
   const handleCheckout = async () => {
     if (!user) {
@@ -33,9 +35,14 @@ const Cart = () => {
       navigate('/login');
       return;
     }
+
+    if (!selectedAddressId) {
+      toast.error("Please select a shipping address");
+      return;
+    }
     
     setIsCreatingOrder(true);
-    const success = await createOrder();
+    const success = await createOrder(selectedAddressId);
     setIsCreatingOrder(false);
     
     if (success) {
@@ -103,10 +110,11 @@ const Cart = () => {
           </Link>
         </div>
       ) : (
-        <div className="grid md:grid-cols-12 gap-8">
-          <div className="md:col-span-8">
+        <div className="grid lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-7">
             {/* Cart items */}
-            <div className="bg-white rounded-lg shadow-sm border p-6">
+            <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
+              <h2 className="text-xl font-bold mb-4">Cart Items</h2>
               {cartItems.map((item) => (
                 <div key={item.id} className="flex flex-col sm:flex-row items-start sm:items-center py-6 border-b last:border-b-0 last:pb-0 gap-4">
                   <div className="w-24 h-24 flex-shrink-0">
@@ -150,8 +158,17 @@ const Cart = () => {
                 </div>
               ))}
             </div>
+
+            {/* Address Selection */}
+            <div className="bg-white rounded-lg shadow-sm border p-6">
+              <AddressSelector 
+                selectedAddressId={selectedAddressId}
+                onAddressSelect={setSelectedAddressId}
+              />
+            </div>
           </div>
-          <div className="md:col-span-4">
+
+          <div className="lg:col-span-5">
             <div className="bg-white rounded-lg shadow-sm border p-6 sticky top-28">
               <h2 className="text-xl font-bold mb-4">Order Summary</h2>
               <div className="space-y-3">
@@ -171,7 +188,7 @@ const Cart = () => {
               <Button 
                 className="w-full mt-6 bg-brand-accent hover:bg-brand-accent/90"
                 onClick={handleCheckout}
-                disabled={isCreatingOrder}
+                disabled={isCreatingOrder || !selectedAddressId}
               >
                 {isCreatingOrder ? 'Processing...' : 'Proceed to Checkout'}
               </Button>

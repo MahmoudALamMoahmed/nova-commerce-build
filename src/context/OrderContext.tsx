@@ -5,12 +5,12 @@ import { useUser } from './UserContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
-export interface Order {
+export interface OrderItem {
   id: string;
-  user_id: string;
+  order_id: string;
   product_id: string;
   quantity: number;
-  status: 'pending' | 'confirmed' | 'shipped' | 'cancelled';
+  price: number;
   created_at: string;
   products?: {
     id: string;
@@ -20,9 +20,27 @@ export interface Order {
   };
 }
 
+export interface Order {
+  id: string;
+  user_id: string;
+  address_id?: string;
+  status: 'pending' | 'confirmed' | 'shipped' | 'cancelled';
+  total_price?: number;
+  created_at: string;
+  order_items?: OrderItem[];
+  addresses?: {
+    id: string;
+    full_name: string;
+    street: string;
+    city: string;
+    postal_code: string;
+    phone_number: string;
+  };
+}
+
 interface OrderContextType {
   orders: Order[];
-  createOrder: () => Promise<boolean>;
+  createOrder: (addressId: string) => Promise<boolean>;
   fetchOrders: () => Promise<void>;
   isLoading: boolean;
 }
@@ -54,15 +72,31 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
         .select(`
           id,
           user_id,
-          product_id,
-          quantity,
+          address_id,
           status,
+          total_price,
           created_at,
-          products (
+          addresses (
             id,
-            title,
+            full_name,
+            street,
+            city,
+            postal_code,
+            phone_number
+          ),
+          order_items (
+            id,
+            order_id,
+            product_id,
+            quantity,
             price,
-            image
+            created_at,
+            products (
+              id,
+              title,
+              price,
+              image
+            )
           )
         `)
         .eq('user_id', user.id)
@@ -89,7 +123,7 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const createOrder = async (): Promise<boolean> => {
+  const createOrder = async (addressId: string): Promise<boolean> => {
     if (!user) {
       toast.error('Please log in to place an order');
       return false;
@@ -103,20 +137,41 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       setIsLoading(true);
 
-      // Create order entries for each cart item
-      const orderEntries = cartItems.map(item => ({
-        user_id: user.id,
+      // Calculate total price
+      const totalPrice = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+
+      // Create the order
+      const { data: orderData, error: orderError } = await supabase
+        .from('orders')
+        .insert({
+          user_id: user.id,
+          address_id: addressId,
+          status: 'pending',
+          total_price: totalPrice
+        })
+        .select()
+        .single();
+
+      if (orderError) {
+        console.error('Error creating order:', orderError);
+        toast.error('Failed to place order');
+        return false;
+      }
+
+      // Create order items
+      const orderItems = cartItems.map(item => ({
+        order_id: orderData.id,
         product_id: item.id,
         quantity: item.quantity,
-        status: 'pending' as const
+        price: item.price
       }));
 
-      const { error } = await supabase
-        .from('orders')
-        .insert(orderEntries);
+      const { error: itemsError } = await supabase
+        .from('order_items')
+        .insert(orderItems);
 
-      if (error) {
-        console.error('Error creating order:', error);
+      if (itemsError) {
+        console.error('Error creating order items:', itemsError);
         toast.error('Failed to place order');
         return false;
       }

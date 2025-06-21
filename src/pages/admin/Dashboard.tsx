@@ -16,9 +16,9 @@ interface DashboardOrder {
   user_id: string;
   status: string;
   created_at: string;
-  product_id: string;
-  quantity: number;
+  total_price?: number;
   user_email: string;
+  item_count: number;
 }
 
 const Dashboard = () => {
@@ -49,7 +49,16 @@ const Dashboard = () => {
       // Get recent orders
       const { data: ordersData, error: ordersError } = await supabase
         .from('orders')
-        .select('*')
+        .select(`
+          id,
+          user_id,
+          status,
+          created_at,
+          total_price,
+          order_items (
+            quantity
+          )
+        `)
         .order('created_at', { ascending: false })
         .limit(5);
 
@@ -68,7 +77,8 @@ const Dashboard = () => {
       // Combine the data
       const enrichedOrders: DashboardOrder[] = (ordersData || []).map(order => ({
         ...order,
-        user_email: userEmailMap.get(order.user_id) || 'Unknown User'
+        user_email: userEmailMap.get(order.user_id) || 'Unknown User',
+        item_count: order.order_items?.reduce((acc: number, item: any) => acc + item.quantity, 0) || 0
       }));
 
       setRecentOrders(enrichedOrders);
@@ -152,7 +162,8 @@ const Dashboard = () => {
                   <TableHead>Order ID</TableHead>
                   <TableHead>Customer Email</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Quantity</TableHead>
+                  <TableHead>Items</TableHead>
+                  <TableHead>Total</TableHead>
                   <TableHead>Date</TableHead>
                 </TableRow>
               </TableHeader>
@@ -165,16 +176,21 @@ const Dashboard = () => {
                     <TableCell>{order.user_email}</TableCell>
                     <TableCell>
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        order.status === 'completed' 
+                        order.status === 'shipped' 
                           ? 'bg-green-100 text-green-800'
                           : order.status === 'pending'
                           ? 'bg-yellow-100 text-yellow-800'
+                          : order.status === 'confirmed'
+                          ? 'bg-blue-100 text-blue-800'
                           : 'bg-gray-100 text-gray-800'
                       }`}>
                         {order.status}
                       </span>
                     </TableCell>
-                    <TableCell>{order.quantity}</TableCell>
+                    <TableCell>{order.item_count}</TableCell>
+                    <TableCell>
+                      {order.total_price ? `$${order.total_price.toFixed(2)}` : 'N/A'}
+                    </TableCell>
                     <TableCell>
                       {new Date(order.created_at).toLocaleDateString()}
                     </TableCell>

@@ -71,55 +71,81 @@ const Orders = () => {
           </CardContent>
         </Card>
       ) : (
-        <Card>
-          <CardHeader>
-            <CardTitle>Order History</CardTitle>
-            <CardDescription>Your recent orders and their status</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Product</TableHead>
-                    <TableHead>Quantity</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead className="text-right">Price</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {orders.map((order) => (
-                    <TableRow key={order.id}>
-                      <TableCell className="font-medium">
-                        <div className="flex items-center gap-3">
-                          {order.products?.image && (
-                            <img 
-                              src={order.products.image} 
-                              alt={order.products.title} 
-                              className="h-12 w-12 rounded object-cover"
-                            />
-                          )}
-                          <span>{order.products?.title || 'Unknown Product'}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>{order.quantity}</TableCell>
-                      <TableCell>
-                        <Badge className={getStatusColor(order.status)}>
-                          {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{format(new Date(order.created_at), 'PPP')}</TableCell>
-                      <TableCell className="text-right">
-                        ${((order.products?.price || 0) * order.quantity).toFixed(2)}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="space-y-6">
+          {orders.map((order) => (
+            <Card key={order.id}>
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle className="text-lg">Order #{order.id.slice(0, 8)}</CardTitle>
+                    <CardDescription>
+                      Placed on {format(new Date(order.created_at), 'PPP')}
+                    </CardDescription>
+                  </div>
+                  <div className="text-right">
+                    <Badge className={getStatusColor(order.status)}>
+                      {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                    </Badge>
+                    {order.total_price && (
+                      <p className="text-lg font-semibold mt-2">${order.total_price.toFixed(2)}</p>
+                    )}
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {/* Shipping Address */}
+                {order.addresses && (
+                  <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                    <h4 className="font-medium mb-1">Shipping Address</h4>
+                    <p className="text-sm text-gray-600">
+                      {order.addresses.full_name}<br />
+                      {order.addresses.street}<br />
+                      {order.addresses.city}, {order.addresses.postal_code}<br />
+                      {order.addresses.phone_number}
+                    </p>
+                  </div>
+                )}
+
+                {/* Order Items */}
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Product</TableHead>
+                        <TableHead>Quantity</TableHead>
+                        <TableHead className="text-right">Price</TableHead>
+                        <TableHead className="text-right">Subtotal</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {order.order_items?.map((item) => (
+                        <TableRow key={item.id}>
+                          <TableCell className="font-medium">
+                            <div className="flex items-center gap-3">
+                              {item.products?.image && (
+                                <img 
+                                  src={item.products.image} 
+                                  alt={item.products.title} 
+                                  className="h-12 w-12 rounded object-cover"
+                                />
+                              )}
+                              <span>{item.products?.title || 'Unknown Product'}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>{item.quantity}</TableCell>
+                          <TableCell className="text-right">${item.price.toFixed(2)}</TableCell>
+                          <TableCell className="text-right">
+                            ${(item.price * item.quantity).toFixed(2)}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       )}
     </div>
   );
