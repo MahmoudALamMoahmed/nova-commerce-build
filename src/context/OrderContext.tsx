@@ -74,7 +74,13 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
         return;
       }
 
-      setOrders(data || []);
+      // Type assertion to ensure status is properly typed
+      const typedOrders = (data || []).map(order => ({
+        ...order,
+        status: order.status as 'pending' | 'confirmed' | 'shipped' | 'cancelled'
+      }));
+
+      setOrders(typedOrders);
     } catch (error) {
       console.error('Error fetching orders:', error);
       toast.error('Failed to load orders');

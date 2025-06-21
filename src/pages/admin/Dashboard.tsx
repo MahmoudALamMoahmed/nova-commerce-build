@@ -11,18 +11,19 @@ interface Stats {
   totalOrders: number;
 }
 
-interface Order {
+interface DashboardOrder {
   id: string;
-  user_email: string;
+  user_id: string;
   status: string;
   created_at: string;
   product_id: string;
   quantity: number;
+  user_email: string;
 }
 
 const Dashboard = () => {
   const [stats, setStats] = useState<Stats>({ totalProducts: 0, totalUsers: 0, totalOrders: 0 });
-  const [recentOrders, setRecentOrders] = useState<Order[]>([]);
+  const [recentOrders, setRecentOrders] = useState<DashboardOrder[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchStats = async () => {
@@ -45,14 +46,32 @@ const Dashboard = () => {
 
   const fetchRecentOrders = async () => {
     try {
-      const { data, error } = await supabase
+      // Get recent orders
+      const { data: ordersData, error: ordersError } = await supabase
         .from('orders')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(5);
 
-      if (error) throw error;
-      setRecentOrders(data || []);
+      if (ordersError) throw ordersError;
+
+      // Get user emails
+      const { data: usersData, error: usersError } = await supabase
+        .from('users')
+        .select('id, email');
+
+      if (usersError) throw usersError;
+
+      // Create a map of user_id to email
+      const userEmailMap = new Map(usersData?.map(user => [user.id, user.email]) || []);
+
+      // Combine the data
+      const enrichedOrders: DashboardOrder[] = (ordersData || []).map(order => ({
+        ...order,
+        user_email: userEmailMap.get(order.user_id) || 'Unknown User'
+      }));
+
+      setRecentOrders(enrichedOrders);
     } catch (error) {
       console.error('Error fetching recent orders:', error);
     }

@@ -29,10 +29,8 @@ interface AdminOrder {
     title: string;
     price: number;
     image?: string;
-  };
-  users: {
-    email: string;
-  };
+  } | null;
+  user_email: string;
 }
 
 const AdminOrders = () => {
@@ -46,7 +44,9 @@ const AdminOrders = () => {
   const fetchOrders = async () => {
     try {
       setIsLoading(true);
-      const { data, error } = await supabase
+      
+      // First get orders with products
+      const { data: ordersData, error: ordersError } = await supabase
         .from('orders')
         .select(`
           id,
@@ -60,20 +60,38 @@ const AdminOrders = () => {
             title,
             price,
             image
-          ),
-          users (
-            email
           )
         `)
         .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Error fetching orders:', error);
+      if (ordersError) {
+        console.error('Error fetching orders:', ordersError);
         toast.error('Failed to load orders');
         return;
       }
 
-      setOrders(data as AdminOrder[] || []);
+      // Get user emails separately since we can't join with auth.users
+      const { data: usersData, error: usersError } = await supabase
+        .from('users')
+        .select('id, email');
+
+      if (usersError) {
+        console.error('Error fetching users:', usersError);
+        toast.error('Failed to load user data');
+        return;
+      }
+
+      // Create a map of user_id to email
+      const userEmailMap = new Map(usersData?.map(user => [user.id, user.email]) || []);
+
+      // Combine the data
+      const enrichedOrders: AdminOrder[] = (ordersData || []).map(order => ({
+        ...order,
+        status: order.status as 'pending' | 'confirmed' | 'shipped' | 'cancelled',
+        user_email: userEmailMap.get(order.user_id) || 'Unknown User'
+      }));
+
+      setOrders(enrichedOrders);
     } catch (error) {
       console.error('Error fetching orders:', error);
       toast.error('Failed to load orders');
@@ -176,7 +194,7 @@ const AdminOrders = () => {
                           <span>{order.products?.title || 'Unknown Product'}</span>
                         </div>
                       </TableCell>
-                      <TableCell>{order.users?.email}</TableCell>
+                      <TableCell>{order.user_email}</TableCell>
                       <TableCell>{order.quantity}</TableCell>
                       <TableCell>${((order.products?.price || 0) * order.quantity).toFixed(2)}</TableCell>
                       <TableCell>
