@@ -21,7 +21,9 @@ import Admin from './pages/Admin';
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminOrders from './pages/admin/AdminOrders';
+import AdminUsers from './pages/admin/AdminUsers';
 import NotFound from './pages/NotFound';
+import AdminLayout from './components/admin/AdminLayout';
 
 import { UserProvider } from './context/UserContext';
 import { CartProvider } from './context/CartContext';
@@ -55,11 +57,12 @@ function App() {
                       <Route path="/favorites" element={<Favorites />} />
                       <Route path="/profile" element={<Profile />} />
 
-                      {/* Admin Routes */}
-                      <Route path="/admin" element={<Admin />} />
-                      <Route path="/admin/dashboard" element={<AdminDashboard />} />
-                      <Route path="/admin/products" element={<AdminProducts />} />
-                      <Route path="/admin/orders" element={<AdminOrders />} />
+                      {/* Admin Routes - All wrapped with AdminLayout */}
+                      <Route path="/admin" element={<AdminLayout><Admin /></AdminLayout>} />
+                      <Route path="/admin/dashboard" element={<AdminLayout><AdminDashboard /></AdminLayout>} />
+                      <Route path="/admin/products" element={<AdminLayout><AdminProducts /></AdminLayout>} />
+                      <Route path="/admin/orders" element={<AdminLayout><AdminOrders /></AdminLayout>} />
+                      <Route path="/admin/users" element={<AdminLayout><AdminUsers /></AdminLayout>} />
 
                       <Route path="*" element={<NotFound />} />
                     </Routes>
