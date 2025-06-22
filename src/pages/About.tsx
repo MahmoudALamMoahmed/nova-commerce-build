@@ -1,7 +1,5 @@
-
 const About = () => {
-  return (
-    <div className="container mx-auto px-6 max-w-5xl">
+  return <div className="container mx-auto px-6 max-w-5xl mt-1 ">
       <h1 className="text-4xl font-bold mb-6 text-gray-800 text-center">About Us</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
@@ -93,8 +91,6 @@ const About = () => {
           </div>
         </div>
       </section>
-    </div>
-  );
+    </div>;
 };
-
 export default About;
