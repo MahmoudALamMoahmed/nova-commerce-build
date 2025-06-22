@@ -1,12 +1,13 @@
+
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { QueryClientProvider as QueryClient } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from 'sonner';
 
-import Home from './pages/Home';
+import Index from './pages/Index';
 import Products from './pages/Products';
-import ProductDetail from './pages/ProductDetail';
+import ProductDetails from './pages/ProductDetails';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Cart from './pages/Cart';
@@ -22,9 +23,9 @@ import { UserProvider } from './context/UserContext';
 import { CartProvider } from './context/CartContext';
 import { FavoritesProvider } from './context/FavoritesContext';
 import { OrderProvider } from './context/OrderContext';
-import { AddressProvider } from '@/context/AddressContext';
+import { AddressProvider } from './context/AddressContext';
 
-const queryClient = new ReactQueryDevtools({ initialIsOpen: false });
+const queryClient = new QueryClient();
 
 function App() {
   return (
@@ -34,12 +35,12 @@ function App() {
           <OrderProvider>
             <AddressProvider>
               <FavoritesProvider>
-                <QueryClient client={queryClient}>
+                <QueryClientProvider client={queryClient}>
                   <Toaster />
                   <Routes>
-                    <Route path="/" element={<Home />} />
+                    <Route path="/" element={<Index />} />
                     <Route path="/products" element={<Products />} />
-                    <Route path="/products/:id" element={<ProductDetail />} />
+                    <Route path="/products/:id" element={<ProductDetails />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/cart" element={<Cart />} />
@@ -54,7 +55,8 @@ function App() {
 
                     <Route path="*" element={<NotFound />} />
                   </Routes>
-                </QueryClient>
+                  <ReactQueryDevtools initialIsOpen={false} />
+                </QueryClientProvider>
               </FavoritesProvider>
             </AddressProvider>
           </OrderProvider>
