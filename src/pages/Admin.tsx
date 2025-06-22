@@ -1,4 +1,4 @@
-
+import AdminLayout from '@/components/admin/AdminLayout';
 import { useState, useEffect } from 'react';
 import { useUser } from '@/context/UserContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -256,7 +256,7 @@ const Admin = () => {
   };
 
   return (
-    <div className="container mx-auto px-6 py-8">
+    <AdminLayout>
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
         <p className="text-gray-600">Manage your store products and view statistics</p>
@@ -478,7 +478,7 @@ const Admin = () => {
           )}
         </CardContent>
       </Card>
-    </div>
+    </AdminLayout>
   );
 };
 

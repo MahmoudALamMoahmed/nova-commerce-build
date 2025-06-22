@@ -16,7 +16,11 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const AdminLayout = () => {
+interface AdminLayoutProps {
+  children?: React.ReactNode;
+}
+
+const AdminLayout = ({ children }: AdminLayoutProps) => {
   const { user, userProfile, isLoading } = useUser();
   const location = useLocation();
   const navigate = useNavigate();
@@ -118,7 +122,7 @@ const AdminLayout = () => {
 
         {/* Page Content */}
         <main className="flex-1 p-6 overflow-auto">
-          <Outlet />
+          {children || <Outlet />}
         </main>
       </div>
     </div>
