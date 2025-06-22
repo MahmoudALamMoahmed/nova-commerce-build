@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   Table,
@@ -11,10 +12,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Eye, Calendar, Filter } from 'lucide-react';
+import OrderDetailsModal from '@/components/admin/OrderDetailsModal';
 
 interface AdminOrder {
   id: string;
@@ -42,19 +52,29 @@ interface AdminOrder {
   }[];
 }
 
+const ORDERS_PER_PAGE = 15;
+
 const AdminOrders = () => {
   const [orders, setOrders] = useState<AdminOrder[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<AdminOrder[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedOrder, setSelectedOrder] = useState<AdminOrder | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [dateFilter, setDateFilter] = useState<string>('all');
 
   useEffect(() => {
     fetchOrders();
   }, []);
 
+  useEffect(() => {
+    applyFilters();
+  }, [orders, statusFilter, dateFilter]);
+
   const fetchOrders = async () => {
     try {
       setIsLoading(true);
       
-      // Get orders with addresses and order items
       const { data: ordersData, error: ordersError } = await supabase
         .from('orders')
         .select(`
@@ -89,7 +109,6 @@ const AdminOrders = () => {
         return;
       }
 
-      // Get user emails separately
       const { data: usersData, error: usersError } = await supabase
         .from('users')
         .select('id, email');
@@ -100,10 +119,8 @@ const AdminOrders = () => {
         return;
       }
 
-      // Create a map of user_id to email
       const userEmailMap = new Map(usersData?.map(user => [user.id, user.email]) || []);
 
-      // Combine the data
       const enrichedOrders: AdminOrder[] = (ordersData || []).map(order => ({
         ...order,
         status: order.status as 'pending' | 'confirmed' | 'shipped' | 'cancelled',
@@ -119,6 +136,43 @@ const AdminOrders = () => {
     }
   };
 
+  const applyFilters = () => {
+    let filtered = [...orders];
+
+    // Status filter
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(order => order.status === statusFilter);
+    }
+
+    // Date filter
+    if (dateFilter !== 'all') {
+      const now = new Date();
+      const filterDate = new Date();
+
+      switch (dateFilter) {
+        case 'today':
+          filterDate.setHours(0, 0, 0, 0);
+          break;
+        case '7days':
+          filterDate.setDate(now.getDate() - 7);
+          break;
+        case '21days':
+          filterDate.setDate(now.getDate() - 21);
+          break;
+        case '30days':
+          filterDate.setDate(now.getDate() - 30);
+          break;
+      }
+
+      if (dateFilter !== 'all') {
+        filtered = filtered.filter(order => new Date(order.created_at) >= filterDate);
+      }
+    }
+
+    setFilteredOrders(filtered);
+    setCurrentPage(1);
+  };
+
   const updateOrderStatus = async (orderId: string, newStatus: string) => {
     try {
       const { error } = await supabase
@@ -132,7 +186,6 @@ const AdminOrders = () => {
         return;
       }
 
-      // Update local state
       setOrders(prev => prev.map(order => 
         order.id === orderId ? { ...order, status: newStatus as any } : order
       ));
@@ -159,6 +212,11 @@ const AdminOrders = () => {
     }
   };
 
+  const totalPages = Math.ceil(filteredOrders.length / ORDERS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ORDERS_PER_PAGE;
+  const endIndex = startIndex + ORDERS_PER_PAGE;
+  const currentOrders = filteredOrders.slice(startIndex, endIndex);
+
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -176,126 +234,159 @@ const AdminOrders = () => {
       <Card>
         <CardHeader>
           <CardTitle>Order Management</CardTitle>
-          <CardDescription>View and manage all customer orders</CardDescription>
+          <CardDescription>View and manage all customer orders ({filteredOrders.length} orders)</CardDescription>
         </CardHeader>
         <CardContent>
-          {orders.length === 0 ? (
+          {/* Filters */}
+          <div className="flex flex-col sm:flex-row gap-4 mb-6">
+            <div className="flex items-center gap-2">
+              <Filter className="h-4 w-4" />
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="Filter by status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="confirmed">Confirmed</SelectItem>
+                  <SelectItem value="shipped">Shipped</SelectItem>
+                  <SelectItem value="cancelled">Cancelled</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              <Select value={dateFilter} onValueChange={setDateFilter}>
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="Filter by date" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Time</SelectItem>
+                  <SelectItem value="today">Today</SelectItem>
+                  <SelectItem value="7days">Last 7 days</SelectItem>
+                  <SelectItem value="21days">Last 21 days</SelectItem>
+                  <SelectItem value="30days">Last month</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {currentOrders.length === 0 ? (
             <div className="text-center py-12">
               <h3 className="text-lg font-medium text-gray-900 mb-2">No Orders Found</h3>
-              <p className="text-gray-500">No orders have been placed yet.</p>
+              <p className="text-gray-500">No orders match your current filters.</p>
             </div>
           ) : (
-            <div className="space-y-6">
-              {orders.map((order) => (
-                <Card key={order.id} className="border-l-4 border-l-brand-accent">
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <CardTitle className="text-lg">Order #{order.id.slice(0, 8)}</CardTitle>
-                        <CardDescription>
-                          Customer: {order.user_email} • {format(new Date(order.created_at), 'PPP')}
-                        </CardDescription>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <Badge className={getStatusColor(order.status)}>
-                          {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                        </Badge>
-                        <Select
-                          value={order.status}
-                          onValueChange={(value) => updateOrderStatus(order.id, value)}
-                        >
-                          <SelectTrigger className="w-32">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="pending">Pending</SelectItem>
-                            <SelectItem value="confirmed">Confirmed</SelectItem>
-                            <SelectItem value="shipped">Shipped</SelectItem>
-                            <SelectItem value="cancelled">Cancelled</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid md:grid-cols-2 gap-6">
-                      {/* Shipping Address */}
-                      <div>
-                        <h4 className="font-medium mb-2">Shipping Address</h4>
-                        {order.addresses ? (
-                          <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded">
-                            <p className="font-medium">{order.addresses.full_name}</p>
-                            <p>{order.addresses.street}</p>
-                            <p>{order.addresses.city}, {order.addresses.postal_code}</p>
-                            <p>{order.addresses.phone_number}</p>
+            <>
+              {/* Orders Table */}
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Order ID</TableHead>
+                      <TableHead>Customer Email</TableHead>
+                      <TableHead>Order Date</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Total</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {currentOrders.map((order) => (
+                      <TableRow key={order.id}>
+                        <TableCell className="font-mono text-sm">
+                          #{order.id.slice(0, 8)}
+                        </TableCell>
+                        <TableCell>{order.user_email}</TableCell>
+                        <TableCell>{format(new Date(order.created_at), 'PPP')}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Badge className={getStatusColor(order.status)}>
+                              {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                            </Badge>
+                            <Select
+                              value={order.status}
+                              onValueChange={(value) => updateOrderStatus(order.id, value)}
+                            >
+                              <SelectTrigger className="w-28 h-8">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="pending">Pending</SelectItem>
+                                <SelectItem value="confirmed">Confirmed</SelectItem>
+                                <SelectItem value="shipped">Shipped</SelectItem>
+                                <SelectItem value="cancelled">Cancelled</SelectItem>
+                              </SelectContent>
+                            </Select>
                           </div>
-                        ) : (
-                          <p className="text-sm text-gray-500">No address provided</p>
-                        )}
-                      </div>
+                        </TableCell>
+                        <TableCell>
+                          {order.total_price ? `$${order.total_price.toFixed(2)}` : 'N/A'}
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setSelectedOrder(order)}
+                          >
+                            <Eye className="h-4 w-4 mr-1" />
+                            View Details
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
 
-                      {/* Order Summary */}
-                      <div>
-                        <h4 className="font-medium mb-2">Order Summary</h4>
-                        <div className="text-sm space-y-1">
-                          <div className="flex justify-between">
-                            <span>Items: {order.order_items?.reduce((acc, item) => acc + item.quantity, 0) || 0}</span>
-                          </div>
-                          {order.total_price && (
-                            <div className="flex justify-between font-medium">
-                              <span>Total: ${order.total_price.toFixed(2)}</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Order Items */}
-                    <div className="mt-6">
-                      <h4 className="font-medium mb-3">Order Items</h4>
-                      <div className="overflow-x-auto">
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>Product</TableHead>
-                              <TableHead>Quantity</TableHead>
-                              <TableHead>Price</TableHead>
-                              <TableHead className="text-right">Subtotal</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {order.order_items?.map((item) => (
-                              <TableRow key={item.id}>
-                                <TableCell className="font-medium">
-                                  <div className="flex items-center gap-3">
-                                    {item.products?.image && (
-                                      <img 
-                                        src={item.products.image} 
-                                        alt={item.products.title} 
-                                        className="h-8 w-8 rounded object-cover"
-                                      />
-                                    )}
-                                    <span>{item.products?.title || 'Unknown Product'}</span>
-                                  </div>
-                                </TableCell>
-                                <TableCell>{item.quantity}</TableCell>
-                                <TableCell>${item.price.toFixed(2)}</TableCell>
-                                <TableCell className="text-right">
-                                  ${(item.price * item.quantity).toFixed(2)}
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="mt-6">
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious 
+                          onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                          className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                        />
+                      </PaginationItem>
+                      
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                        <PaginationItem key={page}>
+                          <PaginationLink
+                            onClick={() => setCurrentPage(page)}
+                            isActive={currentPage === page}
+                            className="cursor-pointer"
+                          >
+                            {page}
+                          </PaginationLink>
+                        </PaginationItem>
+                      ))}
+                      
+                      <PaginationItem>
+                        <PaginationNext 
+                          onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                          className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
+              )}
+            </>
           )}
         </CardContent>
       </Card>
+
+      {/* Order Details Modal */}
+      {selectedOrder && (
+        <OrderDetailsModal
+          order={selectedOrder}
+          onClose={() => setSelectedOrder(null)}
+          onStatusUpdate={updateOrderStatus}
+        />
+      )}
     </div>
   );
 };
