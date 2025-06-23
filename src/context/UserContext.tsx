@@ -59,7 +59,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Fetch user profile when user is authenticated
+          // Use setTimeout to avoid potential auth loops
           setTimeout(() => {
             fetchUserProfile(session.user.id);
           }, 0);
@@ -98,22 +98,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       if (data.user) {
-        // Fetch user profile to check admin status
-        await fetchUserProfile(data.user.id);
-        
-        // Check if user is admin and redirect accordingly
-        const { data: profile } = await supabase
-          .from('users')
-          .select('is_admin')
-          .eq('id', data.user.id)
-          .single();
-
-        if (profile?.is_admin) {
-          navigate('/admin');
-        } else {
-          navigate('/');
-        }
-        
+        // The auth state change handler will take care of profile fetching and navigation
         return { success: true, message: 'Login successful!' };
       }
 
@@ -151,6 +136,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
             .upsert({
               id: data.user.id,
               email: data.user.email!,
+              name: name,
               is_admin: false
             });
         } catch (profileError) {
