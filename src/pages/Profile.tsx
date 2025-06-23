@@ -1,8 +1,9 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useUser } from '@/context/UserContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -12,7 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
@@ -26,25 +27,80 @@ const profileSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
 const Profile = () => {
-  const { user, logout } = useUser();
+  const { user, logout, userProfile } = useUser();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      name: user?.user_metadata?.name || user?.user_metadata?.full_name || '',
-      email: user?.email || '',
+      name: '',
+      email: '',
     },
   });
 
+  // Fetch current user profile data
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (!user) return;
+
+      try {
+        const { data, error } = await supabase
+          .from('users')
+          .select('name, email')
+          .eq('id', user.id)
+          .single();
+
+        if (error) {
+          console.error('Error fetching user profile:', error);
+          return;
+        }
+
+        form.reset({
+          name: data.name || user.user_metadata?.name || user.user_metadata?.full_name || '',
+          email: data.email || user.email || '',
+        });
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    };
+
+    fetchUserProfile();
+  }, [user, form]);
+
   const onSubmit = async (data: ProfileFormValues) => {
+    if (!user) return;
+
     setIsSubmitting(true);
     try {
-      // In a real app, you would update the user profile in the backend
-      // For this demo, we'll just show a success message
-      toast.success('Profile updated successfully!');
+      // Update user profile in our users table
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({
+          name: data.name,
+          email: data.email,
+        })
+        .eq('id', user.id);
+
+      if (updateError) throw updateError;
+
+      // If email changed, update in Supabase Auth
+      if (data.email !== user.email) {
+        const { error: authError } = await supabase.auth.updateUser({
+          email: data.email,
+        });
+
+        if (authError) {
+          console.error('Auth email update error:', authError);
+          toast.error('Profile updated, but email change requires verification');
+        } else {
+          toast.success('Profile updated! Please check your email to confirm the new address.');
+        }
+      } else {
+        toast.success('Profile updated successfully!');
+      }
     } catch (error) {
-      toast.error('An error occurred. Please try again.');
+      console.error('Profile update error:', error);
+      toast.error('Failed to update profile. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -104,6 +160,7 @@ const Profile = () => {
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -116,6 +173,7 @@ const Profile = () => {
                         <FormControl>
                           <Input {...field} type="email" />
                         </FormControl>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />

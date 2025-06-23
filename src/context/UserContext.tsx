@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -6,6 +5,7 @@ import { User, Session } from '@supabase/supabase-js';
 
 export interface UserProfile {
   id: string;
+  name: string | null;
   email: string;
   is_admin: boolean;
 }
@@ -18,6 +18,7 @@ interface UserContextType {
   register: (name: string, email: string, password: string) => Promise<{ success: boolean; message: string }>;
   logout: () => void;
   isLoading: boolean;
+  refreshUserProfile: () => Promise<void>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -178,8 +179,14 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const refreshUserProfile = async () => {
+    if (session?.user) {
+      await fetchUserProfile(session.user.id);
+    }
+  };
+
   return (
-    <UserContext.Provider value={{ user, userProfile, session, login, register, logout, isLoading }}>
+    <UserContext.Provider value={{ user, userProfile, session, login, register, logout, isLoading, refreshUserProfile }}>
       {children}
     </UserContext.Provider>
   );

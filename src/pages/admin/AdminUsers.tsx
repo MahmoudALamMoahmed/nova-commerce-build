@@ -8,10 +8,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
-import { Users, Trash2, Shield, ShieldCheck } from 'lucide-react';
+import { Users, Trash2, Shield, ShieldCheck, Edit, Plus } from 'lucide-react';
+import UserForm from '@/components/admin/UserForm';
 
 interface UserProfile {
   id: string;
+  name: string | null;
   email: string;
   is_admin: boolean;
   created_at: string;
@@ -21,6 +23,8 @@ const AdminUsers = () => {
   const { user, userProfile, isLoading } = useUser();
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [isUsersLoading, setIsUsersLoading] = useState(true);
+  const [showUserForm, setShowUserForm] = useState(false);
+  const [editingUser, setEditingUser] = useState<UserProfile | null>(null);
 
   // Check if user is admin
   if (isLoading) {
@@ -96,6 +100,10 @@ const AdminUsers = () => {
     }
 
     try {
+      // Delete from auth first, then from users table
+      const { error: authError } = await supabase.auth.admin.deleteUser(userId);
+      if (authError) throw authError;
+
       const { error } = await supabase
         .from('users')
         .delete()
@@ -111,6 +119,25 @@ const AdminUsers = () => {
     }
   };
 
+  const handleEditUser = (userToEdit: UserProfile) => {
+    setEditingUser(userToEdit);
+    setShowUserForm(true);
+  };
+
+  const handleCreateUser = () => {
+    setEditingUser(null);
+    setShowUserForm(true);
+  };
+
+  const handleFormClose = () => {
+    setShowUserForm(false);
+    setEditingUser(null);
+  };
+
+  const handleFormSuccess = () => {
+    fetchUsers();
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -124,8 +151,19 @@ const AdminUsers = () => {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">User Management</h1>
-        <p className="text-gray-600">View and manage registered users</p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">User Management</h1>
+            <p className="text-gray-600">View and manage registered users</p>
+          </div>
+          <Button 
+            onClick={handleCreateUser}
+            className="bg-brand-accent hover:bg-brand-accent/90"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Create New User
+          </Button>
+        </div>
       </div>
 
       <Card>
@@ -147,6 +185,7 @@ const AdminUsers = () => {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>Name</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Registration Date</TableHead>
                   <TableHead>Admin Status</TableHead>
@@ -157,13 +196,14 @@ const AdminUsers = () => {
                 {users.map((userItem) => (
                   <TableRow key={userItem.id}>
                     <TableCell className="font-medium">
-                      {userItem.email}
+                      {userItem.name || 'No name set'}
                       {userItem.id === user.id && (
                         <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
                           You
                         </span>
                       )}
                     </TableCell>
+                    <TableCell>{userItem.email}</TableCell>
                     <TableCell>{formatDate(userItem.created_at)}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
@@ -183,14 +223,23 @@ const AdminUsers = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => deleteUser(userItem.id)}
-                        disabled={userItem.id === user.id}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleEditUser(userItem)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => deleteUser(userItem.id)}
+                          disabled={userItem.id === user.id}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -207,6 +256,13 @@ const AdminUsers = () => {
           )}
         </CardContent>
       </Card>
+
+      <UserForm
+        isOpen={showUserForm}
+        onClose={handleFormClose}
+        user={editingUser}
+        onSuccess={handleFormSuccess}
+      />
     </div>
   );
 };
