@@ -1,3 +1,4 @@
+
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
@@ -170,12 +171,6 @@ const Cart = () => {
               selectedAddressId={selectedAddressId}
               onAddressSelect={setSelectedAddressId}
             />
-
-            {/* Payment Method Selection */}
-            <PaymentMethodSelector 
-              selectedMethod={selectedPaymentMethod}
-              onMethodSelect={setSelectedPaymentMethod}
-            />
           </div>
 
           <div className="lg:col-span-5">
@@ -202,6 +197,15 @@ const Cart = () => {
               >
                 {isCreatingOrder ? 'Processing...' : 'Proceed to Checkout'}
               </Button>
+              
+              {/* Payment Method Selection - moved here */}
+              <div className="mt-6">
+                <PaymentMethodSelector 
+                  selectedMethod={selectedPaymentMethod}
+                  onMethodSelect={setSelectedPaymentMethod}
+                />
+              </div>
+              
               <p className="text-sm text-muted-foreground mt-4 text-center">
                 Secure checkout with 100% buyer protection
               </p>
