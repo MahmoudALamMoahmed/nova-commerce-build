@@ -22,6 +22,7 @@ import AdminDashboard from './pages/admin/Dashboard';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminUsers from './pages/admin/AdminUsers';
+import AdminMessages from './pages/admin/AdminMessages';
 import NotFound from './pages/NotFound';
 import AdminLayout from './components/admin/AdminLayout';
 
@@ -63,6 +64,7 @@ function App() {
                       <Route path="/admin/products" element={<AdminLayout><AdminProducts /></AdminLayout>} />
                       <Route path="/admin/orders" element={<AdminLayout><AdminOrders /></AdminLayout>} />
                       <Route path="/admin/users" element={<AdminLayout><AdminUsers /></AdminLayout>} />
+                      <Route path="/admin/messages" element={<AdminLayout><AdminMessages /></AdminLayout>} />
 
                       <Route path="*" element={<NotFound />} />
                     </Routes>
