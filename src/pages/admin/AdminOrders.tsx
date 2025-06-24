@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -23,7 +22,7 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
-import { Loader2, Eye, Calendar, Filter } from 'lucide-react';
+import { Loader2, Eye, Calendar, Filter, CreditCard, Banknote } from 'lucide-react';
 import OrderDetailsModal from '@/components/admin/OrderDetailsModal';
 
 interface AdminOrder {
@@ -32,6 +31,7 @@ interface AdminOrder {
   address_id?: string;
   status: 'pending' | 'confirmed' | 'shipped' | 'cancelled';
   total_price?: number;
+  payment_method?: string;
   created_at: string;
   user_email: string;
   addresses?: {
@@ -83,6 +83,7 @@ const AdminOrders = () => {
           address_id,
           status,
           total_price,
+          payment_method,
           created_at,
           addresses (
             full_name,
@@ -212,6 +213,17 @@ const AdminOrders = () => {
     }
   };
 
+  const getPaymentMethodIcon = (method: string) => {
+    switch (method) {
+      case 'cash':
+        return <Banknote className="h-4 w-4 text-green-600" />;
+      case 'online':
+        return <CreditCard className="h-4 w-4 text-blue-600" />;
+      default:
+        return null;
+    }
+  };
+
   const totalPages = Math.ceil(filteredOrders.length / ORDERS_PER_PAGE);
   const startIndex = (currentPage - 1) * ORDERS_PER_PAGE;
   const endIndex = startIndex + ORDERS_PER_PAGE;
@@ -287,6 +299,7 @@ const AdminOrders = () => {
                       <TableHead>Order ID</TableHead>
                       <TableHead>Customer Email</TableHead>
                       <TableHead>Order Date</TableHead>
+                      <TableHead>Payment Method</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Total</TableHead>
                       <TableHead>Actions</TableHead>
@@ -300,6 +313,12 @@ const AdminOrders = () => {
                         </TableCell>
                         <TableCell>{order.user_email}</TableCell>
                         <TableCell>{format(new Date(order.created_at), 'PPP')}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            {getPaymentMethodIcon(order.payment_method || 'cash')}
+                            <span className="capitalize">{order.payment_method || 'cash'}</span>
+                          </div>
+                        </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <Badge className={getStatusColor(order.status)}>

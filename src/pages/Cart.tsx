@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
@@ -8,6 +7,7 @@ import { toast } from 'sonner';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AddressSelector from '@/components/AddressSelector';
+import PaymentMethodSelector from '@/components/PaymentMethodSelector';
 
 import {
   AlertDialog,
@@ -28,6 +28,7 @@ const Cart = () => {
   const [itemToRemove, setItemToRemove] = useState<string | null>(null);
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>('cash');
 
   const handleCheckout = async () => {
     if (!user) {
@@ -40,9 +41,14 @@ const Cart = () => {
       toast.error("Please select a shipping address");
       return;
     }
+
+    if (!selectedPaymentMethod) {
+      toast.error("Please select a payment method");
+      return;
+    }
     
     setIsCreatingOrder(true);
-    const success = await createOrder(selectedAddressId);
+    const success = await createOrder(selectedAddressId, selectedPaymentMethod);
     setIsCreatingOrder(false);
     
     if (success) {
@@ -111,9 +117,9 @@ const Cart = () => {
         </div>
       ) : (
         <div className="grid lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-7 space-y-6">
             {/* Cart items */}
-            <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
+            <div className="bg-white rounded-lg shadow-sm border p-6">
               <h2 className="text-xl font-bold mb-4">Cart Items</h2>
               {cartItems.map((item) => (
                 <div key={item.id} className="flex flex-col sm:flex-row items-start sm:items-center py-6 border-b last:border-b-0 last:pb-0 gap-4">
@@ -160,12 +166,16 @@ const Cart = () => {
             </div>
 
             {/* Address Selection */}
-            <div className="bg-white rounded-lg shadow-sm border p-6">
-              <AddressSelector 
-                selectedAddressId={selectedAddressId}
-                onAddressSelect={setSelectedAddressId}
-              />
-            </div>
+            <AddressSelector 
+              selectedAddressId={selectedAddressId}
+              onAddressSelect={setSelectedAddressId}
+            />
+
+            {/* Payment Method Selection */}
+            <PaymentMethodSelector 
+              selectedMethod={selectedPaymentMethod}
+              onMethodSelect={setSelectedPaymentMethod}
+            />
           </div>
 
           <div className="lg:col-span-5">
@@ -188,7 +198,7 @@ const Cart = () => {
               <Button 
                 className="w-full mt-6 bg-brand-accent hover:bg-brand-accent/90"
                 onClick={handleCheckout}
-                disabled={isCreatingOrder || !selectedAddressId}
+                disabled={isCreatingOrder || !selectedAddressId || !selectedPaymentMethod}
               >
                 {isCreatingOrder ? 'Processing...' : 'Proceed to Checkout'}
               </Button>

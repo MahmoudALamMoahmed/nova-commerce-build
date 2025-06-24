@@ -26,6 +26,7 @@ export interface Order {
   address_id?: string;
   status: 'pending' | 'confirmed' | 'shipped' | 'cancelled';
   total_price?: number;
+  payment_method?: string;
   created_at: string;
   order_items?: OrderItem[];
   addresses?: {
@@ -40,7 +41,7 @@ export interface Order {
 
 interface OrderContextType {
   orders: Order[];
-  createOrder: (addressId: string) => Promise<boolean>;
+  createOrder: (addressId: string, paymentMethod?: string) => Promise<boolean>;
   fetchOrders: () => Promise<void>;
   isLoading: boolean;
 }
@@ -75,6 +76,7 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
           address_id,
           status,
           total_price,
+          payment_method,
           created_at,
           addresses (
             id,
@@ -123,7 +125,7 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const createOrder = async (addressId: string): Promise<boolean> => {
+  const createOrder = async (addressId: string, paymentMethod: string = 'cash'): Promise<boolean> => {
     if (!user) {
       toast.error('Please log in to place an order');
       return false;
@@ -147,7 +149,8 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
           user_id: user.id,
           address_id: addressId,
           status: 'pending',
-          total_price: totalPrice
+          total_price: totalPrice,
+          payment_method: paymentMethod
         })
         .select()
         .single();

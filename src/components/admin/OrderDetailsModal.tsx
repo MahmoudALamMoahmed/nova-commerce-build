@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { format } from 'date-fns';
-import { Package, MapPin, User, Calendar, DollarSign } from 'lucide-react';
+import { Package, MapPin, User, Calendar, DollarSign, CreditCard, Banknote } from 'lucide-react';
 
 interface OrderDetailsModalProps {
   order: {
@@ -14,6 +14,7 @@ interface OrderDetailsModalProps {
     user_id: string;
     status: 'pending' | 'confirmed' | 'shipped' | 'cancelled';
     total_price?: number;
+    payment_method?: string;
     created_at: string;
     user_email: string;
     addresses?: {
@@ -53,6 +54,27 @@ const OrderDetailsModal = ({ order, onClose, onStatusUpdate }: OrderDetailsModal
     }
   };
 
+  const getPaymentMethodDisplay = (method: string) => {
+    switch (method) {
+      case 'cash':
+        return (
+          <div className="flex items-center gap-2">
+            <Banknote className="h-4 w-4 text-green-600" />
+            <span>Cash on Delivery</span>
+          </div>
+        );
+      case 'online':
+        return (
+          <div className="flex items-center gap-2">
+            <CreditCard className="h-4 w-4 text-blue-600" />
+            <span>Online Payment</span>
+          </div>
+        );
+      default:
+        return <span>Not specified</span>;
+    }
+  };
+
   const totalItems = order.order_items?.reduce((acc, item) => acc + item.quantity, 0) || 0;
 
   return (
@@ -77,7 +99,7 @@ const OrderDetailsModal = ({ order, onClose, onStatusUpdate }: OrderDetailsModal
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-gray-500" />
                   <div>
@@ -99,6 +121,15 @@ const OrderDetailsModal = ({ order, onClose, onStatusUpdate }: OrderDetailsModal
                     <p className="font-medium">
                       {order.total_price ? `$${order.total_price.toFixed(2)}` : 'N/A'}
                     </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 text-gray-500">💳</div>
+                  <div>
+                    <p className="text-sm text-gray-500">Payment Method</p>
+                    <div className="font-medium">
+                      {getPaymentMethodDisplay(order.payment_method || 'cash')}
+                    </div>
                   </div>
                 </div>
               </div>

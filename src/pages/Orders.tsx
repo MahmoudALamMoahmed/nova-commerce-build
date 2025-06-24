@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { useUser } from '@/context/UserContext';
 import { useOrders } from '@/context/OrderContext';
 import { format } from 'date-fns';
+import { CreditCard, Banknote } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -43,6 +44,27 @@ const Orders = () => {
         return 'bg-red-100 text-red-800 border-red-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
+  const getPaymentMethodDisplay = (method: string) => {
+    switch (method) {
+      case 'cash':
+        return (
+          <div className="flex items-center gap-2">
+            <Banknote className="h-4 w-4 text-green-600" />
+            <span>Cash on Delivery</span>
+          </div>
+        );
+      case 'online':
+        return (
+          <div className="flex items-center gap-2">
+            <CreditCard className="h-4 w-4 text-blue-600" />
+            <span>Online Payment</span>
+          </div>
+        );
+      default:
+        return <span>Not specified</span>;
     }
   };
 
@@ -93,6 +115,14 @@ const Orders = () => {
                 </div>
               </CardHeader>
               <CardContent>
+                {/* Payment Method */}
+                <div className="mb-4 p-3 bg-blue-50 rounded-lg">
+                  <h4 className="font-medium mb-1">Payment Method</h4>
+                  <div className="text-sm">
+                    {getPaymentMethodDisplay(order.payment_method || 'cash')}
+                  </div>
+                </div>
+
                 {/* Shipping Address */}
                 {order.addresses && (
                   <div className="mb-4 p-3 bg-gray-50 rounded-lg">

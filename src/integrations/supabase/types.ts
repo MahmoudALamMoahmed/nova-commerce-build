@@ -174,6 +174,7 @@ export type Database = {
           address_id: string | null
           created_at: string
           id: string
+          payment_method: string
           status: string
           total_price: number | null
           user_id: string
@@ -182,6 +183,7 @@ export type Database = {
           address_id?: string | null
           created_at?: string
           id?: string
+          payment_method?: string
           status?: string
           total_price?: number | null
           user_id: string
@@ -190,6 +192,7 @@ export type Database = {
           address_id?: string | null
           created_at?: string
           id?: string
+          payment_method?: string
           status?: string
           total_price?: number | null
           user_id?: string
