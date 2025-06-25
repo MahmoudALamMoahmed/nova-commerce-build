@@ -106,7 +106,7 @@ const Navbar = ({ currentPath }: NavbarProps) => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <div className="h-6 w-6">
-                  <Button variant="ghost" className="p-2 text-gray-700 hover:text-brand-accent transition-colors relative" aria-label="User menu">
+                  <Button variant="ghost" className="h-full w-full p-2 text-gray-700 hover:text-brand-accent transition-colors relative" aria-label="User menu">
                     
   <User className="h-full w-full text-gray-700" />
                   </Button>
