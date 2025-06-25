@@ -103,7 +103,7 @@ const Navbar = ({ currentPath }: NavbarProps) => {
             
             {/* User Menu */}
             {user ? (
-              <DropdownMenu>
+              <DropdownMenu className="relative">
                   <Button variant="ghost" className="p-2 text-gray-700 hover:text-brand-accent transition-colors relative" aria-label="User menu">
                     <User className="h-6 w-6 " />
 
