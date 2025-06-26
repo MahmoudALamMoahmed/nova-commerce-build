@@ -3,16 +3,16 @@
 @tailwind components;
 @tailwind utilities;
 
-/* html,body  {
+html,
+body {
   scrollbar-gutter: stable;
   overflow-y: scroll;
-} */
-
-body[data-radix-scroll-lock="true"] {
-  overflow-y: scroll !important;
-  padding-right: 0 !important;
 }
 
+body[data-radix-scroll-lock="true"] {
+  padding-right: 0 !important;
+  overflow-y: scroll !important;
+}
 
 @layer base {
   :root {
