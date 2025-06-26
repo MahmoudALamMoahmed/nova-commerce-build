@@ -103,13 +103,13 @@ const Navbar = ({ currentPath }: NavbarProps) => {
             
             {/* User Menu */}
             {user ? (
-              <DropdownMenu className="relative">
-                <DropdownMenuTrigger asChild className="relative" >
-                  <button className="relative p-2 text-gray-700 hover:text-brand-accent transition-colors cursor-pointer">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <div className="relative p-2 text-gray-700 hover:text-brand-accent transition-colors cursor-pointer">
                     <User className="h-6 w-6" />
-                  </button>
+                  </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="p-0 m-0">
                   <div className="px-4 py-2 text-sm">
                     <p className="font-medium">Hello, {user.email}</p>
                     {userProfile?.is_admin && (
