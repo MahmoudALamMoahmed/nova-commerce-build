@@ -110,7 +110,7 @@ const Navbar = ({ currentPath }: NavbarProps) => {
                   </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <div className="px-4 py-2 text-sm">
+                  <div className=" py-2 text-sm">
                     <p className="font-medium">Hello, {user.email}</p>
                     {userProfile?.is_admin && (
                       <p className="text-xs text-brand-accent mt-1">Administrator</p>
