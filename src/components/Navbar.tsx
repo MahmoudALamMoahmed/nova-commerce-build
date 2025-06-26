@@ -34,7 +34,7 @@ const Navbar = ({ currentPath }: NavbarProps) => {
   };
 
   return (
-    <nav className="container bg-white shadow-sm fixed w-full z-10">
+    <nav className="bg-white shadow-sm fixed w-full z-10">
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           {/* Logo */}
