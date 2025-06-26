@@ -5,7 +5,7 @@
 
 html,body  {
   scrollbar-gutter: stable;
-  overflow-y: scroll !important;
+  /* overflow-y: scroll !important; */
   padding-right: 0 !important;
 }
 
