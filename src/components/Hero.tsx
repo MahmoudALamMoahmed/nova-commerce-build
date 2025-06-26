@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 const Hero = () => {
   return (
     <section className="pt-24 pb-12 md:py-32 hero-gradient">
-      <div className="mx-auto px-6 w-full max-w-7xl flex flex-col md:flex-row items-center"">
+      <div className="container mx-auto px-6 flex flex-col md:flex-row items-center">
         <div className="md:w-1/2 mb-10 md:mb-0">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
             Elevate Your Style With Our 
