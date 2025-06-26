@@ -8,6 +8,12 @@ html {
   overflow-y: scroll;
 }
 
+body[data-radix-scroll-lock="true"] {
+  overflow-y: scroll !important;
+  padding-right: 0 !important;
+}
+
+
 @layer base {
   :root {
     --background: 0 0% 100%;
