@@ -34,7 +34,7 @@ const Navbar = ({ currentPath }: NavbarProps) => {
   };
 
   return (
-    <nav className="bg-white shadow-sm fixed w-full z-10">
+    <nav className="container bg-white shadow-sm fixed w-full z-10">
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           {/* Logo */}
@@ -109,7 +109,7 @@ const Navbar = ({ currentPath }: NavbarProps) => {
                     <User className="h-6 w-6" />
                   </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="p-0 m-0">
+                <DropdownMenuContent align="end">
                   <div className="px-4 py-2 text-sm">
                     <p className="font-medium">Hello, {user.email}</p>
                     {userProfile?.is_admin && (
