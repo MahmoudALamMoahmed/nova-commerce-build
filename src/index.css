@@ -3,10 +3,10 @@
 @tailwind components;
 @tailwind utilities;
 
-html,body  {
+/* html,body  {
   scrollbar-gutter: stable;
   overflow-y: scroll;
-}
+} */
 
 body[data-radix-scroll-lock="true"] {
   overflow-y: scroll !important;
