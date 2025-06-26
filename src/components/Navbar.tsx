@@ -155,7 +155,17 @@ const Navbar = ({ currentPath }: NavbarProps) => {
               </div>
             )}
             
-            
+            <button
+              className="md:hidden p-2"
+              onClick={toggleMenu}
+              aria-label="Toggle menu"
+            >
+              {isMenuOpen ? (
+                <X className="h-6 w-6 text-gray-700" />
+              ) : (
+                <Menu className="h-6 w-6 text-gray-700" />
+              )}
+            </button>
           </div>
         </div>
       </div>
