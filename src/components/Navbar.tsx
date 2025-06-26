@@ -110,7 +110,7 @@ const Navbar = ({ currentPath }: NavbarProps) => {
                   </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <div className=" text-sm">
+                  <div className="px-4 py-2 text-sm">
                     <p className="font-medium">Hello, {user.email}</p>
                     {userProfile?.is_admin && (
                       <p className="text-xs text-brand-accent mt-1">Administrator</p>
@@ -155,17 +155,7 @@ const Navbar = ({ currentPath }: NavbarProps) => {
               </div>
             )}
             
-            <button
-              className="md:hidden p-2"
-              onClick={toggleMenu}
-              aria-label="Toggle menu"
-            >
-              {isMenuOpen ? (
-                <X className="h-6 w-6 text-gray-700" />
-              ) : (
-                <Menu className="h-6 w-6 text-gray-700" />
-              )}
-            </button>
+            
           </div>
         </div>
       </div>
