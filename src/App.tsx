@@ -10,7 +10,6 @@ import { AddressProvider } from '@/context/AddressContext';
 import { OrderProvider } from '@/context/OrderContext';
 import Layout from '@/components/Layout';
 import AdminLayout from '@/components/admin/AdminLayout';
-import ErrorBoundary from '@/components/ErrorBoundary';
 import Index from '@/pages/Index';
 import Products from '@/pages/Products';
 import ProductDetails from '@/pages/ProductDetails';
@@ -31,7 +30,6 @@ import AdminOrders from '@/pages/admin/AdminOrders';
 import AdminUsers from '@/pages/admin/AdminUsers';
 import AdminMessages from '@/pages/admin/AdminMessages';
 import AdminSettings from '@/pages/admin/AdminSettings';
-import './App.css';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -44,14 +42,13 @@ const queryClient = new QueryClient({
 
 function App() {
   return (
-    <ErrorBoundary>
+    <Router>
       <QueryClientProvider client={queryClient}>
         <UserProvider>
           <CartProvider>
             <FavoritesProvider>
               <AddressProvider>
                 <OrderProvider>
-                  <Router>
                     <Routes>
                       {/* Public routes with main layout */}
                       <Route path="/" element={<Layout><Index /></Layout>} />
@@ -79,7 +76,6 @@ function App() {
                       {/* 404 page */}
                       <Route path="*" element={<Layout><NotFound /></Layout>} />
                     </Routes>
-                  </Router>
                   <Toaster />
                 </OrderProvider>
               </AddressProvider>
@@ -88,7 +84,7 @@ function App() {
         </UserProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
-    </ErrorBoundary>
+    </Router>
   );
 }
 
