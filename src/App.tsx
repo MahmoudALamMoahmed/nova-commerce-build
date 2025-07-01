@@ -10,6 +10,7 @@ import { AddressProvider } from '@/context/AddressContext';
 import { OrderProvider } from '@/context/OrderContext';
 import Layout from '@/components/Layout';
 import AdminLayout from '@/components/admin/AdminLayout';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import Index from '@/pages/Index';
 import Products from '@/pages/Products';
 import ProductDetails from '@/pages/ProductDetails';
@@ -32,53 +33,62 @@ import AdminMessages from '@/pages/admin/AdminMessages';
 import AdminSettings from '@/pages/admin/AdminSettings';
 import './App.css';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      staleTime: 5 * 60 * 1000,
+    },
+  },
+});
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <UserProvider>
-        <CartProvider>
-          <FavoritesProvider>
-            <AddressProvider>
-              <OrderProvider>
-                <Router>
-                  <Routes>
-                    {/* Public routes with main layout */}
-                    <Route path="/" element={<Layout><Index /></Layout>} />
-                    <Route path="/products" element={<Layout><Products /></Layout>} />
-                    <Route path="/products/:id" element={<Layout><ProductDetails /></Layout>} />
-                    <Route path="/about" element={<Layout><About /></Layout>} />
-                    <Route path="/contact" element={<Layout><Contact /></Layout>} />
-                    <Route path="/login" element={<Layout><Login /></Layout>} />
-                    <Route path="/register" element={<Layout><Register /></Layout>} />
-                    <Route path="/profile" element={<Layout><Profile /></Layout>} />
-                    <Route path="/cart" element={<Layout><Cart /></Layout>} />
-                    <Route path="/favorites" element={<Layout><Favorites /></Layout>} />
-                    <Route path="/orders" element={<Layout><Orders /></Layout>} />
-                    
-                    {/* Admin routes with admin layout */}
-                    <Route path="/admin" element={<Layout><AdminLayout><Admin /></AdminLayout></Layout>} />
-                    <Route path="/admin/dashboard" element={<Layout><AdminLayout><Dashboard /></AdminLayout></Layout>} />
-                    <Route path="/admin/products" element={<Layout><AdminLayout><AdminProducts /></AdminLayout></Layout>} />
-                    <Route path="/admin/categories" element={<Layout><AdminLayout><AdminCategories /></AdminLayout></Layout>} />
-                    <Route path="/admin/orders" element={<Layout><AdminLayout><AdminOrders /></AdminLayout></Layout>} />
-                    <Route path="/admin/users" element={<Layout><AdminLayout><AdminUsers /></AdminLayout></Layout>} />
-                    <Route path="/admin/messages" element={<Layout><AdminLayout><AdminMessages /></AdminLayout></Layout>} />
-                    <Route path="/admin/settings" element={<Layout><AdminLayout><AdminSettings /></AdminLayout></Layout>} />
-                    
-                    {/* 404 page */}
-                    <Route path="*" element={<Layout><NotFound /></Layout>} />
-                  </Routes>
-                </Router>
-                <Toaster />
-              </OrderProvider>
-            </AddressProvider>
-          </FavoritesProvider>
-        </CartProvider>
-      </UserProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <UserProvider>
+          <CartProvider>
+            <FavoritesProvider>
+              <AddressProvider>
+                <OrderProvider>
+                  <Router>
+                    <Routes>
+                      {/* Public routes with main layout */}
+                      <Route path="/" element={<Layout><Index /></Layout>} />
+                      <Route path="/products" element={<Layout><Products /></Layout>} />
+                      <Route path="/products/:id" element={<Layout><ProductDetails /></Layout>} />
+                      <Route path="/about" element={<Layout><About /></Layout>} />
+                      <Route path="/contact" element={<Layout><Contact /></Layout>} />
+                      <Route path="/login" element={<Layout><Login /></Layout>} />
+                      <Route path="/register" element={<Layout><Register /></Layout>} />
+                      <Route path="/profile" element={<Layout><Profile /></Layout>} />
+                      <Route path="/cart" element={<Layout><Cart /></Layout>} />
+                      <Route path="/favorites" element={<Layout><Favorites /></Layout>} />
+                      <Route path="/orders" element={<Layout><Orders /></Layout>} />
+                      
+                      {/* Admin routes with admin layout */}
+                      <Route path="/admin" element={<Layout><AdminLayout><Admin /></AdminLayout></Layout>} />
+                      <Route path="/admin/dashboard" element={<Layout><AdminLayout><Dashboard /></AdminLayout></Layout>} />
+                      <Route path="/admin/products" element={<Layout><AdminLayout><AdminProducts /></AdminLayout></Layout>} />
+                      <Route path="/admin/categories" element={<Layout><AdminLayout><AdminCategories /></AdminLayout></Layout>} />
+                      <Route path="/admin/orders" element={<Layout><AdminLayout><AdminOrders /></AdminLayout></Layout>} />
+                      <Route path="/admin/users" element={<Layout><AdminLayout><AdminUsers /></AdminLayout></Layout>} />
+                      <Route path="/admin/messages" element={<Layout><AdminLayout><AdminMessages /></AdminLayout></Layout>} />
+                      <Route path="/admin/settings" element={<Layout><AdminLayout><AdminSettings /></AdminLayout></Layout>} />
+                      
+                      {/* 404 page */}
+                      <Route path="*" element={<Layout><NotFound /></Layout>} />
+                    </Routes>
+                  </Router>
+                  <Toaster />
+                </OrderProvider>
+              </AddressProvider>
+            </FavoritesProvider>
+          </CartProvider>
+        </UserProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 
