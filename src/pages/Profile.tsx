@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useUser } from '@/context/UserContext';
+import { useAddresses } from '@/context/AddressContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,27 +15,51 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
-import { Loader2, Save } from 'lucide-react';
+import { Loader2, Save, Plus, Edit2, Trash2, MapPin } from 'lucide-react';
 
 const profileSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email'),
 });
 
+const addressSchema = z.object({
+  full_name: z.string().min(2, 'Full name must be at least 2 characters'),
+  street: z.string().min(5, 'Street address must be at least 5 characters'),
+  city: z.string().min(2, 'City must be at least 2 characters'),
+  postal_code: z.string().min(3, 'Postal code must be at least 3 characters'),
+  phone_number: z.string().min(10, 'Phone number must be at least 10 characters'),
+});
+
 type ProfileFormValues = z.infer<typeof profileSchema>;
+type AddressFormValues = z.infer<typeof addressSchema>;
 
 const Profile = () => {
   const { user, logout, userProfile } = useUser();
+  const { addresses, addAddress, updateAddress, deleteAddress, isLoading } = useAddresses();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
+  const [editingAddress, setEditingAddress] = useState<any>(null);
   
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       name: '',
       email: '',
+    },
+  });
+
+  const addressForm = useForm<AddressFormValues>({
+    resolver: zodResolver(addressSchema),
+    defaultValues: {
+      full_name: '',
+      street: '',
+      city: '',
+      postal_code: '',
+      phone_number: '',
     },
   });
 
@@ -106,6 +131,46 @@ const Profile = () => {
     }
   };
 
+  const onAddressSubmit = async (data: AddressFormValues) => {
+    let success = false;
+    
+    if (editingAddress) {
+      success = await updateAddress(editingAddress.id, data);
+    } else {
+      success = await addAddress(data);
+    }
+
+    if (success) {
+      setIsAddressDialogOpen(false);
+      setEditingAddress(null);
+      addressForm.reset();
+    }
+  };
+
+  const handleEditAddress = (address: any) => {
+    setEditingAddress(address);
+    addressForm.reset({
+      full_name: address.full_name,
+      street: address.street,
+      city: address.city,
+      postal_code: address.postal_code,
+      phone_number: address.phone_number,
+    });
+    setIsAddressDialogOpen(true);
+  };
+
+  const handleDeleteAddress = async (addressId: string) => {
+    if (window.confirm('Are you sure you want to delete this address?')) {
+      await deleteAddress(addressId);
+    }
+  };
+
+  const handleAddNewAddress = () => {
+    setEditingAddress(null);
+    addressForm.reset();
+    setIsAddressDialogOpen(true);
+  };
+
   // Redirect if not logged in
   if (!user) {
     return <Navigate to="/login" replace />;
@@ -140,7 +205,8 @@ const Profile = () => {
         </div>
         
         {/* Main content */}
-        <div className="md:col-span-8">
+        <div className="md:col-span-8 space-y-6">
+          {/* Personal Information Card */}
           <Card>
             <CardHeader>
               <CardTitle>Personal Information</CardTitle>
@@ -192,6 +258,158 @@ const Profile = () => {
                   </Button>
                 </form>
               </Form>
+            </CardContent>
+          </Card>
+
+          {/* Addresses Card */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>My Addresses</CardTitle>
+                  <CardDescription>
+                    Manage your shipping addresses
+                  </CardDescription>
+                </div>
+                <Dialog open={isAddressDialogOpen} onOpenChange={setIsAddressDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button onClick={handleAddNewAddress}>
+                      <Plus className="mr-2 h-4 w-4" />
+                      Add Address
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>
+                        {editingAddress ? 'Edit Address' : 'Add New Address'}
+                      </DialogTitle>
+                    </DialogHeader>
+                    <Form {...addressForm}>
+                      <form onSubmit={addressForm.handleSubmit(onAddressSubmit)} className="space-y-4">
+                        <FormField
+                          control={addressForm.control}
+                          name="full_name"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Full Name</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={addressForm.control}
+                          name="street"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Street Address</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <div className="grid grid-cols-2 gap-4">
+                          <FormField
+                            control={addressForm.control}
+                            name="city"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>City</FormLabel>
+                                <FormControl>
+                                  <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={addressForm.control}
+                            name="postal_code"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Postal Code</FormLabel>
+                                <FormControl>
+                                  <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <FormField
+                          control={addressForm.control}
+                          name="phone_number"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Phone Number</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <Button type="submit" className="w-full bg-brand-accent hover:bg-brand-accent/90">
+                          {editingAddress ? 'Update Address' : 'Add Address'}
+                        </Button>
+                      </form>
+                    </Form>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {isLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                  <span className="ml-2">Loading addresses...</span>
+                </div>
+              ) : addresses.length === 0 ? (
+                <div className="text-center py-8">
+                  <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-500">No addresses saved yet.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {addresses.map((address) => (
+                    <Card key={address.id} className="border-2">
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <h4 className="font-medium text-lg">{address.full_name}</h4>
+                            <p className="text-gray-600 mt-1">
+                              {address.street}<br />
+                              {address.city}, {address.postal_code}<br />
+                              {address.phone_number}
+                            </p>
+                          </div>
+                          <div className="flex space-x-2 ml-4">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleEditAddress(address)}
+                            >
+                              <Edit2 className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleDeleteAddress(address.id)}
+                              className="text-red-600 hover:text-red-700"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
