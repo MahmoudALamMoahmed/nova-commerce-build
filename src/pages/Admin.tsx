@@ -8,8 +8,10 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { Trash2, Edit, Plus, Package, Users, ShoppingCart, Upload, X } from 'lucide-react';
+import CategoryModal from '@/components/admin/CategoryModal';
 
 interface Product {
   id: string;
@@ -17,6 +19,13 @@ interface Product {
   price: number;
   description: string | null;
   image: string | null;
+  category_id: string | null;
+  created_at: string;
+}
+
+interface Category {
+  id: string;
+  name: string;
   created_at: string;
 }
 
@@ -29,6 +38,7 @@ interface Stats {
 const Admin = () => {
   const { user, userProfile, isLoading } = useUser();
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [stats, setStats] = useState<Stats>({ totalProducts: 0, totalUsers: 0, totalOrders: 0 });
   const [isProductsLoading, setIsProductsLoading] = useState(true);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -37,7 +47,8 @@ const Admin = () => {
     title: '',
     price: '',
     description: '',
-    image: ''
+    image: '',
+    category_id: ''
   });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -59,7 +70,13 @@ const Admin = () => {
     try {
       const { data, error } = await supabase
         .from('products')
-        .select('*')
+        .select(`
+          *,
+          categories (
+            id,
+            name
+          )
+        `)
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -74,6 +91,24 @@ const Admin = () => {
       toast.error('Failed to fetch products');
     } finally {
       setIsProductsLoading(false);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .order('name', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching categories:', error);
+        return;
+      }
+
+      setCategories(data || []);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
     }
   };
 
@@ -97,6 +132,7 @@ const Admin = () => {
 
   useEffect(() => {
     fetchProducts();
+    fetchCategories();
     fetchStats();
   }, []);
 
@@ -159,8 +195,8 @@ const Admin = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.title || !formData.price) {
-      toast.error('Title and price are required');
+    if (!formData.title || !formData.price || !formData.category_id) {
+      toast.error('Title, price, and category are required');
       return;
     }
 
@@ -180,7 +216,8 @@ const Admin = () => {
         title: formData.title,
         price: parseFloat(formData.price),
         description: formData.description || null,
-        image: imageUrl || null
+        image: imageUrl || null,
+        category_id: formData.category_id
       };
 
       if (editingProduct) {
@@ -200,7 +237,7 @@ const Admin = () => {
         toast.success('Product created successfully');
       }
 
-      setFormData({ title: '', price: '', description: '', image: '' });
+      setFormData({ title: '', price: '', description: '', image: '', category_id: '' });
       setSelectedFile(null);
       setEditingProduct(null);
       setShowForm(false);
@@ -218,7 +255,8 @@ const Admin = () => {
       title: product.title,
       price: product.price.toString(),
       description: product.description || '',
-      image: product.image || ''
+      image: product.image || '',
+      category_id: product.category_id || ''
     });
     setSelectedFile(null);
     setShowForm(true);
@@ -245,7 +283,7 @@ const Admin = () => {
   };
 
   const resetForm = () => {
-    setFormData({ title: '', price: '', description: '', image: '' });
+    setFormData({ title: '', price: '', description: '', image: '', category_id: '' });
     setSelectedFile(null);
     setEditingProduct(null);
     setShowForm(false);
@@ -253,6 +291,17 @@ const Admin = () => {
 
   const removeSelectedFile = () => {
     setSelectedFile(null);
+  };
+
+  const handleCategoryAdded = (newCategory: { id: string; name: string }) => {
+    setCategories(prev => [...prev, { ...newCategory, created_at: new Date().toISOString() }]);
+    setFormData(prev => ({ ...prev, category_id: newCategory.id }));
+  };
+
+  const getCategoryName = (categoryId: string | null) => {
+    if (!categoryId) return 'No Category';
+    const category = categories.find(c => c.id === categoryId);
+    return category?.name || 'Unknown Category';
   };
 
   return (
@@ -335,6 +384,28 @@ const Admin = () => {
                       placeholder="0.00"
                       required
                     />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Category *</label>
+                  <div className="flex gap-2">
+                    <Select
+                      value={formData.category_id}
+                      onValueChange={(value) => setFormData({ ...formData, category_id: value })}
+                    >
+                      <SelectTrigger className="flex-1">
+                        <SelectValue placeholder="Select a category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem key={category.id} value={category.id}>
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <CategoryModal onCategoryAdded={handleCategoryAdded} />
                   </div>
                 </div>
                 
@@ -423,6 +494,7 @@ const Admin = () => {
                 <TableRow>
                   <TableHead>Image</TableHead>
                   <TableHead>Title</TableHead>
+                  <TableHead>Category</TableHead>
                   <TableHead>Price</TableHead>
                   <TableHead>Description</TableHead>
                   <TableHead>Actions</TableHead>
@@ -441,6 +513,11 @@ const Admin = () => {
                       )}
                     </TableCell>
                     <TableCell className="font-medium">{product.title}</TableCell>
+                    <TableCell>
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                        {getCategoryName(product.category_id)}
+                      </span>
+                    </TableCell>
                     <TableCell>${product.price.toFixed(2)}</TableCell>
                     <TableCell className="max-w-xs truncate">
                       {product.description || 'No description'}
