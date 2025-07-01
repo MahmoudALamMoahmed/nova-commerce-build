@@ -12,7 +12,8 @@ import {
   Users, 
   MessageSquare, 
   Settings, 
-  LogOut 
+  LogOut,
+  Tag
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -51,6 +52,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const navigation = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
     { name: 'Products', href: '/admin/products', icon: Package },
+    { name: 'Categories', href: '/admin/categories', icon: Tag },
     { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
     { name: 'Users', href: '/admin/users', icon: Users },
     { name: 'Messages', href: '/admin/messages', icon: MessageSquare },
