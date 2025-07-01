@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -132,12 +131,21 @@ const Profile = () => {
   };
 
   const onAddressSubmit = async (data: AddressFormValues) => {
+    // Ensure all required fields are present
+    const addressData = {
+      full_name: data.full_name,
+      street: data.street,
+      city: data.city,
+      postal_code: data.postal_code,
+      phone_number: data.phone_number,
+    };
+
     let success = false;
     
     if (editingAddress) {
-      success = await updateAddress(editingAddress.id, data);
+      success = await updateAddress(editingAddress.id, addressData);
     } else {
-      success = await addAddress(data);
+      success = await addAddress(addressData);
     }
 
     if (success) {
