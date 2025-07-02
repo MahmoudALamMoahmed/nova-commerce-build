@@ -13,11 +13,18 @@ interface Product {
   price: number;
   description: string | null;
   image: string | null;
+  category_id: string | null;
+}
+
+interface Category {
+  id: string;
+  name: string;
 }
 
 const ProductDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
+  const [category, setCategory] = useState<Category | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { addToCart } = useCart();
 
@@ -38,6 +45,17 @@ const ProductDetails = () => {
         }
 
         setProduct(data);
+
+        // Fetch category if product has one
+        if (data?.category_id) {
+          const { data: categoryData } = await supabase
+            .from('categories')
+            .select('*')
+            .eq('id', data.category_id)
+            .single();
+          
+          setCategory(categoryData);
+        }
       } catch (error) {
         console.error('Error fetching product:', error);
       } finally {
@@ -102,6 +120,9 @@ const ProductDetails = () => {
         
         <div className="flex flex-col">
           <h1 className="text-3xl font-bold mb-2">{product.title}</h1>
+          {category && (
+            <p className="text-sm text-gray-500 mb-2">Category: {category.name}</p>
+          )}
           <p className="text-2xl text-brand-accent font-semibold mb-4">
             ${product.price.toFixed(2)}
           </p>

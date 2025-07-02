@@ -3,6 +3,9 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import ProductCard from '../components/ProductCard';
 import Pagination from '../components/Pagination';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Search } from 'lucide-react';
 
 interface Product {
   id: string;
@@ -13,35 +16,83 @@ interface Product {
   category_id: string | null;
 }
 
+interface Category {
+  id: string;
+  name: string;
+}
+
 const PRODUCTS_PER_PAGE = 10;
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
 
   const totalPages = Math.ceil(totalProducts / PRODUCTS_PER_PAGE);
 
   useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
     fetchProducts();
-  }, [currentPage]);
+  }, [currentPage, searchTerm, selectedCategory]);
+
+  const fetchCategories = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .order('name');
+
+      if (error) {
+        console.error('Error fetching categories:', error);
+        return;
+      }
+
+      setCategories(data || []);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
 
   const fetchProducts = async () => {
     try {
       setIsLoading(true);
       
-      // Get total count
-      const { count } = await supabase
-        .from('products')
-        .select('*', { count: 'exact', head: true });
+      // Build query with filters
+      let query = supabase.from('products').select('*', { count: 'exact' });
 
+      // Apply search filter
+      if (searchTerm) {
+        query = query.ilike('title', `%${searchTerm}%`);
+      }
+
+      // Apply category filter
+      if (selectedCategory) {
+        query = query.eq('category_id', selectedCategory);
+      }
+
+      // Get total count with filters
+      const { count } = await query;
       setTotalProducts(count || 0);
 
-      // Get paginated products
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
+      // Get paginated products with filters
+      let productsQuery = supabase.from('products').select('*');
+
+      if (searchTerm) {
+        productsQuery = productsQuery.ilike('title', `%${searchTerm}%`);
+      }
+
+      if (selectedCategory) {
+        productsQuery = productsQuery.eq('category_id', selectedCategory);
+      }
+
+      const { data, error } = await productsQuery
         .order('created_at', { ascending: false })
         .range((currentPage - 1) * PRODUCTS_PER_PAGE, currentPage * PRODUCTS_PER_PAGE - 1);
 
@@ -50,7 +101,6 @@ const Products = () => {
         return;
       }
 
-      console.log('Products fetched:', data);
       setProducts(data || []);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -62,6 +112,16 @@ const Products = () => {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    setCurrentPage(1); // Reset to first page when searching
+  };
+
+  const handleCategoryChange = (value: string) => {
+    setSelectedCategory(value === 'all' ? '' : value);
+    setCurrentPage(1); // Reset to first page when filtering
   };
 
   if (isLoading) {
@@ -81,9 +141,35 @@ const Products = () => {
       <div className="container mx-auto px-6">
         <h1 className="text-3xl font-bold mb-2 text-center">Our Products</h1>
         <p className="text-gray-600 mb-8 text-center">
-          Discover our curated collection of premium products. 
-          {totalProducts > 0 && ` Showing ${products.length} of ${totalProducts} products.`}
+          Discover our curated collection of premium products.
         </p>
+        
+        {/* Filters */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-8">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+            <Input
+              type="text"
+              placeholder="Search products..."
+              value={searchTerm}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <Select value={selectedCategory || 'all'} onValueChange={handleCategoryChange}>
+            <SelectTrigger className="w-full sm:w-48">
+              <SelectValue placeholder="All Categories" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              {categories.map((category) => (
+                <SelectItem key={category.id} value={category.id}>
+                  {category.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
         
         {products.length === 0 ? (
           <div className="text-center py-12">
