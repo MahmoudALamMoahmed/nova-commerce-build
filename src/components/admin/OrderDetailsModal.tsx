@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { format } from 'date-fns';
-import { Package, MapPin, User, Calendar, DollarSign, CreditCard, Banknote } from 'lucide-react';
+import { X, User, Mail, Phone, MapPin, CreditCard, Banknote } from 'lucide-react';
 
 interface OrderDetailsModalProps {
   order: {
@@ -57,169 +57,175 @@ const OrderDetailsModal = ({ order, onClose, onStatusUpdate }: OrderDetailsModal
   const getPaymentMethodDisplay = (method: string) => {
     switch (method) {
       case 'cash':
-        return (
-          <div className="flex items-center gap-2">
-            <Banknote className="h-4 w-4 text-green-600" />
-            <span>Cash on Delivery</span>
-          </div>
-        );
+        return 'Cash';
       case 'online':
-        return (
-          <div className="flex items-center gap-2">
-            <CreditCard className="h-4 w-4 text-blue-600" />
-            <span>Online Payment</span>
-          </div>
-        );
+        return 'Card';
       default:
-        return <span>Not specified</span>;
+        return 'Cash';
     }
   };
 
-  const totalItems = order.order_items?.reduce((acc, item) => acc + item.quantity, 0) || 0;
+  const subtotal = order.order_items?.reduce((acc, item) => acc + (item.price * item.quantity), 0) || 0;
+  const tax = subtotal * 0.1; // 10% tax
+  const deliveryFee = 5.99;
+  const total = subtotal + tax + deliveryFee;
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
-            <span>Order Details #{order.id.slice(0, 8)}</span>
-            <Badge className={getStatusColor(order.status)}>
-              {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-            </Badge>
-          </DialogTitle>
-        </DialogHeader>
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto p-0">
+        <div className="flex">
+          {/* Left Side - Order Information */}
+          <div className="w-1/2 p-6 border-r">
+            <div className="flex items-center justify-between mb-6">
+              <h1 className="text-2xl font-bold">Order Details</h1>
+              <Button variant="ghost" size="sm" onClick={onClose}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
 
-        <div className="grid gap-6">
-          {/* Order Summary */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Package className="h-5 w-5" />
-                Order Summary
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {/* Order Information */}
+            <div className="space-y-4 mb-8">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Order Number:</span>
+                <span className="font-medium">#{order.id.slice(0, 8).padStart(10, '0')}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Status:</span>
                 <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-gray-500" />
-                  <div>
-                    <p className="text-sm text-gray-500">Order Date</p>
-                    <p className="font-medium">{format(new Date(order.created_at), 'PPP')}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4 text-gray-500" />
-                  <div>
-                    <p className="text-sm text-gray-500">Customer</p>
-                    <p className="font-medium">{order.user_email}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <DollarSign className="h-4 w-4 text-gray-500" />
-                  <div>
-                    <p className="text-sm text-gray-500">Total</p>
-                    <p className="font-medium">
-                      {order.total_price ? `$${order.total_price.toFixed(2)}` : 'N/A'}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="h-4 w-4 text-gray-500">💳</div>
-                  <div>
-                    <p className="text-sm text-gray-500">Payment Method</p>
-                    <div className="font-medium">
-                      {getPaymentMethodDisplay(order.payment_method || 'cash')}
-                    </div>
-                  </div>
+                  <Badge className={getStatusColor(order.status)}>
+                    {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                  </Badge>
+                  <Select
+                    value={order.status}
+                    onValueChange={(value) => onStatusUpdate(order.id, value)}
+                  >
+                    <SelectTrigger className="w-32 h-8">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="confirmed">Confirmed</SelectItem>
+                      <SelectItem value="shipped">Shipped</SelectItem>
+                      <SelectItem value="cancelled">Cancelled</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
-              
-              <Separator className="my-4" />
-              
-              <div className="flex items-center gap-4">
-                <span className="font-medium">Update Status:</span>
-                <Select
-                  value={order.status}
-                  onValueChange={(value) => onStatusUpdate(order.id, value)}
-                >
-                  <SelectTrigger className="w-40">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="confirmed">Confirmed</SelectItem>
-                    <SelectItem value="shipped">Shipped</SelectItem>
-                    <SelectItem value="cancelled">Cancelled</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Date:</span>
+                <span className="font-medium">{format(new Date(order.created_at), 'M/d/yyyy')}</span>
               </div>
-            </CardContent>
-          </Card>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Payment Method:</span>
+                <span className="font-medium">{getPaymentMethodDisplay(order.payment_method || 'cash')}</span>
+              </div>
+            </div>
 
-          {/* Shipping Address */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MapPin className="h-5 w-5" />
-                Shipping Address
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {order.addresses ? (
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="font-medium">{order.addresses.full_name}</p>
-                  <p className="text-gray-600">{order.addresses.street}</p>
-                  <p className="text-gray-600">{order.addresses.city}, {order.addresses.postal_code}</p>
-                  <p className="text-gray-600">{order.addresses.phone_number}</p>
+            {/* Customer Information */}
+            <Card className="mb-6">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <User className="h-5 w-5 text-blue-600" />
+                  Customer Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <User className="h-4 w-4 text-gray-400" />
+                  <span>{order.addresses?.full_name || 'N/A'}</span>
                 </div>
-              ) : (
-                <p className="text-gray-500">No shipping address provided</p>
-              )}
-            </CardContent>
-          </Card>
+                <div className="flex items-center gap-2">
+                  <Mail className="h-4 w-4 text-gray-400" />
+                  <span>{order.user_email}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Phone className="h-4 w-4 text-gray-400" />
+                  <span>{order.addresses?.phone_number || 'N/A'}</span>
+                </div>
+              </CardContent>
+            </Card>
 
-          {/* Order Items */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Order Items ({totalItems} items)</CardTitle>
-            </CardHeader>
-            <CardContent>
+            {/* Delivery Address */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <MapPin className="h-5 w-5 text-green-600" />
+                  Delivery Address
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {order.addresses ? (
+                  <div className="text-sm">
+                    <p className="font-medium">{order.addresses.full_name}</p>
+                    <p>{order.addresses.street}</p>
+                    <p>{order.addresses.city}</p>
+                    <p className="text-gray-600">Phone: {order.addresses.phone_number}</p>
+                  </div>
+                ) : (
+                  <p className="text-gray-500">No delivery address provided</p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Side - Order Items & Summary */}
+          <div className="w-1/2 p-6">
+            <h2 className="text-xl font-bold mb-6">Order Items</h2>
+            
+            {/* Order Items */}
+            <div className="space-y-4 mb-8">
               {order.order_items && order.order_items.length > 0 ? (
-                <div className="space-y-4">
-                  {order.order_items.map((item) => (
-                    <div key={item.id} className="flex items-center gap-4 p-4 border rounded-lg">
-                      {item.products?.image && (
-                        <img 
-                          src={item.products.image} 
-                          alt={item.products.title} 
-                          className="h-16 w-16 rounded object-cover flex-shrink-0"
-                        />
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-medium truncate">
-                          {item.products?.title || 'Unknown Product'}
-                        </h4>
-                        <p className="text-sm text-gray-500">
-                          Quantity: {item.quantity} × ${item.price.toFixed(2)}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-medium">${(item.price * item.quantity).toFixed(2)}</p>
-                      </div>
+                order.order_items.map((item) => (
+                  <div key={item.id} className="flex items-center gap-4 p-3 rounded-lg border">
+                    {item.products?.image && (
+                      <img 
+                        src={item.products.image} 
+                        alt={item.products.title} 
+                        className="h-16 w-16 rounded object-cover flex-shrink-0"
+                      />
+                    )}
+                    <div className="flex-1">
+                      <h4 className="font-medium">{item.products?.title || 'Unknown Product'}</h4>
+                      <p className="text-sm text-gray-600">
+                        ${item.price.toFixed(2)} × {item.quantity}
+                      </p>
                     </div>
-                  ))}
-                </div>
+                    <div className="text-right font-medium">
+                      ${(item.price * item.quantity).toFixed(2)}
+                    </div>
+                  </div>
+                ))
               ) : (
                 <p className="text-gray-500">No items found for this order</p>
               )}
-            </CardContent>
-          </Card>
-        </div>
+            </div>
 
-        <div className="flex justify-end pt-4">
-          <Button onClick={onClose} variant="outline">
-            Close
-          </Button>
+            {/* Order Summary */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Order Summary</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex justify-between">
+                  <span>Subtotal</span>
+                  <span>${subtotal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Tax</span>
+                  <span>${tax.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Delivery Fee</span>
+                  <span>${deliveryFee.toFixed(2)}</span>
+                </div>
+                <Separator />
+                <div className="flex justify-between text-lg font-bold text-orange-600">
+                  <span>Total</span>
+                  <span>${total.toFixed(2)}</span>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
