@@ -7,6 +7,16 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { toast } from 'sonner';
 import { Trash2, Edit, Plus, Package, Upload, X } from 'lucide-react';
 import CategoryModal from '@/components/admin/CategoryModal';
@@ -42,6 +52,7 @@ const AdminProducts = () => {
   });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<{ id: string; title: string } | null>(null);
 
   const fetchProducts = async () => {
     try {
@@ -216,14 +227,18 @@ const AdminProducts = () => {
     setShowForm(true);
   };
 
-  const handleDelete = async (productId: string) => {
-    if (!confirm('Are you sure you want to delete this product?')) return;
+  const handleDelete = async (product: { id: string; title: string }) => {
+    setProductToDelete(product);
+  };
+
+  const handleDeleteConfirmed = async () => {
+    if (!productToDelete) return;
 
     try {
       const { error } = await supabase
         .from('products')
         .delete()
-        .eq('id', productId);
+        .eq('id', productToDelete.id);
 
       if (error) throw error;
       
@@ -232,6 +247,8 @@ const AdminProducts = () => {
     } catch (error) {
       console.error('Error deleting product:', error);
       toast.error('Failed to delete product');
+    } finally {
+      setProductToDelete(null);
     }
   };
 
@@ -450,7 +467,7 @@ const AdminProducts = () => {
                         <Button
                           size="sm"
                           variant="destructive"
-                          onClick={() => handleDelete(product.id)}
+                          onClick={() => handleDelete({ id: product.id, title: product.title })}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -471,6 +488,27 @@ const AdminProducts = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Delete confirmation dialog */}
+      <AlertDialog open={productToDelete !== null} onOpenChange={() => setProductToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Product</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{productToDelete?.title}"? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleDeleteConfirmed}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Yes, delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

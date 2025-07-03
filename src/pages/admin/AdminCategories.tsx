@@ -6,6 +6,16 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { toast } from 'sonner';
 import { Trash2, Edit, Plus, Tag } from 'lucide-react';
 
@@ -22,6 +32,7 @@ const AdminCategories = () => {
   const [showForm, setShowForm] = useState(false);
   const [categoryName, setCategoryName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState<{ id: string; name: string } | null>(null);
 
   const fetchCategories = async () => {
     try {
@@ -111,14 +122,18 @@ const AdminCategories = () => {
     setShowForm(true);
   };
 
-  const handleDelete = async (categoryId: string, categoryName: string) => {
-    if (!confirm(`Are you sure you want to delete the category "${categoryName}"? This action cannot be undone.`)) return;
+  const handleDelete = async (category: { id: string; name: string }) => {
+    setCategoryToDelete(category);
+  };
+
+  const handleDeleteConfirmed = async () => {
+    if (!categoryToDelete) return;
 
     try {
       const { error } = await supabase
         .from('categories')
         .delete()
-        .eq('id', categoryId);
+        .eq('id', categoryToDelete.id);
 
       if (error) {
         if (error.code === '23503') {
@@ -134,6 +149,8 @@ const AdminCategories = () => {
     } catch (error) {
       console.error('Error deleting category:', error);
       toast.error('Failed to delete category');
+    } finally {
+      setCategoryToDelete(null);
     }
   };
 
@@ -226,7 +243,7 @@ const AdminCategories = () => {
                         <Button
                           size="sm"
                           variant="destructive"
-                          onClick={() => handleDelete(category.id, category.name)}
+                          onClick={() => handleDelete({ id: category.id, name: category.name })}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -247,6 +264,27 @@ const AdminCategories = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Delete confirmation dialog */}
+      <AlertDialog open={categoryToDelete !== null} onOpenChange={() => setCategoryToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Category</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{categoryToDelete?.name}"? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleDeleteConfirmed}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Yes, delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
