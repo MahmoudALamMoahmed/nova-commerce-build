@@ -76,11 +76,8 @@ const OrderDetailsModal = ({ order, onClose, onStatusUpdate }: OrderDetailsModal
         <div className="flex">
           {/* Left Side - Order Information */}
           <div className="w-1/2 p-6 border-r">
-            <div className="flex items-center justify-between mb-6">
+            <div className="mb-6">
               <h1 className="text-2xl font-bold">Order Details</h1>
-              <Button variant="ghost" size="sm" onClick={onClose}>
-                <X className="h-4 w-4" />
-              </Button>
             </div>
 
             {/* Order Information */}
