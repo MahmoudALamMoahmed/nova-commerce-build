@@ -1,66 +1,54 @@
+import { useTranslation } from 'react-i18next';
+
 const About = () => {
+  const { t } = useTranslation();
+  
   return <div className="container mx-auto px-6 max-w-5xl mt-1 ">
-      <h1 className="text-4xl font-bold mb-6 text-gray-800 text-center">About Us</h1>
+      <h1 className="text-4xl font-bold mb-6 text-gray-800 text-center">{t('about.title')}</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
         <div className="prose max-w-none">
           <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-            Welcome to NOVASHOP, your destination for premium home furnishings and décor. 
-            Founded in 2022, we've made it our mission to bring stylish, high-quality products to your home at affordable prices.
+            {t('about.storyContent')}
           </p>
         </div>
         <div className="bg-gray-100 rounded-lg p-8 shadow-sm">
-          <h2 className="text-2xl font-semibold mb-4 text-brand-accent">Our Values</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-brand-accent">{t('about.whyChooseUs')}</h2>
           <ul className="space-y-3 text-gray-700">
             <li className="flex items-start">
               <span className="text-brand-accent mr-2">✓</span>
-              <span>Quality products at fair prices</span>
+              <span>{t('about.feature1')}</span>
             </li>
             <li className="flex items-start">
               <span className="text-brand-accent mr-2">✓</span>
-              <span>Sustainable and ethical manufacturing</span>
+              <span>{t('about.feature2')}</span>
             </li>
             <li className="flex items-start">
               <span className="text-brand-accent mr-2">✓</span>
-              <span>Outstanding customer service</span>
+              <span>{t('about.feature3')}</span>
             </li>
             <li className="flex items-start">
               <span className="text-brand-accent mr-2">✓</span>
-              <span>Timely shipping and delivery</span>
+              <span>{t('about.feature4')}</span>
             </li>
           </ul>
         </div>
       </div>
       
       <section id="who-we-are" className="mb-16 bg-white p-8 rounded-lg shadow-sm">
-        <h2 className="text-3xl font-semibold mb-6 text-gray-800 border-l-4 border-brand-accent pl-4">Who We Are</h2>
+        <h2 className="text-3xl font-semibold mb-6 text-gray-800 border-l-4 border-brand-accent pl-4">{t('about.ourStory')}</h2>
         <div className="text-gray-700 space-y-4">
           <p className="leading-relaxed">
-            NOVASHOP began with a simple idea: beautiful homes shouldn't require beautiful budgets. Our founders, 
-            a team of passionate interior design enthusiasts and retail experts, set out to create a curated 
-            collection of home goods that balance quality, aesthetics, and value.
-          </p>
-          <p className="leading-relaxed">
-            Today, our team has grown to include designers, product specialists, and customer service experts 
-            who work together to bring you an exceptional shopping experience. We believe in the power of 
-            beautiful spaces to transform daily living, and we're dedicated to helping you create a home 
-            that reflects your personal style.
+            {t('about.storyContent')}
           </p>
         </div>
       </section>
       
       <section id="our-mission" className="mb-16 bg-gray-50 p-8 rounded-lg shadow-sm">
-        <h2 className="text-3xl font-semibold mb-6 text-gray-800 border-l-4 border-brand-accent pl-4">Our Mission</h2>
+        <h2 className="text-3xl font-semibold mb-6 text-gray-800 border-l-4 border-brand-accent pl-4">{t('about.ourMission')}</h2>
         <div className="text-gray-700 space-y-4">
           <p className="leading-relaxed">
-            At NOVASHOP, our mission is to democratize great design. We believe everyone deserves to live 
-            in a well-designed space that brings joy and comfort, regardless of budget or location.
-          </p>
-          <p className="leading-relaxed">
-            We're committed to sourcing products that meet our high standards for quality and design, 
-            working directly with manufacturers to ensure fair pricing and sustainable production practices. 
-            By cutting out middlemen and operating efficiently, we're able to offer premium products 
-            at prices that make sense.
+            {t('about.missionContent')}
           </p>
         </div>
       </section>

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useUser } from '@/context/UserContext';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -33,6 +34,7 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 const Register = () => {
   const { user, register: registerUser } = useUser();
+  const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const form = useForm<RegisterFormValues>({
@@ -70,9 +72,9 @@ const Register = () => {
     <div className="container mx-auto py-24 px-4 flex justify-center items-center">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl text-center">Create Account</CardTitle>
+          <CardTitle className="text-2xl text-center">{t('auth.signup')}</CardTitle>
           <CardDescription className="text-center">
-            Enter your information to create an account
+            {t('auth.createNewAccount')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -83,7 +85,7 @@ const Register = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>{t('auth.name')}</FormLabel>
                     <FormControl>
                       <Input 
                         placeholder="John Doe" 
@@ -100,7 +102,7 @@ const Register = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{t('auth.email')}</FormLabel>
                     <FormControl>
                       <Input 
                         placeholder="your@email.com" 
@@ -118,7 +120,7 @@ const Register = () => {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>{t('auth.password')}</FormLabel>
                     <FormControl>
                       <Input 
                         placeholder="••••••••" 
@@ -153,18 +155,18 @@ const Register = () => {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating Account...
+                    {t('auth.signingUp')}
                   </>
-                ) : 'Create Account'}
+                ) : t('auth.signup')}
               </Button>
             </form>
           </Form>
         </CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-muted-foreground">
-            Already have an account?{" "}
+            {t('auth.alreadyHaveAccount')}{" "}
             <Link to="/login" className="text-brand-accent hover:underline">
-              Sign in
+              {t('auth.signInHere')}
             </Link>
           </p>
         </CardFooter>

@@ -1,6 +1,7 @@
 
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useTranslation } from 'react-i18next';
 import { useCart } from '@/context/CartContext';
 import { useUser } from '@/context/UserContext';
 import { useOrders } from '@/context/OrderContext';
@@ -22,6 +23,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 const Cart = () => {
+  const { t } = useTranslation();
   const { cartItems, removeFromCart, updateQuantity, totalPrice, isLoading } = useCart();
   const { user } = useUser();
   const { createOrder } = useOrders();
@@ -105,15 +107,15 @@ const Cart = () => {
 
   return (
     <div className="container mx-auto py-24 px-4">
-      <h1 className="text-3xl font-bold mb-8 text-center">Your Cart</h1>
+      <h1 className="text-3xl font-bold mb-8 text-center">{t('cart.title')}</h1>
 
       {cartItems.length === 0 ? (
         <div className="text-center py-12">
           <div className="text-6xl mb-4">🛒</div>
-          <h2 className="text-2xl font-medium mb-4">Your cart is empty</h2>
-          <p className="text-muted-foreground mb-8">Looks like you haven't added any products to your cart yet.</p>
+          <h2 className="text-2xl font-medium mb-4">{t('cart.empty')}</h2>
+          <p className="text-muted-foreground mb-8">{t('cart.emptyMessage')}</p>
           <Link to="/products">
-            <Button>Continue Shopping</Button>
+            <Button>{t('cart.browsProducts')}</Button>
           </Link>
         </div>
       ) : (
@@ -121,7 +123,7 @@ const Cart = () => {
           <div className="lg:col-span-7 space-y-6">
             {/* Cart items */}
             <div className="bg-white rounded-lg shadow-sm border p-6">
-              <h2 className="text-xl font-bold mb-4">Cart Items</h2>
+              <h2 className="text-xl font-bold mb-4">{t('cart.title')}</h2>
               {cartItems.map((item) => (
                 <div key={item.id} className="flex flex-col sm:flex-row items-start sm:items-center py-6 border-b last:border-b-0 last:pb-0 gap-4">
                   <div className="w-24 h-24 flex-shrink-0">
@@ -159,7 +161,7 @@ const Cart = () => {
                       onClick={() => confirmRemoveFromCart(item.id)}
                       className="text-red-500 hover:text-red-700 hover:bg-red-50"
                     >
-                      Remove
+                      {t('cart.remove')}
                     </Button>
                   </div>
                 </div>
@@ -179,15 +181,15 @@ const Cart = () => {
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span>Items ({cartItems.reduce((acc, item) => acc + item.quantity, 0)})</span>
-                  <span>${totalPrice.toFixed(2)}</span>
+                  <span>{t('common.currency')}{totalPrice.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Shipping</span>
-                  <span>Free</span>
+                  <span>{t('cart.shipping')}</span>
+                  <span>{t('cart.free')}</span>
                 </div>
                 <div className="border-t pt-3 mt-3 flex justify-between font-bold">
-                  <span>Total</span>
-                  <span>${totalPrice.toFixed(2)}</span>
+                  <span>{t('cart.total')}</span>
+                  <span>{t('common.currency')}{totalPrice.toFixed(2)}</span>
                 </div>
               </div>
               <Button 
@@ -195,7 +197,7 @@ const Cart = () => {
                 onClick={handleCheckout}
                 disabled={isCreatingOrder || !selectedAddressId || !selectedPaymentMethod}
               >
-                {isCreatingOrder ? 'Processing...' : 'Proceed to Checkout'}
+                {isCreatingOrder ? 'Processing...' : t('cart.proceedToCheckout')}
               </Button>
               
               {/* Payment Method Selection - moved here */}
@@ -215,25 +217,25 @@ const Cart = () => {
       )}
       
       {/* Removal confirmation dialog */}
-      <AlertDialog open={itemToRemove !== null} onOpenChange={() => setItemToRemove(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Remove Item</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to remove this item from the cart?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={handleCancelRemove}>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={handleRemoveConfirmed}
-              className="bg-red-500 hover:bg-red-600"
-            >
-              Yes, remove
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        <AlertDialog open={itemToRemove !== null} onOpenChange={() => setItemToRemove(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{t('cart.confirmRemove')}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {t('cart.confirmRemoveMessage')}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={handleCancelRemove}>{t('cart.cancel')}</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={handleRemoveConfirmed}
+                className="bg-red-500 hover:bg-red-600"
+              >
+                {t('cart.continue')}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
     </div>
   );
 };

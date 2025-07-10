@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { useUser } from '@/context/UserContext';
 import { useAddresses } from '@/context/AddressContext';
@@ -37,6 +38,7 @@ type ProfileFormValues = z.infer<typeof profileSchema>;
 type AddressFormValues = z.infer<typeof addressSchema>;
 
 const Profile = () => {
+  const { t } = useTranslation();
   const { user, logout, userProfile } = useUser();
   const { addresses, addAddress, updateAddress, deleteAddress, isLoading } = useAddresses();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -186,7 +188,7 @@ const Profile = () => {
 
   return (
     <div className="container mx-auto py-16 px-4">
-      <h1 className="text-3xl font-bold mb-8 text-center">My Profile</h1>
+      <h1 className="text-3xl font-bold mb-8 text-center">{t('profile.title')}</h1>
       
       <div className="grid md:grid-cols-12 gap-8">
         {/* Left sidebar */}
@@ -205,7 +207,7 @@ const Profile = () => {
                   className="justify-start" 
                   onClick={logout}
                 >
-                  Sign Out
+                  {t('nav.logout')}
                 </Button>
               </div>
             </CardContent>
@@ -217,7 +219,7 @@ const Profile = () => {
           {/* Personal Information Card */}
           <Card>
             <CardHeader>
-              <CardTitle>Personal Information</CardTitle>
+              <CardTitle>{t('profile.personalInfo')}</CardTitle>
               <CardDescription>
                 Update your personal details
               </CardDescription>
@@ -230,7 +232,7 @@ const Profile = () => {
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Name</FormLabel>
+                        <FormLabel>{t('auth.name')}</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
@@ -243,7 +245,7 @@ const Profile = () => {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email</FormLabel>
+                        <FormLabel>{t('auth.email')}</FormLabel>
                         <FormControl>
                           <Input {...field} type="email" />
                         </FormControl>
@@ -255,12 +257,12 @@ const Profile = () => {
                     {isSubmitting ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Saving...
+                        {t('profile.saving')}
                       </>
                     ) : (
                       <>
                         <Save className="mr-2 h-4 w-4" />
-                        Save Changes
+                        {t('profile.updateProfile')}
                       </>
                     )}
                   </Button>
@@ -274,7 +276,7 @@ const Profile = () => {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle>My Addresses</CardTitle>
+                  <CardTitle>{t('profile.addresses')}</CardTitle>
                   <CardDescription>
                     Manage your shipping addresses
                   </CardDescription>
@@ -283,13 +285,13 @@ const Profile = () => {
                   <DialogTrigger asChild>
                     <Button onClick={handleAddNewAddress}>
                       <Plus className="mr-2 h-4 w-4" />
-                      Add Address
+                      {t('profile.addAddress')}
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
                       <DialogTitle>
-                        {editingAddress ? 'Edit Address' : 'Add New Address'}
+                        {editingAddress ? t('profile.editAddress') : t('profile.addAddress')}
                       </DialogTitle>
                     </DialogHeader>
                     <Form {...addressForm}>
@@ -299,7 +301,7 @@ const Profile = () => {
                           name="full_name"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Full Name</FormLabel>
+                              <FormLabel>{t('profile.fullName')}</FormLabel>
                               <FormControl>
                                 <Input {...field} />
                               </FormControl>
@@ -312,7 +314,7 @@ const Profile = () => {
                           name="street"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Street Address</FormLabel>
+                              <FormLabel>{t('profile.street')}</FormLabel>
                               <FormControl>
                                 <Input {...field} />
                               </FormControl>
@@ -326,7 +328,7 @@ const Profile = () => {
                             name="city"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>City</FormLabel>
+                                <FormLabel>{t('profile.city')}</FormLabel>
                                 <FormControl>
                                   <Input {...field} />
                                 </FormControl>
@@ -339,7 +341,7 @@ const Profile = () => {
                             name="postal_code"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Postal Code</FormLabel>
+                                <FormLabel>{t('profile.postalCode')}</FormLabel>
                                 <FormControl>
                                   <Input {...field} />
                                 </FormControl>
@@ -353,7 +355,7 @@ const Profile = () => {
                           name="phone_number"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Phone Number</FormLabel>
+                              <FormLabel>{t('profile.phoneNumber')}</FormLabel>
                               <FormControl>
                                 <Input {...field} />
                               </FormControl>
@@ -362,7 +364,7 @@ const Profile = () => {
                           )}
                         />
                         <Button type="submit" className="w-full bg-brand-accent hover:bg-brand-accent/90">
-                          {editingAddress ? 'Update Address' : 'Add Address'}
+                          {editingAddress ? t('profile.editAddress') : t('profile.addAddress')}
                         </Button>
                       </form>
                     </Form>
@@ -379,7 +381,7 @@ const Profile = () => {
               ) : addresses.length === 0 ? (
                 <div className="text-center py-8">
                   <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500">No addresses saved yet.</p>
+                  <p className="text-gray-500">{t('profile.noAddresses')}</p>
                 </div>
               ) : (
                 <div className="space-y-4">

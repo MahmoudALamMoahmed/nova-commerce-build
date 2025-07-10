@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useTranslation } from 'react-i18next';
 import ProductCard from '../components/ProductCard';
 import Pagination from '../components/Pagination';
 import { Input } from '@/components/ui/input';
@@ -24,6 +25,7 @@ interface Category {
 const PRODUCTS_PER_PAGE = 10;
 
 const Products = () => {
+  const { t } = useTranslation();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -139,7 +141,7 @@ const Products = () => {
   return (
     <div className="pt-24 pb-16">
       <div className="container mx-auto px-6">
-        <h1 className="text-3xl font-bold mb-2 text-center">Our Products</h1>
+        <h1 className="text-3xl font-bold mb-2 text-center">{t('products.title')}</h1>
         <p className="text-gray-600 mb-8 text-center">
           Discover our curated collection of premium products.
         </p>
@@ -150,7 +152,7 @@ const Products = () => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
             <Input
               type="text"
-              placeholder="Search products..."
+              placeholder={t('products.search')}
               value={searchTerm}
               onChange={(e) => handleSearchChange(e.target.value)}
               className="pl-10"
@@ -158,10 +160,10 @@ const Products = () => {
           </div>
           <Select value={selectedCategory || 'all'} onValueChange={handleCategoryChange}>
             <SelectTrigger className="w-full sm:w-48">
-              <SelectValue placeholder="All Categories" />
+              <SelectValue placeholder={t('products.allCategories')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
+              <SelectItem value="all">{t('products.allCategories')}</SelectItem>
               {categories.map((category) => (
                 <SelectItem key={category.id} value={category.id}>
                   {category.name}
@@ -173,8 +175,8 @@ const Products = () => {
         
         {products.length === 0 ? (
           <div className="text-center py-12">
-            <h2 className="text-xl font-semibold mb-2">No products available</h2>
-            <p className="text-gray-500">Check back later for new products!</p>
+            <h2 className="text-xl font-semibold mb-2">{t('products.noProducts')}</h2>
+            <p className="text-gray-500">{t('products.noProductsMessage')}</p>
           </div>
         ) : (
           <>

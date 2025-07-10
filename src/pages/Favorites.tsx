@@ -1,12 +1,14 @@
 
 import { useFavorites } from '@/context/FavoritesContext';
 import { useUser } from '@/context/UserContext';
+import { useTranslation } from 'react-i18next';
 import ProductCard from '@/components/ProductCard';
 import { Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
 const Favorites = () => {
+  const { t } = useTranslation();
   const { favorites, isLoading } = useFavorites();
   const { user } = useUser();
   
@@ -16,14 +18,14 @@ const Favorites = () => {
       <div className="container mx-auto px-6 py-24">
         <div className="text-center py-12">
           <div className="text-6xl mb-4">🔒</div>
-          <h2 className="text-2xl font-medium mb-4">Please log in to view your favorites</h2>
-          <p className="text-muted-foreground mb-8">You need to be logged in to access your favorite products.</p>
+          <h2 className="text-2xl font-medium mb-4">{t('favorites.loginRequired')}</h2>
+          <p className="text-muted-foreground mb-8">{t('favorites.loginMessage')}</p>
           <div className="flex gap-4 justify-center">
             <Link to="/login">
-              <Button>Log In</Button>
+              <Button>{t('nav.login')}</Button>
             </Link>
             <Link to="/register">
-              <Button variant="outline">Sign Up</Button>
+              <Button variant="outline">{t('nav.signup')}</Button>
             </Link>
           </div>
         </div>
@@ -43,18 +45,18 @@ const Favorites = () => {
   
   return (
     <div className="container mx-auto px-6 py-24">
-      <h1 className="text-3xl font-bold mb-2 text-center">My Favorites</h1>
-      <p className="text-gray-600 mb-8 text-center">Products you've saved for later.</p>
+      <h1 className="text-3xl font-bold mb-2 text-center">{t('favorites.title')}</h1>
+      <p className="text-gray-600 mb-8 text-center">{t('favorites.subtitle')}</p>
       
       {favorites.length === 0 ? (
         <div className="text-center py-12">
           <Heart className="mx-auto h-16 w-16 text-gray-300 mb-4" />
-          <h2 className="text-2xl font-semibold mb-2">No favorites yet</h2>
+          <h2 className="text-2xl font-semibold mb-2">{t('favorites.empty')}</h2>
           <p className="text-gray-500 mb-6">
-            Start adding products you love to your favorites list
+            {t('favorites.emptyMessage')}
           </p>
           <Link to="/products" className="inline-block bg-brand-accent text-white font-medium px-6 py-3 rounded-md hover:bg-brand-accent/90 transition-colors">
-            Browse Products
+            {t('cart.browsProducts')}
           </Link>
         </div>
       ) : (
