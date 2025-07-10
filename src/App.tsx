@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from '@/components/ui/sonner';
+import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
 import { UserProvider } from '@/context/UserContext';
 import { CartProvider } from '@/context/CartContext';
 import { FavoritesProvider } from '@/context/FavoritesContext';
@@ -41,6 +43,25 @@ const queryClient = new QueryClient({
 });
 
 function App() {
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    // Set document direction based on language
+    document.dir = i18n.language === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = i18n.language;
+  }, [i18n.language]);
+
+  useEffect(() => {
+    // Listen for language changes
+    const handleLanguageChange = () => {
+      document.dir = i18n.language === 'ar' ? 'rtl' : 'ltr';
+      document.documentElement.lang = i18n.language;
+    };
+
+    i18n.on('languageChanged', handleLanguageChange);
+    return () => i18n.off('languageChanged', handleLanguageChange);
+  }, [i18n]);
+
   return (
     <Router>
       <QueryClientProvider client={queryClient}>

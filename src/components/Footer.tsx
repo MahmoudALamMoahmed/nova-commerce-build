@@ -1,7 +1,10 @@
 
 import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const Footer = () => {
+  const { t } = useTranslation();
+  
   return (
     <footer className="bg-brand-DEFAULT text-white">
       <div className="container mx-auto px-6 py-12">
@@ -10,7 +13,7 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold mb-4">NOVA<span className="text-brand-accent">SHOP</span></h3>
             <p className="text-gray-300 mb-4">
-              Elevating your shopping experience with premium products and exceptional service.
+              {t('footer.tagline')}
             </p>
             <div className="flex space-x-4">
               <a href="https://facebook.com" className="text-gray-300 hover:text-brand-accent transition-colors">
@@ -27,29 +30,29 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-bold mb-4">Quick Links</h3>
+            <h3 className="text-lg font-bold mb-4">{t('footer.quickLinks')}</h3>
             <ul className="space-y-2">
-              <li><a href="/" className="text-gray-300 hover:text-brand-accent transition-colors">Home</a></li>
-              <li><a href="/shop" className="text-gray-300 hover:text-brand-accent transition-colors">Shop</a></li>
-              <li><a href="/about" className="text-gray-300 hover:text-brand-accent transition-colors">About Us</a></li>
-              <li><a href="/contact" className="text-gray-300 hover:text-brand-accent transition-colors">Contact</a></li>
+              <li><a href="/" className="text-gray-300 hover:text-brand-accent transition-colors">{t('footer.home')}</a></li>
+              <li><a href="/products" className="text-gray-300 hover:text-brand-accent transition-colors">{t('footer.shop')}</a></li>
+              <li><a href="/about" className="text-gray-300 hover:text-brand-accent transition-colors">{t('footer.about')}</a></li>
+              <li><a href="/contact" className="text-gray-300 hover:text-brand-accent transition-colors">{t('footer.contact')}</a></li>
             </ul>
           </div>
 
           {/* Customer Service */}
           <div>
-            <h3 className="text-lg font-bold mb-4">Customer Service</h3>
+            <h3 className="text-lg font-bold mb-4">{t('footer.customerService')}</h3>
             <ul className="space-y-2">
-              <li><a href="/faq" className="text-gray-300 hover:text-brand-accent transition-colors">FAQ</a></li>
-              <li><a href="/shipping" className="text-gray-300 hover:text-brand-accent transition-colors">Shipping Policy</a></li>
-              <li><a href="/returns" className="text-gray-300 hover:text-brand-accent transition-colors">Returns & Exchanges</a></li>
-              <li><a href="/terms" className="text-gray-300 hover:text-brand-accent transition-colors">Terms & Conditions</a></li>
+              <li><a href="/faq" className="text-gray-300 hover:text-brand-accent transition-colors">{t('footer.faq')}</a></li>
+              <li><a href="/shipping" className="text-gray-300 hover:text-brand-accent transition-colors">{t('footer.shipping')}</a></li>
+              <li><a href="/returns" className="text-gray-300 hover:text-brand-accent transition-colors">{t('footer.returns')}</a></li>
+              <li><a href="/terms" className="text-gray-300 hover:text-brand-accent transition-colors">{t('footer.terms')}</a></li>
             </ul>
           </div>
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-lg font-bold mb-4">Contact Us</h3>
+            <h3 className="text-lg font-bold mb-4">{t('footer.contactUs')}</h3>
             <ul className="space-y-3">
               <li className="flex items-start">
                 <MapPin className="mr-2 h-5 w-5 text-brand-accent flex-shrink-0" />
@@ -68,7 +71,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400 text-sm">
-          <p>&copy; {new Date().getFullYear()} NOVASHOP. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} NOVASHOP. {t('footer.copyright')}</p>
         </div>
       </div>
     </footer>

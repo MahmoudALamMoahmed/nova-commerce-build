@@ -1,21 +1,23 @@
 
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const Hero = () => {
+  const { t } = useTranslation();
+  
   return (
     <section className="pt-24 pb-12 md:py-32 hero-gradient">
       <div className="container mx-auto px-6 flex flex-col md:flex-row items-center">
         <div className="md:w-1/2 mb-10 md:mb-0">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-            Elevate Your Style With Our 
-            <span className="text-brand-accent"> Collection</span>
+            {t('hero.title')}
           </h1>
           <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-md">
-            Discover the latest trends and timeless classics from our curated selection of premium products.
+            {t('hero.subtitle')}
           </p>
           <Link to="/products" className="btn-primary inline-flex items-center">
-            Shop Now <ArrowRight className="ml-2 h-5 w-5" />
+            {t('hero.cta')} <ArrowRight className="ml-2 h-5 w-5" />
           </Link>
         </div>
         <div className="md:w-1/2 md:pl-12">

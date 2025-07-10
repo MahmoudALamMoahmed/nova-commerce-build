@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useUser } from '@/context/UserContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useTranslation } from 'react-i18next';
 import {
   Card,
   CardContent,
@@ -29,6 +30,7 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 const Login = () => {
   const { user, login } = useUser();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { t } = useTranslation();
   
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -63,9 +65,9 @@ const Login = () => {
     <div className="container mx-auto py-24 px-4 flex justify-center items-center">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl text-center">Login</CardTitle>
+          <CardTitle className="text-2xl text-center">{t('auth.login')}</CardTitle>
           <CardDescription className="text-center">
-            Enter your credentials to access your account
+            {t('auth.enterCredentials')}
           </CardDescription>
         </CardHeader>
         <CardContent>

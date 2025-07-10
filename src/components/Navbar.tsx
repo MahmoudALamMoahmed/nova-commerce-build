@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { useUser } from '@/context/UserContext';
+import { useTranslation } from 'react-i18next';
+import LanguageToggle from './LanguageToggle';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,6 +26,7 @@ const Navbar = ({ currentPath }: NavbarProps) => {
   const { totalItems } = useCart();
   const { totalFavorites } = useFavorites();
   const { user, userProfile, logout } = useUser();
+  const { t } = useTranslation();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -48,25 +51,25 @@ const Navbar = ({ currentPath }: NavbarProps) => {
               to="/" 
               className={`nav-link ${isActive('/') ? 'text-brand-accent font-semibold border-b-2 border-brand-accent' : ''}`}
             >
-              Home
+              {t('nav.home')}
             </Link>
             <Link 
               to="/products" 
               className={`nav-link ${isActive('/products') ? 'text-brand-accent font-semibold border-b-2 border-brand-accent' : ''}`}
             >
-              Products
+              {t('nav.products')}
             </Link>
             <Link 
               to="/about" 
               className={`nav-link ${isActive('/about') ? 'text-brand-accent font-semibold border-b-2 border-brand-accent' : ''}`}
             >
-              About
+              {t('nav.about')}
             </Link>
             <Link 
               to="/contact" 
               className={`nav-link ${isActive('/contact') ? 'text-brand-accent font-semibold border-b-2 border-brand-accent' : ''}`}
             >
-              Contact
+              {t('nav.contact')}
             </Link>
             {/* Admin link for admin users */}
             {userProfile?.is_admin && (
@@ -74,13 +77,15 @@ const Navbar = ({ currentPath }: NavbarProps) => {
                 to="/admin" 
                 className={`nav-link ${isActive('/admin') ? 'text-brand-accent font-semibold border-b-2 border-brand-accent' : ''}`}
               >
-                Admin
+                {t('nav.admin')}
               </Link>
             )}
           </div>
 
-          {/* Cart, Favorites, and User Menu */}
+          {/* Language Toggle, Cart, Favorites, and User Menu */}
           <div className="flex items-center space-x-4">
+            {/* Language Toggle */}
+            <LanguageToggle />
             {/* Favorites icon */}
             <Link to="/favorites" className="relative p-2">
               <Heart className="h-6 w-6 text-gray-700 hover:text-brand-accent transition-colors" />
@@ -120,37 +125,37 @@ const Navbar = ({ currentPath }: NavbarProps) => {
                   <DropdownMenuItem asChild>
                     <Link to="/profile" className="flex items-center cursor-pointer">
                       <User className="mr-2 h-4 w-4" />
-                      <span>Profile</span>
+                      <span>{t('nav.profile')}</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/orders" className="flex items-center cursor-pointer">
                       <Package className="mr-2 h-4 w-4" />
-                      <span>Orders</span>
+                      <span>{t('nav.orders')}</span>
                     </Link>
                   </DropdownMenuItem>
                   {userProfile?.is_admin && (
                     <DropdownMenuItem asChild>
                       <Link to="/admin" className="flex items-center cursor-pointer">
                         <Shield className="mr-2 h-4 w-4" />
-                        <span>Admin Panel</span>
+                        <span>{t('nav.adminPanel')}</span>
                       </Link>
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem className="cursor-pointer" onClick={logout}>
                     <LogOut className="mr-2 h-4 w-4" />
-                    <span>Sign out</span>
+                    <span>{t('nav.logout')}</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <div className="hidden md:flex space-x-2">
                 <Link to="/login">
-                  <Button variant="ghost">Log in</Button>
+                  <Button variant="ghost">{t('nav.login')}</Button>
                 </Link>
                 <Link to="/register">
-                  <Button>Sign up</Button>
+                  <Button>{t('nav.signup')}</Button>
                 </Link>
               </div>
             )}
@@ -192,28 +197,28 @@ const Navbar = ({ currentPath }: NavbarProps) => {
               className={`text-xl font-medium ${isActive('/') ? 'text-brand-accent font-semibold' : ''}`} 
               onClick={toggleMenu}
             >
-              Home
+              {t('nav.home')}
             </Link>
             <Link 
               to="/products" 
               className={`text-xl font-medium ${isActive('/products') ? 'text-brand-accent font-semibold' : ''}`} 
               onClick={toggleMenu}
             >
-              Products
+              {t('nav.products')}
             </Link>
             <Link 
               to="/about" 
               className={`text-xl font-medium ${isActive('/about') ? 'text-brand-accent font-semibold' : ''}`} 
               onClick={toggleMenu}
             >
-              About
+              {t('nav.about')}
             </Link>
             <Link 
               to="/contact" 
               className={`text-xl font-medium ${isActive('/contact') ? 'text-brand-accent font-semibold' : ''}`} 
               onClick={toggleMenu}
             >
-              Contact
+              {t('nav.contact')}
             </Link>
             
             {/* User specific links */}
@@ -232,21 +237,21 @@ const Navbar = ({ currentPath }: NavbarProps) => {
                   <div className="flex flex-col space-y-4 pl-2">
                     <Link to="/profile" className="flex items-center text-base" onClick={toggleMenu}>
                       <User className="mr-2 h-5 w-5" />
-                      <span>Profile</span>
+                      <span>{t('nav.profile')}</span>
                     </Link>
                     <Link to="/orders" className="flex items-center text-base" onClick={toggleMenu}>
                       <Package className="mr-2 h-5 w-5" />
-                      <span>Orders</span>
+                      <span>{t('nav.orders')}</span>
                     </Link>
                     {userProfile?.is_admin && (
                       <Link to="/admin" className="flex items-center text-base" onClick={toggleMenu}>
                         <Shield className="mr-2 h-5 w-5" />
-                        <span>Admin Panel</span>
+                        <span>{t('nav.adminPanel')}</span>
                       </Link>
                     )}
                     <button onClick={logout} className="flex items-center text-base text-red-600">
                       <LogOut className="mr-2 h-5 w-5" />
-                      <span>Sign out</span>
+                      <span>{t('nav.logout')}</span>
                     </button>
                   </div>
                 </div>
@@ -254,10 +259,10 @@ const Navbar = ({ currentPath }: NavbarProps) => {
             ) : (
               <div className="pt-4 border-t flex flex-col gap-3">
                 <Link to="/login" onClick={toggleMenu}>
-                  <Button className="w-full" variant="outline">Log in</Button>
+                  <Button className="w-full" variant="outline">{t('nav.login')}</Button>
                 </Link>
                 <Link to="/register" onClick={toggleMenu}>
-                  <Button className="w-full">Sign up</Button>
+                  <Button className="w-full">{t('nav.signup')}</Button>
                 </Link>
               </div>
             )}
@@ -265,12 +270,12 @@ const Navbar = ({ currentPath }: NavbarProps) => {
           <div className="mt-auto flex flex-col gap-3">
             <Link to="/favorites" onClick={toggleMenu}>
               <Button className="w-full bg-brand-DEFAULT hover:bg-brand-DEFAULT/90">
-                <Heart className="mr-2 h-5 w-5" /> Favorites ({totalFavorites})
+                <Heart className="mr-2 h-5 w-5" /> {t('favorites.title')} ({totalFavorites})
               </Button>
             </Link>
             <Link to="/cart" onClick={toggleMenu}>
               <Button className="w-full bg-brand-accent hover:bg-brand-accent/90">
-                <ShoppingCart className="mr-2 h-5 w-5" /> View Cart ({totalItems})
+                <ShoppingCart className="mr-2 h-5 w-5" /> {t('cart.title')} ({totalItems})
               </Button>
             </Link>
           </div>
