@@ -55,7 +55,9 @@
     "confirmRemoveMessage": "This action will remove this product from your cart.",
     "cancel": "Cancel",
     "continue": "Continue",
-    "free": "Free"
+    "free": "Free",
+    "loginRequired":"Please log in to view your cart",
+    "loginMessage":"You need to be logged in to access your shopping cart."
   },
   "favorites": {
     "title": "My Favorites",
