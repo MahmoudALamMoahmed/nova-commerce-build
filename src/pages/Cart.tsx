@@ -80,8 +80,8 @@ const Cart = () => {
       <div className="container mx-auto py-24 px-4">
         <div className="text-center py-12">
           <div className="text-6xl mb-4">🔒</div>
-          <h2 className="text-2xl font-medium mb-4">Please log in to view your cart</h2>
-          <p className="text-muted-foreground mb-8">You need to be logged in to access your shopping cart.</p>
+          <h2 className="text-2xl font-medium mb-4">{t('cart.loginRequired')}</h2>
+          <p className="text-muted-foreground mb-8">{t('cart.loginMessage')}</p>
           <div className="flex gap-4 justify-center">
             <Link to="/login">
               <Button>{t('nav.login')}</Button>
