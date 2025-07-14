@@ -3,6 +3,10 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  --ring: 220 100% 50%;
+  /* لون أزرق مثل ring-blue-500 */
+  /* أو مثلاً لو عندك لون مميز: */
+  /* --ring: 24 95% 53%; => برتقالي تقريبي */
 }
 
 .logo {
