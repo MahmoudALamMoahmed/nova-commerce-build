@@ -83,7 +83,7 @@ const Navbar = ({ currentPath }: NavbarProps) => {
           </div>
 
           {/* Language Toggle, Cart, Favorites, and User Menu */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 rtl:space-x-reverse">
             {/* Language Toggle */}
             <LanguageToggle />
             {/* Favorites icon */}
