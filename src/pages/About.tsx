@@ -6,7 +6,7 @@ const About = () => {
 
   return (
     <div className="container mx-auto px-6 max-w-5xl mt-1">
-      <h1 className="text-4xl font-bold mb-6 text-gray-800 text-center rtl:text-right">
+      <h1 className="text-4xl font-bold mb-6 text-gray-800 text-center">
         {t('about.title')}
       </h1>
 
