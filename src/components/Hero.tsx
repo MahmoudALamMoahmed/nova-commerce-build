@@ -17,7 +17,7 @@ const Hero = () => {
             {t('hero.subtitle')}
           </p>
           <Link to="/products" className="btn-primary inline-flex items-center">
-            {t('hero.cta')} <ArrowRight className="ml-2 h-5 w-5" />
+            {t('hero.cta')} <ArrowRight className="ml-2 h-5 w-5 rtl:rotate-180" />
           </Link>
         </div>
         <div className="md:w-1/2 md:pl-12">
