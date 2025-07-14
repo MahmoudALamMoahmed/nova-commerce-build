@@ -84,10 +84,10 @@ const Cart = () => {
           <p className="text-muted-foreground mb-8">You need to be logged in to access your shopping cart.</p>
           <div className="flex gap-4 justify-center">
             <Link to="/login">
-              <Button>Log In</Button>
+              <Button>{t('nav.login')}</Button>
             </Link>
             <Link to="/register">
-              <Button variant="outline">Sign Up</Button>
+              <Button variant="outline">{t('nav.signup')}</Button>
             </Link>
           </div>
         </div>
