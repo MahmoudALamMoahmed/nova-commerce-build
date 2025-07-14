@@ -150,7 +150,7 @@ const Navbar = ({ currentPath }: NavbarProps) => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <div className="hidden md:flex space-x-2">
+              <div className="hidden md:flex space-x-2 rtl:space-x-reverse">
                 <Link to="/login">
                   <Button variant="ghost">{t('nav.login')}</Button>
                 </Link>
