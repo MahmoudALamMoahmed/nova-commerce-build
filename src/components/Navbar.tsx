@@ -46,7 +46,7 @@ const Navbar = ({ currentPath }: NavbarProps) => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex space-x-8">
+          <div className="hidden md:flex space-x-8 rtl:space-x-reverse">
             <Link 
               to="/" 
               className={`nav-link ${isActive('/') ? 'text-brand-accent font-semibold border-b-2 border-brand-accent' : ''}`}
@@ -83,7 +83,7 @@ const Navbar = ({ currentPath }: NavbarProps) => {
           </div>
 
           {/* Language Toggle, Cart, Favorites, and User Menu */}
-          <div className="flex items-center space-x-4 rtl:space-x-reverse">
+          <div className="flex items-center space-x-4">
             {/* Language Toggle */}
             <LanguageToggle />
             {/* Favorites icon */}
