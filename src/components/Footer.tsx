@@ -15,8 +15,7 @@ const Footer = () => {
               NOVA<span className="text-brand-accent">SHOP</span>
             </h3>
             <p className="text-gray-300 mb-4">{t('footer.tagline')}</p>
-
-            <div className={`flex ${isRTL ? 'flex-row-reverse gap-4' : 'gap-4'}`}>
+            <div className="flex space-x-4 rtl:space-x-reverse">
               <a
                 href="https://facebook.com"
                 className="text-gray-300 hover:text-brand-accent transition-colors"
@@ -115,11 +114,19 @@ const Footer = () => {
             <h3 className="text-lg font-bold mb-4">{t('footer.contactUs')}</h3>
             <ul className="space-y-3">
               <li className="flex items-start">
-                <MapPin className="ms-2 h-5 w-5 text-brand-accent flex-shrink-0" />
+                <MapPin
+                  className={`h-5 w-5 text-brand-accent flex-shrink-0 ${
+                    isRTL ? 'ml-2' : 'mr-2'
+                  }`}
+                />
                 <span className="text-gray-300">123 Commerce St, New York, NY 10001</span>
               </li>
-              <li className="flex items-start">
-                <Phone className="ms-2 h-5 w-5 text-brand-accent flex-shrink-0" />
+              <li className="flex items-center">
+                <Phone
+                  className={`h-5 w-5 text-brand-accent flex-shrink-0 ${
+                    isRTL ? 'ml-2' : 'mr-2'
+                  }`}
+                />
                 <a
                   href="tel:+11234567890"
                   dir="ltr"
@@ -128,14 +135,18 @@ const Footer = () => {
                   +1 (123) 456-7890
                 </a>
               </li>
-              <li className="flex items-start">
-                <Mail className="ms-2 h-5 w-5 text-brand-accent flex-shrink-0" />
+              <li className="flex items-center">
+                <Mail
+                  className={`h-5 w-5 text-brand-accent flex-shrink-0 ${
+                    isRTL ? 'ml-2' : 'mr-2'
+                  }`}
+                />
                 <a
                   href="mailto:info@novashop.com"
                   dir="ltr"
                   className="text-gray-300 hover:text-brand-accent transition-colors"
                 >
-                  MA Agency@novashop.com
+                  info@novashop.com
                 </a>
               </li>
             </ul>
