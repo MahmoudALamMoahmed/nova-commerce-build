@@ -135,7 +135,7 @@ const Footer = () => {
                   dir="ltr"
                   className="text-gray-300 hover:text-brand-accent transition-colors"
                 >
-                  info@novashop.com
+                  MA Agency@novashop.com
                 </a>
               </li>
             </ul>
