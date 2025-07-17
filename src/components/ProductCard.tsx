@@ -97,7 +97,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             className="text-center text-sm py-1.5 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
             onClick={(e) => e.stopPropagation()}
           >
-            {t('products.viewDetails')}
+           <Eye size={16} /> {t('products.viewDetails')}
           </Link>
           <Button 
             onClick={handleAddToCart}
