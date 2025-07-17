@@ -35,7 +35,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
       >
-        <ChevronLeft className="h-4 w-4" />
+        <ChevronLeft className={`h-4 w-4 ${isRTL ? 'rotate-180' : ''}`} />
         {t('common.previous')}
       </Button>
 
@@ -58,7 +58,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
         disabled={currentPage === totalPages}
       >
         {t('common.next')}
-        <ChevronRight className="h-4 w-4" />
+        <ChevronRight className={`h-4 w-4 ${isRTL ? 'rotate-180' : ''}`} />
       </Button>
     </div>
   );
