@@ -7,12 +7,16 @@ import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { useUser } from '@/context/UserContext';
 import { Product } from '@/data/products';
+import { useTranslation } from 'react-i18next';
 
 interface ProductCardProps {
   product: Product;
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
+
   const { addToCart } = useCart();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const { user } = useUser();
@@ -93,14 +97,14 @@ const ProductCard = ({ product }: ProductCardProps) => {
             className="text-center text-sm py-1.5 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
             onClick={(e) => e.stopPropagation()}
           >
-            View Details
+            {t('products.viewDetails')}
           </Link>
           <Button 
             onClick={handleAddToCart}
             variant="default" 
             className="w-full bg-brand-accent hover:bg-brand-accent/90"
           >
-            <ShoppingCart size={16} className="mr-2" /> Add to Cart
+            <ShoppingCart size={16} className="mr-2" /> {t('products.addToCart')}
           </Button>
         </div>
       </div>
