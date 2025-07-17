@@ -94,11 +94,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <div className="flex flex-col gap-2">
           <Link
             to={`/products/${product.id}`}
-            className="w-full border border-gray-300 rounded-md hover:bg-gray-50 transition-colors flex"
+            className="flex items-center justify-center gap-1 text-sm py-1.5 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
             onClick={(e) => e.stopPropagation()}
           >
-           <Eye size={16} /> {t('products.viewDetails')}
+            <Eye size={16} />
+            {t('products.viewDetails')}
           </Link>
+
           <Button 
             onClick={handleAddToCart}
             variant="default" 
