@@ -94,7 +94,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <div className="flex flex-col gap-2">
           <Link
             to={`/products/${product.id}`}
-            className="w-full border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+            className="w-full border border-gray-300 rounded-md hover:bg-gray-50 transition-colors flex"
             onClick={(e) => e.stopPropagation()}
           >
            <Eye size={16} /> {t('products.viewDetails')}
