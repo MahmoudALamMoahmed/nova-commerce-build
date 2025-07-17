@@ -104,7 +104,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             variant="default" 
             className="w-full bg-brand-accent hover:bg-brand-accent/90"
           >
-            <ShoppingCart size={16} className="mr-2" /> {t('products.addToCart')}
+            <ShoppingCart size={16} className="${isRTL ? 'ml-2' : 'mr-2'}`}" /> {t('products.addToCart')}
           </Button>
         </div>
       </div>
