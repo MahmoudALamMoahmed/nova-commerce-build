@@ -399,7 +399,7 @@ const Profile = () => {
                               {address.phone_number}
                             </p>
                           </div>
-                          <div className="flex space-x-2 ml-4">
+                          <div className="flex gap-2 ml-4">
                             <Button
                               variant="outline"
                               size="sm"
@@ -417,6 +417,7 @@ const Profile = () => {
                             </Button>
                           </div>
                         </div>
+
                       </CardContent>
                     </Card>
                   ))}
