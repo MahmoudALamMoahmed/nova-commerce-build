@@ -52,6 +52,7 @@
     "shipping": "Shipping",
     "grandTotal": "Grand Total",
     "proceedToCheckout": "Proceed to Checkout",
+    "secureText": "Secure checkout with 100% buyer protection",
     "remove": "Remove",
     "confirmRemove": "Are you sure?",
     "confirmRemoveMessage": "This action will remove this product from your cart.",
@@ -59,7 +60,11 @@
     "continue": "Continue",
     "free": "Free",
     "loginRequired":"Please log in to view your cart",
-    "loginMessage":"You need to be logged in to access your shopping cart."
+    "loginMessage":"You need to be logged in to access your shopping cart.",
+    "paymentMethod":"Payment Method",
+    "cashOnDelivery":"Cash on Delivery",
+    "onlinePayment":"Online Payment"
+    
   },
   "favorites": {
     "title": "My Favorites",
@@ -188,6 +193,6 @@
     "search": "Search",
     "filter": "Filter",
     "sort": "Sort",
-    "currency": "$"
+    "currency": "L.E"
   }
 }
