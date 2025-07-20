@@ -32,6 +32,7 @@ import AdminOrders from '@/pages/admin/AdminOrders';
 import AdminUsers from '@/pages/admin/AdminUsers';
 import AdminMessages from '@/pages/admin/AdminMessages';
 import AdminSettings from '@/pages/admin/AdminSettings';
+import AdminAnalytics from '@/pages/admin/AdminAnalytics';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -92,6 +93,7 @@ function App() {
                       <Route path="/admin/orders" element={<Layout><AdminLayout><AdminOrders /></AdminLayout></Layout>} />
                       <Route path="/admin/users" element={<Layout><AdminLayout><AdminUsers /></AdminLayout></Layout>} />
                       <Route path="/admin/messages" element={<Layout><AdminLayout><AdminMessages /></AdminLayout></Layout>} />
+                      <Route path="/admin/analytics" element={<Layout><AdminLayout><AdminAnalytics /></AdminLayout></Layout>} />
                       <Route path="/admin/settings" element={<Layout><AdminLayout><AdminSettings /></AdminLayout></Layout>} />
                       
                       {/* 404 page */}

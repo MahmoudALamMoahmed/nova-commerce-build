@@ -13,7 +13,8 @@ import {
   MessageSquare, 
   Settings, 
   LogOut,
-  Tag
+  Tag,
+  BarChart3
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -56,6 +57,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
     { name: 'Users', href: '/admin/users', icon: Users },
     { name: 'Messages', href: '/admin/messages', icon: MessageSquare },
+    { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
     { name: 'Settings', href: '/admin/settings', icon: Settings },
   ];
 

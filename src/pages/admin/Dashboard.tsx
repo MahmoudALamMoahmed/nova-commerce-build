@@ -3,20 +3,11 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Progress } from '@/components/ui/progress';
-import { Users, ShoppingCart, HardDrive } from 'lucide-react';
+import { Users, ShoppingCart } from 'lucide-react';
 
 interface Stats {
   totalUsers: number;
   totalOrders: number;
-}
-
-interface StorageUsage {
-  usedBytes: number;
-  usedMB: number;
-  usedGB: number;
-  percentage: number;
-  totalGB: number;
 }
 
 interface DashboardOrder {
@@ -31,9 +22,6 @@ interface DashboardOrder {
 
 const Dashboard = () => {
   const [stats, setStats] = useState<Stats>({ totalUsers: 0, totalOrders: 0 });
-  const [storageUsage, setStorageUsage] = useState<StorageUsage>({ 
-    usedBytes: 0, usedMB: 0, usedGB: 0, percentage: 0, totalGB: 2 
-  });
   const [recentOrders, setRecentOrders] = useState<DashboardOrder[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -53,42 +41,6 @@ const Dashboard = () => {
     }
   };
 
-  const fetchStorageUsage = async () => {
-    try {
-      const { data: files, error } = await supabase.storage
-        .from('product-images')
-        .list('', { limit: 1000 });
-
-      if (error) {
-        console.error('Error fetching storage files:', error);
-        return;
-      }
-
-      let totalBytes = 0;
-      if (files) {
-        for (const file of files) {
-          if (file.metadata?.size) {
-            totalBytes += file.metadata.size;
-          }
-        }
-      }
-
-      const totalGB = 2; // Supabase free plan limit
-      const usedMB = totalBytes / (1024 * 1024);
-      const usedGB = totalBytes / (1024 * 1024 * 1024);
-      const percentage = (usedGB / totalGB) * 100;
-
-      setStorageUsage({
-        usedBytes: totalBytes,
-        usedMB: Math.round(usedMB * 100) / 100,
-        usedGB: Math.round(usedGB * 1000) / 1000,
-        percentage: Math.round(percentage * 10) / 10,
-        totalGB
-      });
-    } catch (error) {
-      console.error('Error calculating storage usage:', error);
-    }
-  };
 
   const fetchRecentOrders = async () => {
     try {
@@ -135,7 +87,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      await Promise.all([fetchStats(), fetchStorageUsage(), fetchRecentOrders()]);
+      await Promise.all([fetchStats(), fetchRecentOrders()]);
       setIsLoading(false);
     };
     
@@ -153,24 +105,7 @@ const Dashboard = () => {
   return (
     <div className="space-y-6">
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Storage Usage</CardTitle>
-            <HardDrive className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="text-2xl font-bold">{storageUsage.percentage}%</div>
-            <Progress value={storageUsage.percentage} className="h-2" />
-            <p className="text-xs text-muted-foreground">
-              {storageUsage.usedMB < 1024 
-                ? `${storageUsage.usedMB}MB` 
-                : `${storageUsage.usedGB}GB`
-              } of {storageUsage.totalGB}GB used
-            </p>
-          </CardContent>
-        </Card>
-        
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Users</CardTitle>
