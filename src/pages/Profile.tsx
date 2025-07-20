@@ -199,7 +199,7 @@ const Profile = () => {
             <CardHeader>
               <CardTitle>Account</CardTitle>
               <CardDescription>
-                {t('profile.addressText')}
+                {t('profile.accountText')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -280,7 +280,7 @@ const Profile = () => {
                 <div>
                   <CardTitle>{t('profile.addresses')}</CardTitle>
                   <CardDescription>
-                    Manage your shipping addresses
+                    {t('profile.addressText')}
                   </CardDescription>
                 </div>
                 <Dialog open={isAddressDialogOpen} onOpenChange={setIsAddressDialogOpen}>

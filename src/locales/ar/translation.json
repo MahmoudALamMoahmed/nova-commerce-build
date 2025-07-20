@@ -106,6 +106,7 @@
     "updating": "جاري التحديث...",
     "addresses": "العناوين",
     "addressText": "إدارة عناوين التوصيل الخاصة بك",
+    "accountText": "إدارة تفاصيل حسابك",
     "addAddress": "إضافة عنوان",
     "editAddress": "تعديل العنوان",
     "deleteAddress": "حذف العنوان",
