@@ -51,7 +51,7 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium">{t('cart.selectShippingAddress')}</h3>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm">
               <Plus className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
@@ -110,7 +110,9 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
                   required
                 />
               </div>
-              <Button type="submit" className="w-full">{t('profile.addAddress')}</Button>
+              <Button type="submit" className="w-full">
+                {t('profile.addAddress')}
+              </Button>
             </form>
           </DialogContent>
         </Dialog>
