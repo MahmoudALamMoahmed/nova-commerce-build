@@ -9,14 +9,14 @@ const Hero = () => {
   return (
     <section className="pt-24 pb-12 md:py-32 hero-gradient">
       <div className="container mx-auto px-6 flex flex-col md:flex-row items-center">
-        <div className="md:w-1/2 mb-10 md:mb-0 mx-auto">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+        <div className="md:w-1/2 mb-10 md:mb-0">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 mx-auto">
             {t('hero.title')}
           </h1>
-          <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-md">
+          <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-md mx-auto">
             {t('hero.subtitle')}
           </p>
-          <Link to="/products" className="btn-primary inline-flex items-center">
+          <Link to="/products" className="btn-primary inline-flex items-center mx-auto">
             {t('hero.cta')} <ArrowRight className="ml-2 rtl:ml-0 rtl:mr-2 h-5 w-5 rtl:rotate-180" />
           </Link>
         </div>
