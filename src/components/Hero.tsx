@@ -9,7 +9,7 @@ const Hero = () => {
   return (
     <section className="pt-24 pb-12 md:py-32 hero-gradient">
       <div className="container mx-auto px-6 flex flex-col md:flex-row items-center">
-        <div className="md:w-1/2 mb-10 md:mb-0 text-center">
+        <div className="md:w-1/2 mb-10 md:mb-0">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
             {t('hero.title')}
           </h1>
@@ -20,7 +20,7 @@ const Hero = () => {
             {t('hero.cta')} <ArrowRight className="ml-2 rtl:ml-0 rtl:mr-2 h-5 w-5 rtl:rotate-180" />
           </Link>
         </div>
-        <div className="md:w-1/2 md:ps-12">
+        <div className="md:w-1/2 md:pl-12">
           <div className="relative">
             <img
               src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80"
