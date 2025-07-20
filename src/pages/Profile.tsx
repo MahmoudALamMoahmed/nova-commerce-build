@@ -39,6 +39,7 @@ type AddressFormValues = z.infer<typeof addressSchema>;
 
 const Profile = () => {
   const { t } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const { user, logout, userProfile } = useUser();
   const { addresses, addAddress, updateAddress, deleteAddress, isLoading } = useAddresses();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -261,7 +262,7 @@ const Profile = () => {
                       </>
                     ) : (
                       <>
-                        <Save className="mr-2 h-4 w-4" />
+                        <Save className={`${isRTL ? 'ml-2' : 'mr-2'} h-4 w-4`} />
                         {t('profile.updateProfile')}
                       </>
                     )}
