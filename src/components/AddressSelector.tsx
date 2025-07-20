@@ -62,7 +62,7 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
             <DialogHeader>
               <DialogTitle>{t('profile.addNewAddress')}</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleAddAddress} className="space-y-4">
+            <form onSubmit={handleAddAddress} className="space-y-6">
               <div className="space-y-1">
                 <Label htmlFor="full_name" className="block text-sm font-medium text-gray-700">
                   {t('profile.fullName')}
