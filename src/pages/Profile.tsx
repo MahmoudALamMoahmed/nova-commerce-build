@@ -286,7 +286,7 @@ const Profile = () => {
                 <Dialog open={isAddressDialogOpen} onOpenChange={setIsAddressDialogOpen}>
                   <DialogTrigger asChild>
                     <Button onClick={handleAddNewAddress}>
-                      <Plus className="mr-2 h-4 w-4" />
+                      <Plus className={`${isRTL ? 'ml-2' : 'mr-2'} h-4 w-4`} />
                       {t('profile.addAddress')}
                     </Button>
                   </DialogTrigger>
