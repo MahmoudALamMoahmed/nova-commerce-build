@@ -15,8 +15,9 @@ interface AddressSelectorProps {
 }
 
 const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelectorProps) => {
-  const { t } = useTranslation();
+  const { t,i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
+  
   const { addresses, addAddress, isLoading } = useAddresses();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
