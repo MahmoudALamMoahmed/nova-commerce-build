@@ -101,6 +101,7 @@
   "profile": {
     "title": "Profile",
     "personalInfo": "Personal Information",
+    "personalInfoText": "Update your personal details",
     "updateProfile": "Update Profile",
     "updating": "Updating...",
     "addresses": "Addresses",

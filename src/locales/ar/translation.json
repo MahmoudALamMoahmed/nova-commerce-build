@@ -101,6 +101,7 @@
   "profile": {
     "title": "الملف الشخصي",
     "personalInfo": "المعلومات الشخصية",
+    "personalInfoText": "قم بتحديث بياناتك الشخصية",
     "updateProfile": "تحديث الملف الشخصي",
     "updating": "جاري التحديث...",
     "addresses": "العناوين",

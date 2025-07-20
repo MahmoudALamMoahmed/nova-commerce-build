@@ -221,7 +221,7 @@ const Profile = () => {
             <CardHeader>
               <CardTitle>{t('profile.personalInfo')}</CardTitle>
               <CardDescription>
-                Update your personal details
+                {t('profile.personalInfoText')}
               </CardDescription>
             </CardHeader>
             <CardContent>
