@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Plus, MapPin } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface AddressSelectorProps {
   selectedAddressId: string | null;
@@ -14,6 +15,7 @@ interface AddressSelectorProps {
 }
 
 const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelectorProps) => {
+  const { t } = useTranslation();
   const { addresses, addAddress, isLoading } = useAddresses();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
