@@ -177,7 +177,7 @@ const Cart = () => {
 
           <div className="lg:col-span-5">
             <div className="bg-white rounded-lg shadow-sm border p-6 sticky top-28">
-              <h2 className="text-xl font-bold mb-4">Order Summary</h2>
+              <h2 className="text-xl font-bold mb-4">{t('cart.orderSummary')}</h2>
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span>Items ({cartItems.reduce((acc, item) => acc + item.quantity, 0)})</span>

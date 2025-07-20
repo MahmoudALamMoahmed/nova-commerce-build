@@ -43,6 +43,7 @@
     "empty": "Your cart is empty",
     "emptyMessage": "Start adding some products to your cart",
     "browsProducts": "Browse Products",
+    "orderSummary": "Order Summary",
     "quantity": "Quantity",
     "price": "Price",
     "total": "Total",
