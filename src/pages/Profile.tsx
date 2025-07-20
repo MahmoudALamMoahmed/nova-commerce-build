@@ -199,7 +199,7 @@ const Profile = () => {
             <CardHeader>
               <CardTitle>Account</CardTitle>
               <CardDescription>
-                Manage your account details
+                {t('profile.addressText')}
               </CardDescription>
             </CardHeader>
             <CardContent>

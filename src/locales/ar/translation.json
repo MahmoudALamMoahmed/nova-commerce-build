@@ -105,6 +105,7 @@
     "updateProfile": "تحديث الملف الشخصي",
     "updating": "جاري التحديث...",
     "addresses": "العناوين",
+    "addressText": "إدارة عناوين التوصيل الخاصة بك",
     "addAddress": "إضافة عنوان",
     "editAddress": "تعديل العنوان",
     "deleteAddress": "حذف العنوان",

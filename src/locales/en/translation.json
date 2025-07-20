@@ -105,6 +105,7 @@
     "updateProfile": "Update Profile",
     "updating": "Updating...",
     "addresses": "Addresses",
+    "addressText": "Manage your shipping addresses",
     "addAddress": "Add Address",
     "editAddress": "Edit Address",
     "deleteAddress": "Delete Address",
