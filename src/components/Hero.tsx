@@ -4,16 +4,15 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 const Hero = () => {
-  const { t } = useTranslation();
-  
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
+
   return (
     <section className="pt-24 pb-12 md:py-32 hero-gradient">
     <div className="container mx-auto px-6 flex flex-col md:flex-row items-center gap-8 md:gap-20">
       {/* نستخدم direction عشان نتحكم في ترتيب العناصر حسب اللغة */}
       <div
-        className={`flex flex-col md:flex-row items-center w-full ${
-          i18n.language === 'ar' ? 'md:flex-row-reverse' : ''
-        }`}
+        className={`flex flex-col md:flex-row items-center w-full ${isRTL ? 'md:flex-row-reverse' : ''}`}
       >
         {/* النصوص */}
         <div className="md:w-1/2 text-center md:text-start">
