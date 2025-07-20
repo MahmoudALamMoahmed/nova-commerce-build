@@ -64,7 +64,7 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
             </DialogHeader>
             <form onSubmit={handleAddAddress} className="space-y-4">
               <div>
-                <Label htmlFor="full_name">{t('profile.fullName')}</Label>
+                <Label htmlFor="full_name" className="mb-1 block">{t('profile.fullName')}</Label>
                 <Input
                   id="full_name"
                   value={formData.full_name}
@@ -73,7 +73,7 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
                 />
               </div>
               <div>
-                <Label htmlFor="street">{t('profile.street')}</Label>
+                <Label htmlFor="street" className="mb-1 block">{t('profile.street')}</Label>
                 <Input
                   id="street"
                   value={formData.street}
@@ -83,7 +83,7 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="city">{t('profile.city')}</Label>
+                  <Label htmlFor="city" className="mb-1 block">{t('profile.city')}</Label>
                   <Input
                     id="city"
                     value={formData.city}
@@ -92,7 +92,7 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
                   />
                 </div>
                 <div>
-                  <Label htmlFor="postal_code">{t('profile.postalCode')}</Label>
+                  <Label htmlFor="postal_code" className="mb-1 block">{t('profile.postalCode')}</Label>
                   <Input
                     id="postal_code"
                     value={formData.postal_code}
@@ -102,7 +102,7 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
                 </div>
               </div>
               <div>
-                <Label htmlFor="phone_number">{t('profile.phoneNumber')}</Label>
+                <Label htmlFor="phone_number" className="mb-1 block">{t('profile.phoneNumber')}</Label>
                 <Input
                   id="phone_number"
                   value={formData.phone_number}
@@ -114,6 +114,7 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
             </form>
           </DialogContent>
         </Dialog>
+
       </div>
 
       {addresses.length === 0 ? (
