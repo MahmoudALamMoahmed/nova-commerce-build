@@ -51,7 +51,7 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium">{t('cart.selectShippingAddress')}</h3>
-       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm">
               <Plus className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
@@ -63,8 +63,10 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
               <DialogTitle>{t('profile.addNewAddress')}</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleAddAddress} className="space-y-4">
-              <div>
-                <Label htmlFor="full_name" className="mb-1 block">{t('profile.fullName')}</Label>
+              <div className="space-y-1">
+                <Label htmlFor="full_name" className="block text-sm font-medium text-gray-700">
+                  {t('profile.fullName')}
+                </Label>
                 <Input
                   id="full_name"
                   value={formData.full_name}
@@ -72,8 +74,10 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
                   required
                 />
               </div>
-              <div>
-                <Label htmlFor="street" className="mb-1 block">{t('profile.street')}</Label>
+              <div className="space-y-1">
+                <Label htmlFor="street" className="block text-sm font-medium text-gray-700">
+                  {t('profile.street')}
+                </Label>
                 <Input
                   id="street"
                   value={formData.street}
@@ -82,8 +86,10 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="city" className="mb-1 block">{t('profile.city')}</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="city" className="block text-sm font-medium text-gray-700">
+                    {t('profile.city')}
+                  </Label>
                   <Input
                     id="city"
                     value={formData.city}
@@ -91,8 +97,10 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
                     required
                   />
                 </div>
-                <div>
-                  <Label htmlFor="postal_code" className="mb-1 block">{t('profile.postalCode')}</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="postal_code" className="block text-sm font-medium text-gray-700">
+                    {t('profile.postalCode')}
+                  </Label>
                   <Input
                     id="postal_code"
                     value={formData.postal_code}
@@ -101,8 +109,10 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
                   />
                 </div>
               </div>
-              <div>
-                <Label htmlFor="phone_number" className="mb-1 block">{t('profile.phoneNumber')}</Label>
+              <div className="space-y-1">
+                <Label htmlFor="phone_number" className="block text-sm font-medium text-gray-700">
+                  {t('profile.phoneNumber')}
+                </Label>
                 <Input
                   id="phone_number"
                   value={formData.phone_number}
@@ -116,6 +126,7 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
             </form>
           </DialogContent>
         </Dialog>
+
 
       </div>
 
