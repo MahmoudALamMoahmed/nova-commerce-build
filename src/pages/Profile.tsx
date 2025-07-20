@@ -38,7 +38,7 @@ type ProfileFormValues = z.infer<typeof profileSchema>;
 type AddressFormValues = z.infer<typeof addressSchema>;
 
 const Profile = () => {
-  const { t } = useTranslation();
+  const { t ,i18n} = useTranslation();
   const isRTL = i18n.language === 'ar';
 
   const { user, logout, userProfile } = useUser();
