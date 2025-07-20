@@ -63,7 +63,7 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
               <DialogTitle>{t('profile.addNewAddress')}</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleAddAddress} className="space-y-6">
-              <div className="space-y-1">
+              <div className="space-y-2">
                 <Label htmlFor="full_name" className="block text-sm font-medium text-gray-700">
                   {t('profile.fullName')}
                 </Label>
@@ -74,7 +74,7 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
                   required
                 />
               </div>
-              <div className="space-y-1">
+              <div className="space-y-2">
                 <Label htmlFor="street" className="block text-sm font-medium text-gray-700">
                   {t('profile.street')}
                 </Label>
@@ -86,7 +86,7 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
+                <div className="space-y-2">
                   <Label htmlFor="city" className="block text-sm font-medium text-gray-700">
                     {t('profile.city')}
                   </Label>
