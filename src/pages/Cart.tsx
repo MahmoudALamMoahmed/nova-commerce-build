@@ -209,7 +209,7 @@ const Cart = () => {
               </div>
               
               <p className="text-sm text-muted-foreground mt-4 text-center">
-                Secure checkout with 100% buyer protection
+                {t('cart.secureText')}
               </p>
             </div>
           </div>
