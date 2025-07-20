@@ -17,7 +17,7 @@ interface AddressSelectorProps {
 const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelectorProps) => {
   const { t,i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
-
+  
   const { addresses, addAddress, isLoading } = useAddresses();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -54,7 +54,7 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm">
-              <Plus className={`h-4 w-4 ms-2`} />
+              <Plus className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
               {t('profile.addAddress')}
             </Button>
           </DialogTrigger>
