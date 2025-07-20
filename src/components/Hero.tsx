@@ -8,32 +8,29 @@ const Hero = () => {
   const isRTL = i18n.language === 'ar';
 
   return (
-    <section className="pt-24 pb-12 md:py-32 hero-gradient">
+   <section className="pt-24 pb-12 md:py-32 hero-gradient">
   <div className="container mx-auto px-6 flex flex-col md:flex-row items-center gap-8 md:gap-20">
-    {/* التحكم في الاتجاه حسب اللغة */}
     <div
       className={`flex flex-col md:flex-row items-center w-full ${
-        isRTL ? 'md:flex-row-reverse' : ''
+        isRTL ? "md:flex-row-reverse" : ""
       }`}
     >
-      {/* النصوص */}
-      <div className="md:w-1/2 h-full flex flex-col justify-center items-center md:items-start text-center md:text-start">
+      <div className="md:w-1/2 h-[500px] flex flex-col justify-center items-center md:items-start text-center md:text-start">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-          {t('hero.title')}
+          {t("hero.title")}
         </h1>
         <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-md">
-          {t('hero.subtitle')}
+          {t("hero.subtitle")}
         </p>
         <Link
           to="/products"
           className="btn-primary inline-flex items-center justify-center"
         >
-          {t('hero.cta')}
+          {t("hero.cta")}
           <ArrowRight className="ml-2 rtl:ml-0 rtl:mr-2 h-5 w-5 rtl:rotate-180" />
         </Link>
       </div>
 
-      {/* الصورة */}
       <div className="md:w-1/2 mt-10 md:mt-0 md:px-6">
         <div className="relative">
           <img
@@ -50,6 +47,7 @@ const Hero = () => {
     </div>
   </div>
 </section>
+
 
   );
 };
