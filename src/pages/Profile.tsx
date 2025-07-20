@@ -40,6 +40,7 @@ type AddressFormValues = z.infer<typeof addressSchema>;
 const Profile = () => {
   const { t } = useTranslation();
   const isRTL = i18n.language === 'ar';
+
   const { user, logout, userProfile } = useUser();
   const { addresses, addAddress, updateAddress, deleteAddress, isLoading } = useAddresses();
   const [isSubmitting, setIsSubmitting] = useState(false);
