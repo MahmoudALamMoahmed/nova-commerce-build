@@ -20,7 +20,7 @@ const Hero = () => {
             {t('hero.cta')} <ArrowRight className="ml-2 rtl:ml-0 rtl:mr-2 h-5 w-5 rtl:rotate-180" />
           </Link>
         </div>
-        <div className="md:w-1/2 md:pl-12 rtl:pr-12">
+        <div className="md:w-1/2 md:pl-12 rtl:md:pr-12">
           <div className="relative">
             <img
               src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80"
