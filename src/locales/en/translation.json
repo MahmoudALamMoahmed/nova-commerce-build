@@ -63,7 +63,9 @@
     "loginMessage":"You need to be logged in to access your shopping cart.",
     "paymentMethod":"Payment Method",
     "cashOnDelivery":"Cash on Delivery",
-    "onlinePayment":"Online Payment"
+    "onlinePayment":"Online Payment",
+    "addAddress":"Add Address",
+    "selectShippingAddress":"Select Shipping Address"
     
   },
   "favorites": {
@@ -114,6 +116,7 @@
     "addressText": "Manage your shipping addresses",
     "accountText": "Manage your account details",
     "addAddress": "Add Address",
+    "addNewAddress": "Add Address",
     "editAddress": "Edit Address",
     "deleteAddress": "Delete Address",
     "fullName": "Full Name",

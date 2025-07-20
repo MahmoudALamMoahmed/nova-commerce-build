@@ -63,7 +63,8 @@
     "loginMessage":"يجب عليك تسجيل الدخول للوصول إلى سلة التسوق الخاصة بك.",
     "paymentMethod":"اختر طريقة الدفع",
     "cashOnDelivery":"الدفع عن الاستلام",
-    "onlinePayment":"الدفع فودافون كاش"
+    "onlinePayment":"الدفع فودافون كاش",
+    "selectShippingAddress":"اختر عنوان التوصيل"
   },
   "favorites": {
     "title": "المفضلة",
@@ -113,6 +114,7 @@
     "addressText": "إدارة عناوين التوصيل الخاصة بك",
     "accountText": "إدارة تفاصيل حسابك",
     "addAddress": "إضافة عنوان",
+    "addNewAddress": "إضافة عنوان جديد",
     "editAddress": "تعديل العنوان",
     "deleteAddress": "حذف العنوان",
     "fullName": "الاسم الكامل",

@@ -46,21 +46,21 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-medium">Select Shipping Address</h3>
+        <h3 className="text-lg font-medium">{t('cart.selectShippingAddress')}</h3>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm">
               <Plus className="h-4 w-4 mr-2" />
-              Add Address
+              {t('profile.addAddress')}
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add New Address</DialogTitle>
+              <DialogTitle>{t('profile.addNewAddress')}</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleAddAddress} className="space-y-4">
               <div>
-                <Label htmlFor="full_name">Full Name</Label>
+                <Label htmlFor="full_name">{t('profile.fullName')}</Label>
                 <Input
                   id="full_name"
                   value={formData.full_name}
@@ -69,7 +69,7 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
                 />
               </div>
               <div>
-                <Label htmlFor="street">Street Address</Label>
+                <Label htmlFor="street">{t('profile.street')}</Label>
                 <Input
                   id="street"
                   value={formData.street}
@@ -79,7 +79,7 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="city">City</Label>
+                  <Label htmlFor="city">{t('profile.city')}</Label>
                   <Input
                     id="city"
                     value={formData.city}
@@ -88,7 +88,7 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
                   />
                 </div>
                 <div>
-                  <Label htmlFor="postal_code">Postal Code</Label>
+                  <Label htmlFor="postal_code">{t('profile.postalCode')}</Label>
                   <Input
                     id="postal_code"
                     value={formData.postal_code}
@@ -98,7 +98,7 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
                 </div>
               </div>
               <div>
-                <Label htmlFor="phone_number">Phone Number</Label>
+                <Label htmlFor="phone_number">{t('profile.phoneNumber')}</Label>
                 <Input
                   id="phone_number"
                   value={formData.phone_number}
@@ -106,7 +106,7 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
                   required
                 />
               </div>
-              <Button type="submit" className="w-full">Add Address</Button>
+              <Button type="submit" className="w-full">{t('profile.addAddress')}</Button>
             </form>
           </DialogContent>
         </Dialog>
