@@ -3,6 +3,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CreditCard, Banknote } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 
 interface PaymentMethodSelectorProps {
   selectedMethod: string;
@@ -10,10 +11,12 @@ interface PaymentMethodSelectorProps {
 }
 
 const PaymentMethodSelector = ({ selectedMethod, onMethodSelect }: PaymentMethodSelectorProps) => {
+   const { t } = useTranslation();
+   
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">Payment Method</CardTitle>
+        <CardTitle className="text-lg">{t('cart.paymentMethod')}</CardTitle>
       </CardHeader>
       <CardContent>
         <RadioGroup value={selectedMethod} onValueChange={onMethodSelect}>
@@ -21,14 +24,14 @@ const PaymentMethodSelector = ({ selectedMethod, onMethodSelect }: PaymentMethod
             <RadioGroupItem value="cash" id="cash" />
             <Label htmlFor="cash" className="flex items-center gap-2 cursor-pointer flex-1">
               <Banknote className="h-5 w-5 text-green-600" />
-              <span>Cash on Delivery</span>
+              <span>{t('cart.cashOnDelivery')}</span>
             </Label>
           </div>
           <div className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50">
             <RadioGroupItem value="online" id="online" />
             <Label htmlFor="online" className="flex items-center gap-2 cursor-pointer flex-1">
               <CreditCard className="h-5 w-5 text-blue-600" />
-              <span>Online Payment</span>
+              <span>{t('cart.onlinePayment')}</span>
             </Label>
           </div>
         </RadioGroup>
