@@ -52,7 +52,7 @@ const AdminProducts = () => {
   });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [productToDelete, setProductToDelete] = useState<{ id: string; title: string } | null>(null);
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
 
   const fetchProducts = async () => {
     try {
@@ -106,6 +106,51 @@ const AdminProducts = () => {
     fetchProducts();
     fetchCategories();
   }, []);
+
+  const extractImagePath = (imageUrl: string | null): string | null => {
+    if (!imageUrl) return null;
+    
+    try {
+      // Extract the file path from the Supabase Storage URL
+      // URL format: https://[project].supabase.co/storage/v1/object/public/product-images/[filename]
+      const url = new URL(imageUrl);
+      const pathSegments = url.pathname.split('/');
+      const bucketIndex = pathSegments.indexOf('product-images');
+      
+      if (bucketIndex !== -1 && bucketIndex < pathSegments.length - 1) {
+        return pathSegments.slice(bucketIndex + 1).join('/');
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error extracting image path:', error);
+      return null;
+    }
+  };
+
+  const deleteImageFromStorage = async (imageUrl: string | null): Promise<boolean> => {
+    if (!imageUrl) return true;
+    
+    const imagePath = extractImagePath(imageUrl);
+    if (!imagePath) return false;
+
+    try {
+      const { error } = await supabase.storage
+        .from('product-images')
+        .remove([imagePath]);
+
+      if (error) {
+        console.error('Error deleting image:', error);
+        return false;
+      }
+
+      console.log('Image deleted successfully:', imagePath);
+      return true;
+    } catch (error) {
+      console.error('Error deleting image from storage:', error);
+      return false;
+    }
+  };
 
   const uploadImage = async (file: File): Promise<string | null> => {
     try {
@@ -169,6 +214,12 @@ const AdminProducts = () => {
 
     try {
       let imageUrl = formData.image;
+      let oldImageUrl: string | null = null;
+
+      // If editing and uploading a new image, store the old image URL for deletion
+      if (editingProduct && selectedFile && editingProduct.image) {
+        oldImageUrl = editingProduct.image;
+      }
 
       if (selectedFile) {
         const uploadedUrl = await uploadImage(selectedFile);
@@ -193,6 +244,12 @@ const AdminProducts = () => {
           .eq('id', editingProduct.id);
 
         if (error) throw error;
+        
+        // Delete old image if we uploaded a new one
+        if (oldImageUrl && selectedFile) {
+          await deleteImageFromStorage(oldImageUrl);
+        }
+        
         toast.success('Product updated successfully');
       } else {
         const { error } = await supabase
@@ -227,7 +284,7 @@ const AdminProducts = () => {
     setShowForm(true);
   };
 
-  const handleDelete = async (product: { id: string; title: string }) => {
+  const handleDelete = async (product: Product) => {
     setProductToDelete(product);
   };
 
@@ -235,12 +292,18 @@ const AdminProducts = () => {
     if (!productToDelete) return;
 
     try {
+      // Delete the product from database first
       const { error } = await supabase
         .from('products')
         .delete()
         .eq('id', productToDelete.id);
 
       if (error) throw error;
+      
+      // Delete the product's image from storage
+      if (productToDelete.image) {
+        await deleteImageFromStorage(productToDelete.image);
+      }
       
       toast.success('Product deleted successfully');
       fetchProducts();
@@ -467,7 +530,7 @@ const AdminProducts = () => {
                         <Button
                           size="sm"
                           variant="destructive"
-                          onClick={() => handleDelete({ id: product.id, title: product.title })}
+                          onClick={() => handleDelete(product)}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
