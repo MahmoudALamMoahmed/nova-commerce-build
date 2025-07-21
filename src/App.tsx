@@ -48,14 +48,14 @@ function App() {
 
   useEffect(() => {
   const isAdminRoute = window.location.pathname.startsWith('/admin');
-  document.dir = isAdminRoute ? 'ltr' : (i18n.language === 'ar' ? 'ltr' : 'ltr');
+  document.dir = isAdminRoute ? 'ltr' : (i18n.language === 'ar' ? 'ltr' : 'rtl');
   document.documentElement.lang = i18n.language;
 }, [i18n.language]);
 
  useEffect(() => {
   const handleLanguageChange = () => {
     const isAdminRoute = window.location.pathname.startsWith('/admin');
-    document.dir = isAdminRoute ? 'ltr' : (i18n.language === 'ar' ? 'ltr' : 'ltr');
+    document.dir = isAdminRoute ? 'ltr' : (i18n.language === 'ar' ? 'ltr' : 'rtl');
     document.documentElement.lang = i18n.language;
   };
 
