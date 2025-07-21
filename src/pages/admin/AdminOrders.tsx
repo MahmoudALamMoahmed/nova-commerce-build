@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -22,7 +23,7 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
-import { Loader2, Eye, Calendar, Filter, CreditCard, Banknote } from 'lucide-react';
+import { Loader2, Eye, Calendar, Filter, CreditCard, Banknote, Search } from 'lucide-react';
 import OrderDetailsModal from '@/components/admin/OrderDetailsModal';
 
 interface AdminOrder {
@@ -62,6 +63,7 @@ const AdminOrders = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [dateFilter, setDateFilter] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   useEffect(() => {
     fetchOrders();
@@ -69,7 +71,7 @@ const AdminOrders = () => {
 
   useEffect(() => {
     applyFilters();
-  }, [orders, statusFilter, dateFilter]);
+  }, [orders, statusFilter, dateFilter, searchTerm]);
 
   const fetchOrders = async () => {
     try {
@@ -170,6 +172,15 @@ const AdminOrders = () => {
       }
     }
 
+    // Search filter
+    if (searchTerm.trim()) {
+      const searchLower = searchTerm.toLowerCase();
+      filtered = filtered.filter(order => 
+        order.id.toLowerCase().includes(searchLower) ||
+        order.user_email.toLowerCase().includes(searchLower)
+      );
+    }
+
     setFilteredOrders(filtered);
     setCurrentPage(1);
   };
@@ -251,6 +262,17 @@ const AdminOrders = () => {
         <CardContent>
           {/* Filters */}
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
+            {/* Search Input */}
+            <div className="flex items-center gap-2 flex-1">
+              <Search className="h-4 w-4" />
+              <Input
+                placeholder="Search by order ID or email..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="max-w-xs"
+              />
+            </div>
+
             <div className="flex items-center gap-2">
               <Filter className="h-4 w-4" />
               <Select value={statusFilter} onValueChange={setStatusFilter}>
