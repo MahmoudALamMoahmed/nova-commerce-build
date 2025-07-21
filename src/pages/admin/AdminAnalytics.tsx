@@ -38,7 +38,7 @@ const AdminAnalytics = () => {
         }
       }
 
-      const totalGB = 2; // Supabase free plan limit
+      const totalGB = 1; // Supabase free plan limit is 1GB
       const usedMB = totalBytes / (1024 * 1024);
       const usedGB = totalBytes / (1024 * 1024 * 1024);
       const percentage = (usedGB / totalGB) * 100;
