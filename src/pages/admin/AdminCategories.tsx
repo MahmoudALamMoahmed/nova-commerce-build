@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -18,6 +17,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from 'sonner';
 import { Trash2, Edit, Plus, Tag } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface Category {
   id: string;
@@ -26,6 +26,9 @@ interface Category {
 }
 
 const AdminCategories = () => {
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
+  
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
@@ -164,13 +167,13 @@ const AdminCategories = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <div className="flex justify-between items-center">
-            <div>
+          <div className={`flex justify-between items-center flex-wrap gap-4 ${isRTL ? 'rtl' : 'ltr'}`}>
+            <div className="min-w-0 flex-1">
               <CardTitle>Category Management</CardTitle>
               <CardDescription>Add, edit, or remove product categories</CardDescription>
             </div>
-            <Button onClick={() => setShowForm(true)} className="bg-brand-accent hover:bg-brand-accent/90">
-              <Plus className="mr-2 h-4 w-4" />
+            <Button onClick={() => setShowForm(true)} className="bg-brand-accent hover:bg-brand-accent/90 shrink-0">
+              <Plus className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
               Add Category
             </Button>
           </div>
@@ -178,7 +181,7 @@ const AdminCategories = () => {
         <CardContent>
           {/* Category Form Dialog */}
           <Dialog open={showForm} onOpenChange={setShowForm}>
-            <DialogContent>
+            <DialogContent className={isRTL ? 'rtl' : 'ltr'}>
               <DialogHeader>
                 <DialogTitle>
                   {editingCategory ? 'Edit Category' : 'Add New Category'}
@@ -200,7 +203,7 @@ const AdminCategories = () => {
                     required
                   />
                 </div>
-                <div className="flex gap-2 justify-end">
+                <div className={`flex gap-2 ${isRTL ? 'justify-start flex-row-reverse' : 'justify-end'}`}>
                   <Button type="button" variant="outline" onClick={resetForm}>
                     Cancel
                   </Button>
@@ -218,41 +221,51 @@ const AdminCategories = () => {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-accent"></div>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Created At</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {categories.map((category) => (
-                  <TableRow key={category.id}>
-                    <TableCell className="font-medium">{category.name}</TableCell>
-                    <TableCell>{new Date(category.created_at).toLocaleDateString()}</TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleEdit(category)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          onClick={() => handleDelete({ id: category.id, name: category.name })}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
+            <div className="overflow-x-auto">
+              <Table className={`min-w-full ${isRTL ? 'rtl' : 'ltr'}`}>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="min-w-[150px]">Name</TableHead>
+                    <TableHead className="text-center min-w-[120px]">Created At</TableHead>
+                    <TableHead className="text-center min-w-[100px]">Actions</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {categories.map((category) => (
+                    <TableRow key={category.id}>
+                      <TableCell className="font-medium">
+                        <div className="break-words max-w-[200px]">
+                          {category.name}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {new Date(category.created_at).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <div className="flex gap-2 justify-center">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleEdit(category)}
+                            className="min-w-[40px]"
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleDelete({ id: category.id, name: category.name })}
+                            className="min-w-[40px]"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
 
           {categories.length === 0 && !isLoading && (
@@ -267,14 +280,14 @@ const AdminCategories = () => {
 
       {/* Delete confirmation dialog */}
       <AlertDialog open={categoryToDelete !== null} onOpenChange={() => setCategoryToDelete(null)}>
-        <AlertDialogContent>
+        <AlertDialogContent className={isRTL ? 'rtl' : 'ltr'}>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Category</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete "{categoryToDelete?.name}"? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
+          <AlertDialogFooter className={`${isRTL ? 'flex-row-reverse justify-start' : ''}`}>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction 
               onClick={handleDeleteConfirmed}
