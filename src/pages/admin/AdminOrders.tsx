@@ -324,7 +324,7 @@ const AdminOrders = () => {
                   <TableHeader>
                     <TableRow>
                       <TableHead className='text-center'>Order ID</TableHead>
-                      <TableHead className={`${isRTL ? 'text-right' : 'text-left'}>Customer Email</TableHead>
+                      <TableHead className={`${isRTL ? "text-right" : "text-left"}`}>Customer Email</TableHead>
                       <TableHead className='text-center'>Order Date</TableHead>
                       <TableHead className='text-center'>Payment Method</TableHead>
                       <TableHead className='text-center'>Status</TableHead>
