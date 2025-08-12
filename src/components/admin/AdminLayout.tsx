@@ -5,6 +5,7 @@ import { Navigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 import { 
   LayoutDashboard, 
@@ -27,6 +28,8 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const { user, userProfile, isLoading } = useUser();
   const location = useLocation();
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
 
   if (isLoading) {
     return (
