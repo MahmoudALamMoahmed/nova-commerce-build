@@ -489,16 +489,16 @@ const AdminProducts = () => {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-accent"></div>
             </div>
           ) : (
-            <div className={` ${isRTL ? 'rtl' : 'ltr'}`}>
-              <Table className={`min-w-full ${isRTL ? 'rtl' : 'ltr'}`}>
-                <TableHeader className={`${isRTL ? 'rtl' : 'ltr'}`}>
-                  <TableRow className={`${isRTL ? 'rtl' : 'ltr'}`}>
-                    <TableHead className="text-center">Image</TableHead>
-                    <TableHead className="text-center">Title</TableHead>
-                    <TableHead className="text-center min-w-[100px]">Category</TableHead>
-                    <TableHead className="text-center min-w-[80px]">Price</TableHead>
-                    <TableHead className="text-right">Description</TableHead>
-                    <TableHead className="text-center min-w-[100px]">Actions</TableHead>
+            <div className="overflow-x-auto">
+              <Table className="min-w-full">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className={`${isRTL ? 'text-right' : 'text-left'}`}>Image</TableHead>
+                    <TableHead className={`${isRTL ? 'text-right' : 'text-left'}`}>Title</TableHead>
+                    <TableHead className={`${isRTL ? 'text-right' : 'text-left'}`}>Category</TableHead>
+                    <TableHead className={`${isRTL ? 'text-right' : 'text-left'}`}>Price</TableHead>
+                    <TableHead className={`${isRTL ? 'text-right' : 'text-left'}`}>Description</TableHead>
+                    <TableHead className={`${isRTL ? 'text-right' : 'text-left'}`}>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
