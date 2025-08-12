@@ -20,7 +20,6 @@ import {
 import { toast } from 'sonner';
 import { Trash2, Edit, Plus, Package, Upload, X } from 'lucide-react';
 import CategoryModal from '@/components/admin/CategoryModal';
-import { useTranslation } from "react-i18next";
 
 interface Product {
   id: string;
@@ -54,9 +53,6 @@ const AdminProducts = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
-
-  const { t, i18n } = useTranslation();
-  const isRTL = i18n.dir() === "rtl";
 
   const fetchProducts = async () => {
     try {
@@ -342,25 +338,16 @@ const AdminProducts = () => {
   };
 
   return (
-    <div className="space-y-6" dir={isRTL ? "rtl" : "ltr"}>
+    <div className="space-y-6">
       <Card>
         <CardHeader>
-          <div
-            className={`flex justify-between items-center ${isRTL ? "flex-row-reverse" : "flex-row"}`}
-          >
+          <div className="flex justify-between items-center">
             <div>
               <CardTitle>Product Management</CardTitle>
-              <CardDescription>
-                Add, edit, or remove products from your store
-              </CardDescription>
+              <CardDescription>Add, edit, or remove products from your store</CardDescription>
             </div>
-            <Button
-              onClick={() => setShowForm(true)}
-              className="bg-brand-accent hover:bg-brand-accent/90"
-            >
-              <Plus
-                className={`${isRTL ? "ml-2" : "mr-2"} h-4 w-4`}
-              />
+            <Button onClick={() => setShowForm(true)} className="bg-brand-accent hover:bg-brand-accent/90">
+              <Plus className="mr-2 h-4 w-4" />
               Add Product
             </Button>
           </div>
@@ -370,10 +357,10 @@ const AdminProducts = () => {
           {showForm && (
             <div className="mb-6 p-4 border rounded-lg bg-gray-50">
               <h3 className="text-lg font-semibold mb-4">
-                {editingProduct ? "Edit Product" : "Add New Product"}
+                {editingProduct ? 'Edit Product' : 'Add New Product'}
               </h3>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 ${isRTL ? "md:flex-row-reverse" : ""}`}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">Title *</label>
                     <Input
@@ -417,7 +404,7 @@ const AdminProducts = () => {
                     <CategoryModal onCategoryAdded={handleCategoryAdded} />
                   </div>
                 </div>
-
+                
                 <div>
                   <label className="block text-sm font-medium mb-2">Product Image</label>
                   <div className="space-y-3">
@@ -439,19 +426,19 @@ const AdminProducts = () => {
                         </Button>
                       )}
                     </div>
-
+                    
                     {selectedFile && (
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Upload className="h-4 w-4" />
                         <span>Selected: {selectedFile.name}</span>
                       </div>
                     )}
-
+                    
                     {formData.image && !selectedFile && (
                       <div className="flex items-center gap-2">
-                        <img
-                          src={formData.image}
-                          alt="Current product"
+                        <img 
+                          src={formData.image} 
+                          alt="Current product" 
                           className="w-16 h-16 object-cover rounded"
                         />
                         <span className="text-sm text-gray-600">Current image</span>
@@ -459,7 +446,7 @@ const AdminProducts = () => {
                     )}
                   </div>
                 </div>
-
+                
                 <div>
                   <label className="block text-sm font-medium mb-2">Description</label>
                   <Textarea
@@ -469,20 +456,20 @@ const AdminProducts = () => {
                     rows={3}
                   />
                 </div>
-                <div className={`flex gap-2 ${isRTL ? "flex-row-reverse" : ""}`}>
-                  <Button
-                    type="submit"
+                <div className="flex gap-2">
+                  <Button 
+                    type="submit" 
                     className="bg-brand-accent hover:bg-brand-accent/90"
                     disabled={isUploading}
                   >
                     {isUploading ? (
                       <>
-                        <div
-                          className={`animate-spin rounded-full h-4 w-4 border-b-2 border-white ${isRTL ? "ml-2" : "mr-2"}`}
-                        ></div>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                         Uploading...
                       </>
-                    ) : editingProduct ? "Update Product" : "Create Product"}
+                    ) : (
+                      editingProduct ? 'Update Product' : 'Create Product'
+                    )}
                   </Button>
                   <Button type="button" variant="outline" onClick={resetForm}>
                     Cancel
@@ -501,28 +488,26 @@ const AdminProducts = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  {(isRTL
-                    ? ["Actions", "Description", "Price", "Category", "Title", "Image"]
-                    : ["Image", "Title", "Category", "Price", "Description", "Actions"]
-                  ).map((head, idx) => (
-                    <TableHead key={idx}>{head}</TableHead>
-                  ))}
+                  <TableHead>Image</TableHead>
+                  <TableHead>Title</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Price</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {products.map((product) => (
                   <TableRow key={product.id}>
-                    {!isRTL && (
-                      <TableCell>
-                        {product.image ? (
-                          <img src={product.image} alt={product.title} className="w-16 h-16 object-cover rounded" />
-                        ) : (
-                          <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
-                            <Package className="h-6 w-6 text-gray-400" />
-                          </div>
-                        )}
-                      </TableCell>
-                    )}
+                    <TableCell>
+                      {product.image ? (
+                        <img src={product.image} alt={product.title} className="w-16 h-16 object-cover rounded" />
+                      ) : (
+                        <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
+                          <Package className="h-6 w-6 text-gray-400" />
+                        </div>
+                      )}
+                    </TableCell>
                     <TableCell className="font-medium">{product.title}</TableCell>
                     <TableCell>
                       <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
@@ -531,29 +516,26 @@ const AdminProducts = () => {
                     </TableCell>
                     <TableCell>${product.price.toFixed(2)}</TableCell>
                     <TableCell className="max-w-xs truncate">
-                      {product.description || "No description"}
+                      {product.description || 'No description'}
                     </TableCell>
                     <TableCell>
-                      <div className={`flex gap-2 ${isRTL ? "flex-row-reverse" : ""}`}>
-                        <Button size="sm" variant="outline" onClick={() => handleEdit(product)}>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleEdit(product)}
+                        >
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button size="sm" variant="destructive" onClick={() => handleDelete(product)}>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => handleDelete(product)}
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </TableCell>
-                    {isRTL && (
-                      <TableCell>
-                        {product.image ? (
-                          <img src={product.image} alt={product.title} className="w-16 h-16 object-cover rounded" />
-                        ) : (
-                          <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
-                            <Package className="h-6 w-6 text-gray-400" />
-                          </div>
-                        )}
-                      </TableCell>
-                    )}
                   </TableRow>
                 ))}
               </TableBody>
@@ -581,7 +563,7 @@ const AdminProducts = () => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
+            <AlertDialogAction 
               onClick={handleDeleteConfirmed}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
