@@ -146,7 +146,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         </header>
 
         {/* Page Content */}
-        <main className={`flex-1 p-6 overflow-auto ${isRTL ? "rtl" : "ltr"}`}>
+        <main className="flex-1 p-6 overflow-auto">
           {children || <Outlet />}
         </main>
       </div>

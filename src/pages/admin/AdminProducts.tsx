@@ -338,7 +338,7 @@ const AdminProducts = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 ltr">
       <Card>
         <CardHeader>
           <div className="flex justify-between items-center">
