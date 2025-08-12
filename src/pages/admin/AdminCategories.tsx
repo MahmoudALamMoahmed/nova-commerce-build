@@ -225,7 +225,7 @@ const AdminCategories = () => {
               <Table className={`min-w-full ${isRTL ? 'rtl' : 'ltr'}`}>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="min-w-[150px]">Name</TableHead>
+                    <TableHead className={`${isRTL ? 'text-right' : 'text-left'} min-w-[150px]`}>Name</TableHead>
                     <TableHead className="text-center min-w-[120px]">Created At</TableHead>
                     <TableHead className="text-center min-w-[100px]">Actions</TableHead>
                   </TableRow>
