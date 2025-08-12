@@ -44,25 +44,6 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  const { i18n } = useTranslation();
-
-  useEffect(() => {
-  const isAdminRoute = window.location.pathname.startsWith('/admin');
-  document.dir = isAdminRoute ? 'ltr' : (i18n.language === 'ar' ? 'rtl' : 'ltr');
-  document.documentElement.lang = i18n.language;
-}, [i18n.language]);
-
- useEffect(() => {
-  const handleLanguageChange = () => {
-    const isAdminRoute = window.location.pathname.startsWith('/admin');
-    document.dir = isAdminRoute ? 'ltr' : (i18n.language === 'ar' ? 'rtl' : 'ltr');
-    document.documentElement.lang = i18n.language;
-  };
-
-     i18n.on('languageChanged', handleLanguageChange);
-  return () => i18n.off('languageChanged', handleLanguageChange);
-}, [i18n]);
-
   return (
     <Router>
       <QueryClientProvider client={queryClient}>
