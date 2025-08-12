@@ -1,22 +1,22 @@
+
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '@/context/UserContext';
 import { Navigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import {
-  LayoutDashboard,
-  Package,
-  ShoppingCart,
-  Users,
-  MessageSquare,
-  Settings,
+import { 
+  LayoutDashboard, 
+  Package, 
+  ShoppingCart, 
+  Users, 
+  MessageSquare, 
+  Settings, 
   LogOut,
   Tag,
   BarChart3
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useTranslation } from 'react-i18next';
 
 interface AdminLayoutProps {
   children?: React.ReactNode;
@@ -26,8 +26,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const { user, userProfile, isLoading } = useUser();
   const location = useLocation();
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
-  const isRTL = i18n.language === 'ar';
 
   if (isLoading) {
     return (
@@ -44,38 +42,33 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
-      toast.success(t('Logged out successfully'));
+      toast.success('Logged out successfully');
       navigate('/');
     } catch (error) {
       console.error('Logout error:', error);
-      toast.error(t('Failed to logout'));
+      toast.error('Failed to logout');
     }
   };
 
   const navigation = [
-    { name: t('Dashboard'), href: '/admin', icon: LayoutDashboard },
-    { name: t('Products'), href: '/admin/products', icon: Package },
-    { name: t('Categories'), href: '/admin/categories', icon: Tag },
-    { name: t('Orders'), href: '/admin/orders', icon: ShoppingCart },
-    { name: t('Users'), href: '/admin/users', icon: Users },
-    { name: t('Messages'), href: '/admin/messages', icon: MessageSquare },
-    { name: t('Analytics'), href: '/admin/analytics', icon: BarChart3 },
-    { name: t('Settings'), href: '/admin/settings', icon: Settings },
+    { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+    { name: 'Products', href: '/admin/products', icon: Package },
+    { name: 'Categories', href: '/admin/categories', icon: Tag },
+    { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
+    { name: 'Users', href: '/admin/users', icon: Users },
+    { name: 'Messages', href: '/admin/messages', icon: MessageSquare },
+    { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
+    { name: 'Settings', href: '/admin/settings', icon: Settings },
   ];
 
   return (
-    <div className={`bg-gray-50 flex min-h-[calc(100vh-5rem)]`}>
+    <div className="bg-gray-50 flex min-h-[calc(100vh-5rem)]">
       {/* Sidebar */}
-      <div
-        className={cn(
-          "w-64 bg-white shadow-sm border-gray-200 fixed h-[calc(100vh-5rem)] top-20",
-          isRTL ? "right-0 border-l" : "left-0 border-r"
-        )}
-      >
+      <div className="w-64 bg-white shadow-sm border-r border-gray-200 fixed h-[calc(100vh-5rem)] top-20">
         <div className="flex flex-col h-full">
           {/* Logo/Header */}
           <div className="p-6 border-b border-gray-200">
-            <h1 className="text-xl font-bold text-gray-900">{t('Admin Panel')}</h1>
+            <h1 className="text-xl font-bold text-gray-900">Admin Panel</h1>
           </div>
 
           {/* Navigation */}
@@ -83,26 +76,20 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             {navigation.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.href;
-
+              
               return (
                 <Button
                   key={item.name}
                   variant="ghost"
                   className={cn(
                     "w-full justify-start h-10 px-3",
-                    isRTL && "flex-row-reverse",
-                    isActive
-                      ? "bg-brand-accent text-white hover:bg-brand-accent/90"
+                    isActive 
+                      ? "bg-brand-accent text-white hover:bg-brand-accent/90" 
                       : "text-gray-700 hover:bg-gray-100"
                   )}
                   onClick={() => navigate(item.href)}
                 >
-                  <Icon
-                    className={cn(
-                      "h-4 w-4",
-                      isRTL ? "ml-3" : "mr-3"
-                    )}
-                  />
+                  <Icon className="mr-3 h-4 w-4" />
                   {item.name}
                 </Button>
               );
@@ -113,34 +100,26 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           <div className="p-4 border-t border-gray-200">
             <Button
               variant="ghost"
-              className={cn(
-                "w-full justify-start h-10 px-3 text-red-600 hover:bg-red-50 hover:text-red-700",
-                isRTL && "flex-row-reverse"
-              )}
+              className="w-full justify-start h-10 px-3 text-red-600 hover:bg-red-50 hover:text-red-700"
               onClick={handleLogout}
             >
-              <LogOut className={cn("h-4 w-4", isRTL ? "ml-3" : "mr-3")} />
-              {t('Logout')}
+              <LogOut className="mr-3 h-4 w-4" />
+              Logout
             </Button>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div
-        className={cn(
-          "flex-1 flex flex-col",
-          isRTL ? "mr-64" : "ml-64"
-        )}
-      >
+      <div className="ml-64 flex-1 flex flex-col">
         {/* Top Navbar */}
         <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
-          <div className={cn("flex items-center justify-between", isRTL && "flex-row-reverse")}>
+          <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold text-gray-900">
-              {navigation.find(item => item.href === location.pathname)?.name || t('Dashboard')}
+              {navigation.find(item => item.href === location.pathname)?.name || 'Dashboard'}
             </h2>
             <div className="text-sm text-gray-500">
-              {t('Welcome')}, {user.email}
+              Welcome, {user.email}
             </div>
           </div>
         </header>
