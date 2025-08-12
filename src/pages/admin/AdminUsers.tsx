@@ -164,7 +164,7 @@ const AdminUsers = () => {
             onClick={handleCreateUser}
             className="bg-brand-accent hover:bg-brand-accent/90"
           >
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
             Create New User
           </Button>
         </div>

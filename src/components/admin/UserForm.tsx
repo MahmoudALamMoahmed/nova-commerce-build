@@ -233,7 +233,7 @@ const UserForm = ({ isOpen, onClose, user, onSuccess }: UserFormProps) => {
               )}
             />
 
-            <div className="flex justify-end space-x-2 pt-4">
+            <div className="flex justify-end gap-3 pt-4">
               <Button variant="outline" onClick={onClose} type="button">
                 Cancel
               </Button>
