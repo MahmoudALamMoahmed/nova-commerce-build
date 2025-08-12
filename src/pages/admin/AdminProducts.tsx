@@ -344,7 +344,7 @@ const AdminProducts = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <div className={`flex justify-between items-center flex-wrap gap-4 ${isRTL ? 'rtl' : 'ltr'}`}>
+          <div className={`flex justify-between items-center flex-wrap gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <div className="min-w-0 flex-1">
               <CardTitle>Product Management</CardTitle>
               <CardDescription>Add, edit, or remove products from your store</CardDescription>
