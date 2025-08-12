@@ -439,7 +439,7 @@ const AdminProducts = () => {
                     )}
                     
                     {formData.image && !selectedFile && (
-                      <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                      <div className={`flex items-center gap-2 ${isRTL ? 'rtl' : 'ltr'}`}>
                         <img 
                           src={formData.image} 
                           alt="Current product" 
