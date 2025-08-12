@@ -64,7 +64,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   ];
 
   return (
-    <div className="bg-gray-50 flex min-h-[calc(100vh-5rem)]" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={`bg-gray-50 flex min-h-[calc(100vh-5rem)] ${isRTL ? 'rtl' : 'ltr'}`}>
       {/* Sidebar */}
       <div
         className={cn(
