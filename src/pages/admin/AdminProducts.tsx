@@ -20,6 +20,7 @@ import {
 import { toast } from 'sonner';
 import { Trash2, Edit, Plus, Package, Upload, X } from 'lucide-react';
 import CategoryModal from '@/components/admin/CategoryModal';
+import { useTranslation } from "react-i18next";
 
 interface Product {
   id: string;
