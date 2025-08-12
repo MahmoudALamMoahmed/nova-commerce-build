@@ -10,6 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { Users, Trash2, Shield, ShieldCheck, Edit, Plus } from 'lucide-react';
 import UserForm from '@/components/admin/UserForm';
+import { useTranslation } from 'react-i18next';
 
 interface UserProfile {
   id: string;
@@ -20,6 +21,9 @@ interface UserProfile {
 }
 
 const AdminUsers = () => {
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
+
   const { user, userProfile, isLoading } = useUser();
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [isUsersLoading, setIsUsersLoading] = useState(true);
@@ -185,11 +189,11 @@ const AdminUsers = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Registration Date</TableHead>
-                  <TableHead>Admin Status</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead className={`${isRTL ? "text-right" : "text-left"}`}>Name</TableHead>
+                  <TableHead className={`${isRTL ? "text-right" : "text-left"}`}>Email</TableHead>
+                  <TableHead className={`${isRTL ? "text-right" : "text-left"}`}>Registration Date</TableHead>
+                  <TableHead className={`${isRTL ? "text-right" : "text-left"}`}>Admin Status</TableHead>
+                  <TableHead className={`${isRTL ? "text-right" : "text-left"}`}>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
