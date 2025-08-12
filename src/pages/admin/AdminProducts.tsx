@@ -460,7 +460,7 @@ const AdminProducts = () => {
                     rows={3}
                   />
                 </div>
-                <div className={`flex gap-2 ${isRTL ? 'justify-end' : 'justify-start'} flex-wrap`}>
+                <div className={`flex gap-2 ${isRTL ? 'rtl' : 'ltr'} flex-wrap`}>
                   <Button 
                     type="submit" 
                     className="bg-brand-accent hover:bg-brand-accent/90"
