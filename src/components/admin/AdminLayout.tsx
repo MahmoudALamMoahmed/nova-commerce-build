@@ -68,7 +68,10 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   return (
     <div className="bg-gray-50 flex min-h-[calc(100vh-5rem)]" dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Sidebar */}
-      <div className="w-64 bg-white shadow-sm border-r border-gray-200 fixed h-[calc(100vh-5rem)] top-20">
+      <div className={cn(
+          "w-64 bg-white shadow-sm border-gray-200 fixed h-[calc(100vh-5rem)] top-20",
+          isRTL ? "right-0 border-l" : "left-0 border-r"
+        )}>
         <div className="flex flex-col h-full">
           {/* Logo/Header */}
           <div className="p-6 border-b border-gray-200">
