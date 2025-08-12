@@ -497,7 +497,7 @@ const AdminProducts = () => {
                     <TableHead className="text-center">Title</TableHead>
                     <TableHead className="text-center min-w-[100px]">Category</TableHead>
                     <TableHead className="text-center min-w-[80px]">Price</TableHead>
-                    <TableHead className="text-center">Description</TableHead>
+                    <TableHead className="text-right">Description</TableHead>
                     <TableHead className="text-center min-w-[100px]">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
