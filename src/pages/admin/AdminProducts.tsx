@@ -493,12 +493,12 @@ const AdminProducts = () => {
               <Table className="min-w-full">
                 <TableHeader>
                   <TableRow>
-                    <TableHead className={`${isRTL ? 'text-right' : 'text-left'}`}>Image</TableHead>
+                    <TableHead className={`text-center`}>Image</TableHead>
                     <TableHead className={`${isRTL ? 'text-right' : 'text-left'}`}>Title</TableHead>
-                    <TableHead className={`${isRTL ? 'text-right' : 'text-left'}`}>Category</TableHead>
-                    <TableHead className={`${isRTL ? 'text-right' : 'text-left'}`}>Price</TableHead>
+                    <TableHead className={`text-center`}>Category</TableHead>
+                    <TableHead className={`text-center`}>Price</TableHead>
                     <TableHead className={`${isRTL ? 'text-right' : 'text-left'}`}>Description</TableHead>
-                    <TableHead className={`${isRTL ? 'text-right' : 'text-left'}`}>Actions</TableHead>
+                    <TableHead className={`text-center`}>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
