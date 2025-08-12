@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useTranslation } from 'react-i18next';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -38,6 +39,8 @@ interface Category {
 }
 
 const AdminProducts = () => {
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isProductsLoading, setIsProductsLoading] = useState(true);
@@ -341,13 +344,13 @@ const AdminProducts = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <div className="flex justify-between items-center">
-            <div>
+          <div className={`flex justify-between items-center flex-wrap gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+            <div className="min-w-0 flex-1">
               <CardTitle>Product Management</CardTitle>
               <CardDescription>Add, edit, or remove products from your store</CardDescription>
             </div>
-            <Button onClick={() => setShowForm(true)} className="bg-brand-accent hover:bg-brand-accent/90">
-              <Plus className="mr-2 h-4 w-4" />
+            <Button onClick={() => setShowForm(true)} className="bg-brand-accent hover:bg-brand-accent/90 shrink-0">
+              <Plus className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
               Add Product
             </Button>
           </div>
@@ -385,7 +388,7 @@ const AdminProducts = () => {
 
                 <div>
                   <label className="block text-sm font-medium mb-2">Category *</label>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 flex-col sm:flex-row">
                     <Select
                       value={formData.category_id}
                       onValueChange={(value) => setFormData({ ...formData, category_id: value })}
@@ -408,12 +411,12 @@ const AdminProducts = () => {
                 <div>
                   <label className="block text-sm font-medium mb-2">Product Image</label>
                   <div className="space-y-3">
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 flex-col sm:flex-row">
                       <Input
                         type="file"
                         accept="image/*"
                         onChange={handleFileSelect}
-                        className="flex-1"
+                        className="flex-1 w-full"
                       />
                       {selectedFile && (
                         <Button
@@ -421,6 +424,7 @@ const AdminProducts = () => {
                           variant="outline"
                           size="sm"
                           onClick={removeSelectedFile}
+                          className="shrink-0"
                         >
                           <X className="h-4 w-4" />
                         </Button>
@@ -428,14 +432,14 @@ const AdminProducts = () => {
                     </div>
                     
                     {selectedFile && (
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <div className={`flex items-center gap-2 text-sm text-gray-600 ${isRTL ? 'flex-row-reverse' : ''}`}>
                         <Upload className="h-4 w-4" />
                         <span>Selected: {selectedFile.name}</span>
                       </div>
                     )}
                     
                     {formData.image && !selectedFile && (
-                      <div className="flex items-center gap-2">
+                      <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                         <img 
                           src={formData.image} 
                           alt="Current product" 
@@ -456,7 +460,7 @@ const AdminProducts = () => {
                     rows={3}
                   />
                 </div>
-                <div className="flex gap-2">
+                <div className={`flex gap-2 ${isRTL ? 'justify-end' : 'justify-start'} flex-wrap`}>
                   <Button 
                     type="submit" 
                     className="bg-brand-accent hover:bg-brand-accent/90"
@@ -464,7 +468,7 @@ const AdminProducts = () => {
                   >
                     {isUploading ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        <div className={`animate-spin rounded-full h-4 w-4 border-b-2 border-white ${isRTL ? 'ml-2' : 'mr-2'}`}></div>
                         Uploading...
                       </>
                     ) : (
@@ -485,61 +489,79 @@ const AdminProducts = () => {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-accent"></div>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Image</TableHead>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Price</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {products.map((product) => (
-                  <TableRow key={product.id}>
-                    <TableCell>
-                      {product.image ? (
-                        <img src={product.image} alt={product.title} className="w-16 h-16 object-cover rounded" />
-                      ) : (
-                        <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
-                          <Package className="h-6 w-6 text-gray-400" />
-                        </div>
-                      )}
-                    </TableCell>
-                    <TableCell className="font-medium">{product.title}</TableCell>
-                    <TableCell>
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                        {getCategoryName(product.category_id)}
-                      </span>
-                    </TableCell>
-                    <TableCell>${product.price.toFixed(2)}</TableCell>
-                    <TableCell className="max-w-xs truncate">
-                      {product.description || 'No description'}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleEdit(product)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          onClick={() => handleDelete(product)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
+            <div className="overflow-x-auto">
+              <Table className="min-w-full">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className={`text-center w-20`}>Image</TableHead>
+                    <TableHead className={`min-w-[120px] ${isRTL ? 'text-right' : 'text-left'}`}>Title</TableHead>
+                    <TableHead className={`text-center min-w-[100px]`}>Category</TableHead>
+                    <TableHead className={`text-center min-w-[80px]`}>Price</TableHead>
+                    <TableHead className={`min-w-[150px] ${isRTL ? 'text-right' : 'text-left'}`}>Description</TableHead>
+                    <TableHead className={`text-center min-w-[100px]`}>Actions</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {products.map((product) => (
+                    <TableRow key={product.id}>
+                      <TableCell className="text-center">
+                        {product.image ? (
+                          <div className="flex justify-center">
+                            <img src={product.image} alt={product.title} className="w-16 h-16 object-cover rounded" />
+                          </div>
+                        ) : (
+                          <div className="flex justify-center">
+                            <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
+                              <Package className="h-6 w-6 text-gray-400" />
+                            </div>
+                          </div>
+                        )}
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        <div className="break-words max-w-[200px]">
+                          {product.title}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <div className="flex justify-center">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 whitespace-nowrap">
+                            {getCategoryName(product.category_id)}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-center font-medium">
+                        ${product.price.toFixed(2)}
+                      </TableCell>
+                      <TableCell>
+                        <div className="max-w-[200px] break-words" title={product.description || 'No description'}>
+                          {product.description || 'No description'}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <div className="flex gap-2 justify-center">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleEdit(product)}
+                            className="min-w-[40px]"
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleDelete(product)}
+                            className="min-w-[40px]"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
 
           {products.length === 0 && !isProductsLoading && (
