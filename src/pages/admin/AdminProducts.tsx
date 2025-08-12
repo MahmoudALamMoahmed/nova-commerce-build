@@ -350,7 +350,7 @@ const AdminProducts = () => {
               <CardDescription>Add, edit, or remove products from your store</CardDescription>
             </div>
             <Button onClick={() => setShowForm(true)} className="bg-brand-accent hover:bg-brand-accent/90 shrink-0">
-              <Plus className={`h-4 w-4 ${isRTL ? 'mr-2' : 'ml-2'}`} />
+              <Plus className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
               Add Product
             </Button>
           </div>
