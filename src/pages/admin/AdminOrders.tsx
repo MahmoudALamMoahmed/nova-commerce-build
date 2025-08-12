@@ -4,6 +4,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
+import { useTranslation } from 'react-i18next';
+
 import {
   Table,
   TableBody,
@@ -56,6 +58,9 @@ interface AdminOrder {
 const ORDERS_PER_PAGE = 15;
 
 const AdminOrders = () => {
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
+
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<AdminOrder[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -318,13 +323,13 @@ const AdminOrders = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Order ID</TableHead>
-                      <TableHead>Customer Email</TableHead>
-                      <TableHead>Order Date</TableHead>
-                      <TableHead>Payment Method</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Total</TableHead>
-                      <TableHead>Actions</TableHead>
+                      <TableHead className='text-center'>Order ID</TableHead>
+                      <TableHead className={`${isRTL ? 'text-right' : 'text-left'}>Customer Email</TableHead>
+                      <TableHead className='text-center'>Order Date</TableHead>
+                      <TableHead className='text-center'>Payment Method</TableHead>
+                      <TableHead className='text-center'>Status</TableHead>
+                      <TableHead className='text-center'>Total</TableHead>
+                      <TableHead className='text-center'>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
