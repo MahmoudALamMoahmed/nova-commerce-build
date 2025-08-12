@@ -5,6 +5,7 @@ import { Navigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import { 
   LayoutDashboard, 
   Package, 
@@ -26,7 +27,9 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const { user, userProfile, isLoading } = useUser();
   const location = useLocation();
   const navigate = useNavigate();
-
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
+  
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -62,7 +65,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   ];
 
   return (
-    <div className="bg-gray-50 flex min-h-[calc(100vh-5rem)]">
+    <div className="bg-gray-50 flex min-h-[calc(100vh-5rem)] dir={isRTL ? 'rtl' : 'ltr'}">
       {/* Sidebar */}
       <div className="w-64 bg-white shadow-sm border-r border-gray-200 fixed h-[calc(100vh-5rem)] top-20">
         <div className="flex flex-col h-full">
