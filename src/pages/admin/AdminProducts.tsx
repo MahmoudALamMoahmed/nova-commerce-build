@@ -489,7 +489,7 @@ const AdminProducts = () => {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-accent"></div>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className={`overflow-x-auto ${isRTL ? 'rtl' : 'ltr'}`}>
               <Table className="min-w-full">
                 <TableHeader>
                   <TableRow>
