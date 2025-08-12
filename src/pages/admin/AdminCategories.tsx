@@ -287,14 +287,16 @@ const AdminCategories = () => {
               Are you sure you want to delete "{categoryToDelete?.name}"? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className={`gap-4 ${isRTL ? 'ltr' : 'rtl'}`}>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={handleDeleteConfirmed}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              Yes, delete
-            </AlertDialogAction>
+          <AlertDialogFooter className={isRTL ? 'rtl' : 'ltr'}>
+            <div className="flex gap-3 justify-end">
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={handleDeleteConfirmed}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Yes, delete
+              </AlertDialogAction>
+            </div>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
