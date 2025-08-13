@@ -179,12 +179,28 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
         return false;
       }
 
-      // Update stock quantities for each product
-      for (const item of cartItems) {
+    // Fetch items of this order from DB (not from cart)
+    const { data: dbItems, error: oiErr } = await supabase
+      .from('order_items')
+      .select('product_id, quantity')
+      .eq('order_id', orderData.id);
+
+    if (oiErr) {
+      console.error('Error fetching order items:', oiErr);
+    } else {
+      // Aggregate quantities per product
+      const qtyByProduct: Record<string, number> = {};
+      for (const row of dbItems || []) {
+        qtyByProduct[row.product_id] = (qtyByProduct[row.product_id] || 0) + row.quantity;
+      }
+
+      // Decrement stock per product (based on DB order_items)
+      for (const [productId, qty] of Object.entries(qtyByProduct)) {
+        // Get current stock
         const { data: productData, error: fetchError } = await supabase
           .from('products')
           .select('stock_quantity')
-          .eq('id', item.product_id) // ✅ تأكد إن ده هو معرف المنتج في جدول products
+          .eq('id', productId) // ✅ استخدم product_id الحقيقي
           .single();
 
         if (fetchError) {
@@ -192,17 +208,19 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
           continue;
         }
 
-        const newStockQuantity = (productData.stock_quantity || 0) - item.quantity;
+        const current = productData?.stock_quantity ?? 0;
+        const newStock = Math.max(0, current - qty);
 
         const { error: updateError } = await supabase
           .from('products')
-          .update({ stock_quantity: Math.max(0, newStockQuantity) })
-          .eq('id', item.product_id); // ✅ نفس التعديل هنا
+          .update({ stock_quantity: newStock })
+          .eq('id', productId);
 
         if (updateError) {
           console.error('Error updating product stock:', updateError);
         }
       }
+    }
 
       // Clear cart after successful order
       await clearCart();
