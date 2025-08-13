@@ -179,31 +179,18 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
         return false;
       }
 
-      // Update stock quantities for each product
+      // Update stock quantities for each product using secure function
       for (const item of cartItems) {
-        // Get current stock quantity
-        const { data: productData, error: fetchError } = await supabase
-          .from('products')
-          .select('stock_quantity')
-          .eq('id', item.id)
-          .single();
-
-        if (fetchError) {
-          console.error('Error fetching product stock:', fetchError);
-          continue;
-        }
-
-        // Calculate new stock quantity
-        const newStockQuantity = (productData.stock_quantity || 0) - item.quantity;
-
-        // Update stock quantity (ensure it doesn't go below 0)
-        const { error: updateError } = await supabase
-          .from('products')
-          .update({ stock_quantity: Math.max(0, newStockQuantity) })
-          .eq('id', item.id);
+        const { data: updateResult, error: updateError } = await supabase
+          .rpc('update_product_stock', {
+            product_id_param: item.id,
+            quantity_to_reduce: item.quantity
+          });
 
         if (updateError) {
           console.error('Error updating product stock:', updateError);
+        } else if (!updateResult) {
+          console.error('Failed to update stock for product:', item.id);
         }
       }
 

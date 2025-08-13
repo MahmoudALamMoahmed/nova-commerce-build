@@ -308,6 +308,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      update_product_stock: {
+        Args: { product_id_param: string; quantity_to_reduce: number }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
