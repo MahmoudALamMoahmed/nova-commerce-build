@@ -14,6 +14,7 @@ interface Product {
   description: string | null;
   image: string | null;
   category_id: string | null;
+  stock_quantity: number;
 }
 
 interface Category {
@@ -96,7 +97,8 @@ const ProductDetails = () => {
       name: product.title,
       price: product.price,
       description: product.description || '',
-      image: product.image || 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500'
+      image: product.image || 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500',
+      stock_quantity: product.stock_quantity || 0
     };
     
     addToCart(cartProduct);
@@ -123,18 +125,30 @@ const ProductDetails = () => {
           {category && (
             <p className="text-sm text-gray-500 mb-2">Category: {category.name}</p>
           )}
-          <p className="text-2xl text-brand-accent font-semibold mb-4">
+          <p className="text-2xl text-brand-accent font-semibold mb-2">
             ${product.price.toFixed(2)}
           </p>
+          <div className="mb-4">
+            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+              product.stock_quantity === 0 
+                ? 'bg-red-100 text-red-800' 
+                : product.stock_quantity <= 5 
+                ? 'bg-yellow-100 text-yellow-800' 
+                : 'bg-green-100 text-green-800'
+            }`}>
+              {product.stock_quantity === 0 ? 'Out of Stock' : `${product.stock_quantity} in stock`}
+            </span>
+          </div>
           <div className="border-t border-gray-200 my-4 pt-4">
             <p className="text-gray-700 mb-6">{product.description || 'No description available.'}</p>
           </div>
           <Button 
             onClick={handleAddToCart}
-            className="bg-brand-accent hover:bg-brand-accent/90 text-white py-3 px-6 rounded-md font-medium transition-all inline-flex items-center"
+            disabled={product.stock_quantity === 0}
+            className="bg-brand-accent hover:bg-brand-accent/90 text-white py-3 px-6 rounded-md font-medium transition-all inline-flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ShoppingCart className="mr-2" size={18} />
-            Add to Cart
+            {product.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart'}
           </Button>
         </div>
       </div>

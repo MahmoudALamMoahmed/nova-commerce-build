@@ -29,6 +29,7 @@ interface Product {
   description: string | null;
   image: string | null;
   category_id: string | null;
+  stock_quantity: number;
   created_at: string;
 }
 
@@ -51,7 +52,8 @@ const AdminProducts = () => {
     price: '',
     description: '',
     image: '',
-    category_id: ''
+    category_id: '',
+    stock_quantity: ''
   });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -210,8 +212,8 @@ const AdminProducts = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.title || !formData.price || !formData.category_id) {
-      toast.error('Title, price, and category are required');
+    if (!formData.title || !formData.price || !formData.category_id || !formData.stock_quantity) {
+      toast.error('Title, price, category, and stock quantity are required');
       return;
     }
 
@@ -237,7 +239,8 @@ const AdminProducts = () => {
         price: parseFloat(formData.price),
         description: formData.description || null,
         image: imageUrl || null,
-        category_id: formData.category_id
+        category_id: formData.category_id,
+        stock_quantity: parseInt(formData.stock_quantity)
       };
 
       if (editingProduct) {
@@ -263,7 +266,7 @@ const AdminProducts = () => {
         toast.success('Product created successfully');
       }
 
-      setFormData({ title: '', price: '', description: '', image: '', category_id: '' });
+      setFormData({ title: '', price: '', description: '', image: '', category_id: '', stock_quantity: '' });
       setSelectedFile(null);
       setEditingProduct(null);
       setShowForm(false);
@@ -281,7 +284,8 @@ const AdminProducts = () => {
       price: product.price.toString(),
       description: product.description || '',
       image: product.image || '',
-      category_id: product.category_id || ''
+      category_id: product.category_id || '',
+      stock_quantity: product.stock_quantity.toString()
     });
     setSelectedFile(null);
     setShowForm(true);
@@ -319,7 +323,7 @@ const AdminProducts = () => {
   };
 
   const resetForm = () => {
-    setFormData({ title: '', price: '', description: '', image: '', category_id: '' });
+    setFormData({ title: '', price: '', description: '', image: '', category_id: '', stock_quantity: '' });
     setSelectedFile(null);
     setEditingProduct(null);
     setShowForm(false);
@@ -363,7 +367,7 @@ const AdminProducts = () => {
                 {editingProduct ? 'Edit Product' : 'Add New Product'}
               </h3>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">Title *</label>
                     <Input
@@ -381,6 +385,17 @@ const AdminProducts = () => {
                       value={formData.price}
                       onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                       placeholder="0.00"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Quantity in Stock *</label>
+                    <Input
+                      type="number"
+                      min="0"
+                      value={formData.stock_quantity}
+                      onChange={(e) => setFormData({ ...formData, stock_quantity: e.target.value })}
+                      placeholder="0"
                       required
                     />
                   </div>
@@ -497,6 +512,7 @@ const AdminProducts = () => {
                     <TableHead className={`min-w-[120px] ${isRTL ? 'text-right' : 'text-left'}`}>Title</TableHead>
                     <TableHead className={`text-center min-w-[100px]`}>Category</TableHead>
                     <TableHead className={`text-center min-w-[80px]`}>Price</TableHead>
+                    <TableHead className={`text-center min-w-[80px]`}>Stock</TableHead>
                     <TableHead className={`min-w-[150px] ${isRTL ? 'text-right' : 'text-left'}`}>Description</TableHead>
                     <TableHead className={`text-center min-w-[100px]`}>Actions</TableHead>
                   </TableRow>
@@ -531,6 +547,17 @@ const AdminProducts = () => {
                       </TableCell>
                       <TableCell className="text-center font-medium">
                         ${product.price.toFixed(2)}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                          product.stock_quantity === 0 
+                            ? 'bg-red-100 text-red-800' 
+                            : product.stock_quantity <= 5 
+                            ? 'bg-yellow-100 text-yellow-800' 
+                            : 'bg-green-100 text-green-800'
+                        }`}>
+                          {product.stock_quantity} in stock
+                        </span>
                       </TableCell>
                       <TableCell>
                         <div className="max-w-[200px] break-words" title={product.description || 'No description'}>

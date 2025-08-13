@@ -88,8 +88,19 @@ const ProductCard = ({ product }: ProductCardProps) => {
       </div>
       <div className="p-4">
         <h3 className="text-lg font-medium mb-2">{product.name}</h3>
-        <div className="flex justify-between items-center mb-3">
+        <div className="flex justify-between items-center mb-2">
           <span className="text-brand-accent font-semibold">${product.price.toFixed(2)}</span>
+        </div>
+        <div className="mb-3">
+          <span className={`text-xs px-2 py-1 rounded-full ${
+            product.stock_quantity === 0 
+              ? 'bg-red-100 text-red-800' 
+              : product.stock_quantity <= 5 
+              ? 'bg-yellow-100 text-yellow-800' 
+              : 'bg-green-100 text-green-800'
+          }`}>
+            {product.stock_quantity === 0 ? 'Out of Stock' : `${product.stock_quantity} in stock`}
+          </span>
         </div>
         <div className="flex flex-col gap-2">
           <Link
@@ -103,9 +114,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <Button 
             onClick={handleAddToCart}
             variant="default" 
-            className="w-full bg-brand-accent hover:bg-brand-accent/90"
+            disabled={product.stock_quantity === 0}
+            className="w-full bg-brand-accent hover:bg-brand-accent/90 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <ShoppingCart size={16} className={`${isRTL ? 'ml-2' : 'mr-2'}`} /> {t('products.addToCart')}
+            <ShoppingCart size={16} className={`${isRTL ? 'ml-2' : 'mr-2'}`} /> 
+            {product.stock_quantity === 0 ? 'Out of Stock' : t('products.addToCart')}
           </Button>
         </div>
       </div>

@@ -51,7 +51,8 @@ export const FavoritesProvider = ({ children }: { children: React.ReactNode }) =
             title,
             price,
             description,
-            image
+            image,
+            stock_quantity
           )
         `)
         .eq('user_id', user.id);
@@ -67,7 +68,8 @@ export const FavoritesProvider = ({ children }: { children: React.ReactNode }) =
         name: item.products.title,
         price: item.products.price,
         description: item.products.description || '',
-        image: item.products.image || 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500'
+        image: item.products.image || 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500',
+        stock_quantity: item.products.stock_quantity || 0
       })) || [];
 
       setFavorites(formattedFavorites);
