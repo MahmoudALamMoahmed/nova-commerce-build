@@ -181,11 +181,10 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
 
       // Update stock quantities for each product
       for (const item of cartItems) {
-        // Get current stock quantity
         const { data: productData, error: fetchError } = await supabase
           .from('products')
           .select('stock_quantity')
-          .eq('id', item.id)
+          .eq('id', item.product_id) // ✅ تأكد إن ده هو معرف المنتج في جدول products
           .single();
 
         if (fetchError) {
@@ -193,14 +192,12 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
           continue;
         }
 
-        // Calculate new stock quantity
         const newStockQuantity = (productData.stock_quantity || 0) - item.quantity;
 
-        // Update stock quantity (ensure it doesn't go below 0)
         const { error: updateError } = await supabase
           .from('products')
           .update({ stock_quantity: Math.max(0, newStockQuantity) })
-          .eq('id', item.id);
+          .eq('id', item.product_id); // ✅ نفس التعديل هنا
 
         if (updateError) {
           console.error('Error updating product stock:', updateError);
