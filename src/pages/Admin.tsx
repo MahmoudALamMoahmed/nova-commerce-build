@@ -10,11 +10,21 @@ interface Stats {
   totalProducts: number;
   totalUsers: number;
   totalOrders: number;
+  totalRevenue: number;
+  totalProductsSold: number;
+  topProduct: string;
 }
 
 const Admin = () => {
   const { user, userProfile, isLoading } = useUser();
-  const [stats, setStats] = useState<Stats>({ totalProducts: 0, totalUsers: 0, totalOrders: 0 });
+  const [stats, setStats] = useState<Stats>({ 
+    totalProducts: 0, 
+    totalUsers: 0, 
+    totalOrders: 0, 
+    totalRevenue: 0, 
+    totalProductsSold: 0, 
+    topProduct: 'Loading...' 
+  });
 
   // Check if user is admin
   if (isLoading) {
@@ -31,16 +41,42 @@ const Admin = () => {
 
   const fetchStats = async () => {
     try {
-      const [productsRes, usersRes, ordersRes] = await Promise.all([
+      const [productsRes, usersRes, ordersRes, orderItemsRes, revenueRes] = await Promise.all([
         supabase.from('products').select('id', { count: 'exact' }),
         supabase.from('users').select('id', { count: 'exact' }),
-        supabase.from('orders').select('id', { count: 'exact' })
+        supabase.from('orders').select('id', { count: 'exact' }),
+        supabase.from('order_items').select('quantity, product_id, products(title)'),
+        supabase.from('orders').select('total_price')
       ]);
+
+      // Calculate total revenue
+      const totalRevenue = revenueRes.data?.reduce((sum, order) => sum + Number(order.total_price || 0), 0) || 0;
+
+      // Calculate total products sold
+      const totalProductsSold = orderItemsRes.data?.reduce((sum, item) => sum + (item.quantity || 0), 0) || 0;
+
+      // Calculate top product
+      const productCounts: { [key: string]: { name: string; count: number } } = {};
+      orderItemsRes.data?.forEach(item => {
+        const productName = item.products?.title || 'Unknown';
+        if (productCounts[productName]) {
+          productCounts[productName].count += item.quantity || 0;
+        } else {
+          productCounts[productName] = { name: productName, count: item.quantity || 0 };
+        }
+      });
+
+      const topProduct = Object.values(productCounts).length > 0 
+        ? Object.values(productCounts).reduce((max, current) => max.count > current.count ? max : current).name
+        : 'No sales yet';
 
       setStats({
         totalProducts: productsRes.count || 0,
         totalUsers: usersRes.count || 0,
-        totalOrders: ordersRes.count || 0
+        totalOrders: ordersRes.count || 0,
+        totalRevenue,
+        totalProductsSold,
+        topProduct
       });
     } catch (error) {
       console.error('Error fetching stats:', error);
@@ -66,8 +102,8 @@ const Admin = () => {
             <ShoppingCart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">247</div>
-            <p className="text-xs text-muted-foreground">+12% from last month</p>
+            <div className="text-2xl font-bold">{stats.totalOrders}</div>
+            <p className="text-xs text-muted-foreground">Live from database</p>
           </CardContent>
         </Card>
         
@@ -77,19 +113,19 @@ const Admin = () => {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$12,847</div>
-            <p className="text-xs text-muted-foreground">+8% from last month</p>
+            <div className="text-2xl font-bold">${stats.totalRevenue.toFixed(2)}</div>
+            <p className="text-xs text-muted-foreground">Live from database</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">New Customers</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Total Users</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">89</div>
-            <p className="text-xs text-muted-foreground">+23% from last month</p>
+            <div className="text-2xl font-bold">{stats.totalUsers}</div>
+            <p className="text-xs text-muted-foreground">Live from database</p>
           </CardContent>
         </Card>
 
@@ -99,8 +135,8 @@ const Admin = () => {
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">1,429</div>
-            <p className="text-xs text-muted-foreground">+18% from last month</p>
+            <div className="text-2xl font-bold">{stats.totalProductsSold}</div>
+            <p className="text-xs text-muted-foreground">Live from database</p>
           </CardContent>
         </Card>
 
@@ -110,8 +146,8 @@ const Admin = () => {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">Nike Air</div>
-            <p className="text-xs text-muted-foreground">142 units sold</p>
+            <div className="text-2xl font-bold">{stats.topProduct}</div>
+            <p className="text-xs text-muted-foreground">Most ordered product</p>
           </CardContent>
         </Card>
       </div>
