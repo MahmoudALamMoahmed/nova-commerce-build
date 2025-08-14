@@ -135,6 +135,12 @@ const Cart = () => {
                   </div>
                   <div className="flex-grow">
                     <h3 className="font-medium text-lg">{item.name}</h3>
+                    {(item.color || item.size) && (
+                      <div className="flex gap-2 mt-1 text-sm text-muted-foreground">
+                        {item.color && <span>Color: {item.color}</span>}
+                        {item.size && <span>Size: {item.size}</span>}
+                      </div>
+                    )}
                     <p className="text-brand-accent font-semibold mt-1">${item.price.toFixed(2)}</p>
                   </div>
                   <div className="flex items-center justify-between gap-4">

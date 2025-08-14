@@ -28,8 +28,15 @@ interface OrderDetailsModalProps {
       id: string;
       quantity: number;
       price: number;
+      product_id?: string;
+      variant_id?: string;
       products: {
         title: string;
+        image?: string;
+      } | null;
+      product_variants?: {
+        color: string;
+        size: string;
         image?: string;
       } | null;
     }[];
@@ -173,20 +180,26 @@ const OrderDetailsModal = ({ order, onClose, onStatusUpdate }: OrderDetailsModal
             <div className="space-y-4 mb-8">
               {order.order_items && order.order_items.length > 0 ? (
                 order.order_items.map((item) => (
-                  <div key={item.id} className="flex items-center gap-4 p-3 rounded-lg border">
-                    {item.products?.image && (
-                      <img 
-                        src={item.products.image} 
-                        alt={item.products.title} 
-                        className="h-16 w-16 rounded object-cover flex-shrink-0"
-                      />
-                    )}
-                    <div className="flex-1">
-                      <h4 className="font-medium">{item.products?.title || 'Unknown Product'}</h4>
-                      <p className="text-sm text-gray-600">
-                        ${item.price.toFixed(2)} × {item.quantity}
-                      </p>
-                    </div>
+                   <div key={item.id} className="flex items-center gap-4 p-3 rounded-lg border">
+                     {((item.product_variants?.image || item.products?.image)) && (
+                       <img 
+                         src={item.product_variants?.image || item.products?.image} 
+                         alt={item.products?.title || 'Product'} 
+                         className="h-16 w-16 rounded object-cover flex-shrink-0"
+                       />
+                     )}
+                     <div className="flex-1">
+                       <h4 className="font-medium">{item.products?.title || 'Unknown Product'}</h4>
+                       {item.product_variants && (
+                         <div className="flex gap-2 text-xs text-gray-500 mt-1">
+                           {item.product_variants.color && <span>Color: {item.product_variants.color}</span>}
+                           {item.product_variants.size && <span>Size: {item.product_variants.size}</span>}
+                         </div>
+                       )}
+                       <p className="text-sm text-gray-600">
+                         ${item.price.toFixed(2)} × {item.quantity}
+                       </p>
+                     </div>
                     <div className="text-right font-medium">
                       ${(item.price * item.quantity).toFixed(2)}
                     </div>

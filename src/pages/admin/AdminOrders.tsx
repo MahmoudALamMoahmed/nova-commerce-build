@@ -103,8 +103,15 @@ const AdminOrders = () => {
             id,
             quantity,
             price,
+            product_id,
+            variant_id,
             products (
               title,
+              image
+            ),
+            product_variants (
+              color,
+              size,
               image
             )
           )
