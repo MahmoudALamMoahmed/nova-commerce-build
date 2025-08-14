@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -230,6 +230,39 @@ export type Database = {
           },
         ]
       }
+      product_variants: {
+        Row: {
+          color: string
+          created_at: string
+          id: string
+          image: string | null
+          price: number | null
+          product_id: string
+          size: string
+          stock_quantity: number
+        }
+        Insert: {
+          color: string
+          created_at?: string
+          id?: string
+          image?: string | null
+          price?: number | null
+          product_id: string
+          size: string
+          stock_quantity?: number
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          id?: string
+          image?: string | null
+          price?: number | null
+          product_id?: string
+          size?: string
+          stock_quantity?: number
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           category_id: string | null
@@ -310,6 +343,10 @@ export type Database = {
       }
       update_product_stock: {
         Args: { product_id_param: string; quantity_to_reduce: number }
+        Returns: boolean
+      }
+      update_product_variant_stock: {
+        Args: { quantity_to_reduce: number; variant_id_param: string }
         Returns: boolean
       }
     }
