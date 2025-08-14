@@ -8,7 +8,8 @@ import { toast } from 'sonner';
 export interface OrderItem {
   id: string;
   order_id: string;
-  product_id: string;
+  product_id?: string;
+  variant_id?: string;
   quantity: number;
   price: number;
   created_at: string;
@@ -16,6 +17,11 @@ export interface OrderItem {
     id: string;
     title: string;
     price: number;
+    image?: string;
+  };
+  product_variants?: {
+    color: string;
+    size: string;
     image?: string;
   };
 }
@@ -90,6 +96,7 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
             id,
             order_id,
             product_id,
+            variant_id,
             quantity,
             price,
             created_at,
@@ -97,6 +104,11 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
               id,
               title,
               price,
+              image
+            ),
+            product_variants (
+              color,
+              size,
               image
             )
           )
@@ -164,7 +176,8 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
       // Create order items
       const orderItems = cartItems.map(item => ({
         order_id: orderData.id,
-        product_id: item.id,
+        product_id: item.variant_id ? null : item.id,
+        variant_id: item.variant_id || null,
         quantity: item.quantity,
         price: item.price
       }));

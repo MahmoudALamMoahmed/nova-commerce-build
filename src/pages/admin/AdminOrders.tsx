@@ -48,8 +48,15 @@ interface AdminOrder {
     id: string;
     quantity: number;
     price: number;
+    product_id?: string;
+    variant_id?: string;
     products: {
       title: string;
+      image?: string;
+    } | null;
+    product_variants?: {
+      color: string;
+      size: string;
       image?: string;
     } | null;
   }[];
