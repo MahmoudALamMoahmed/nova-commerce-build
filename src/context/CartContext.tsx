@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, useEffect } from 'react';
 import { Product } from '@/data/products';
 import { supabase } from '@/integrations/supabase/client';
@@ -18,7 +17,7 @@ export interface CartItem {
 
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (product: Product) => Promise<void>;
+  addToCart: (product: Product & { variant_id?: string; color?: string; size?: string }) => Promise<void>;
   removeFromCart: (itemId: string) => Promise<void>;
   updateQuantity: (itemId: string, quantity: number) => Promise<void>;
   clearCart: () => Promise<void>;
@@ -65,6 +64,9 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         .select(`
           id,
           quantity,
+          variant_id,
+          color,
+          size,
           products (
             id,
             title,
@@ -81,11 +83,14 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       const formattedItems: CartItem[] = data?.map(item => ({
-        id: item.products.id,
+        id: item.variant_id || item.products.id,
         name: item.products.title,
         price: item.products.price,
         image: item.products.image || 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500',
-        quantity: item.quantity
+        quantity: item.quantity,
+        variant_id: item.variant_id,
+        color: item.color,
+        size: item.size
       })) || [];
 
       setCartItems(formattedItems);
@@ -97,7 +102,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const addToCart = async (product: Product) => {
+  const addToCart = async (product: Product & { variant_id?: string; color?: string; size?: string }) => {
     if (!user) {
       toast.error('Please log in to add items to cart');
       return;
@@ -105,12 +110,19 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
     try {
       // Check if item already exists in cart
-      const { data: existingItem, error: checkError } = await supabase
+      let checkQuery = supabase
         .from('cart')
         .select('id, quantity')
         .eq('user_id', user.id)
-        .eq('product_id', product.id)
-        .single();
+        .eq('product_id', product.id);
+
+      if (product.variant_id) {
+        checkQuery = checkQuery.eq('variant_id', product.variant_id);
+      } else {
+        checkQuery = checkQuery.is('variant_id', null);
+      }
+
+      const { data: existingItem, error: checkError } = await checkQuery.single();
 
       if (checkError && checkError.code !== 'PGRST116') {
         console.error('Error checking existing cart item:', checkError);
@@ -137,6 +149,9 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
           .insert({
             user_id: user.id,
             product_id: product.id,
+            variant_id: product.variant_id || null,
+            color: product.color || null,
+            size: product.size || null,
             quantity: 1
           });
 
@@ -149,6 +164,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
       // Refresh cart items
       await fetchCartItems();
+      toast.success('Item added to cart');
     } catch (error) {
       console.error('Error adding to cart:', error);
       toast.error('Failed to add item to cart');
@@ -156,17 +172,25 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const removeFromCart = async (itemId: string) => {
-    if (!user) {
-      toast.error('Please log in to manage cart');
-      return;
-    }
+    if (!user) return;
 
     try {
-      const { error } = await supabase
+      // Find the cart item by product_id or variant_id
+      const cartItem = cartItems.find(item => item.id === itemId);
+      if (!cartItem) return;
+
+      let deleteQuery = supabase
         .from('cart')
         .delete()
-        .eq('user_id', user.id)
-        .eq('product_id', itemId);
+        .eq('user_id', user.id);
+
+      if (cartItem.variant_id) {
+        deleteQuery = deleteQuery.eq('variant_id', cartItem.variant_id);
+      } else {
+        deleteQuery = deleteQuery.eq('product_id', itemId).is('variant_id', null);
+      }
+
+      const { error } = await deleteQuery;
 
       if (error) {
         console.error('Error removing from cart:', error);
@@ -175,7 +199,8 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       // Update local state
-      setCartItems(currentItems => currentItems.filter(item => item.id !== itemId));
+      setCartItems(prev => prev.filter(item => item.id !== itemId));
+      toast.success('Item removed from cart');
     } catch (error) {
       console.error('Error removing from cart:', error);
       toast.error('Failed to remove item from cart');
@@ -183,34 +208,45 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const updateQuantity = async (itemId: string, quantity: number) => {
-    if (!user) {
-      toast.error('Please log in to manage cart');
+    if (!user) return;
+
+    if (quantity <= 0) {
+      await removeFromCart(itemId);
       return;
     }
 
-    if (quantity < 1) return;
-
     try {
-      const { error } = await supabase
+      // Find the cart item by product_id or variant_id
+      const cartItem = cartItems.find(item => item.id === itemId);
+      if (!cartItem) return;
+
+      let updateQuery = supabase
         .from('cart')
         .update({ quantity })
-        .eq('user_id', user.id)
-        .eq('product_id', itemId);
+        .eq('user_id', user.id);
+
+      if (cartItem.variant_id) {
+        updateQuery = updateQuery.eq('variant_id', cartItem.variant_id);
+      } else {
+        updateQuery = updateQuery.eq('product_id', itemId).is('variant_id', null);
+      }
+
+      const { error } = await updateQuery;
 
       if (error) {
-        console.error('Error updating cart quantity:', error);
+        console.error('Error updating quantity:', error);
         toast.error('Failed to update quantity');
         return;
       }
 
       // Update local state
-      setCartItems(currentItems => 
-        currentItems.map(item => 
+      setCartItems(prev => 
+        prev.map(item => 
           item.id === itemId ? { ...item, quantity } : item
         )
       );
     } catch (error) {
-      console.error('Error updating cart quantity:', error);
+      console.error('Error updating quantity:', error);
       toast.error('Failed to update quantity');
     }
   };
@@ -231,23 +267,26 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       setCartItems([]);
+      toast.success('Cart cleared');
     } catch (error) {
       console.error('Error clearing cart:', error);
       toast.error('Failed to clear cart');
     }
   };
 
+  const value: CartContextType = {
+    cartItems,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    totalItems,
+    totalPrice,
+    isLoading
+  };
+
   return (
-    <CartContext.Provider value={{
-      cartItems,
-      addToCart,
-      removeFromCart,
-      updateQuantity,
-      clearCart,
-      totalItems,
-      totalPrice,
-      isLoading
-    }}>
+    <CartContext.Provider value={value}>
       {children}
     </CartContext.Provider>
   );

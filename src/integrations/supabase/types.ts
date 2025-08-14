@@ -49,25 +49,34 @@ export type Database = {
       }
       cart: {
         Row: {
+          color: string | null
           created_at: string
           id: string
           product_id: string
           quantity: number
+          size: string | null
           user_id: string
+          variant_id: string | null
         }
         Insert: {
+          color?: string | null
           created_at?: string
           id?: string
           product_id: string
           quantity?: number
+          size?: string | null
           user_id: string
+          variant_id?: string | null
         }
         Update: {
+          color?: string | null
           created_at?: string
           id?: string
           product_id?: string
           quantity?: number
+          size?: string | null
           user_id?: string
+          variant_id?: string | null
         }
         Relationships: [
           {

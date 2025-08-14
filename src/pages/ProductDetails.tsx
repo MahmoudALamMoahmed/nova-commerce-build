@@ -153,12 +153,15 @@ const ProductDetails = () => {
   const handleAddToCart = () => {
     // Convert to the format expected by the cart context
     const cartProduct = {
-      id: selectedVariant ? selectedVariant.id : product.id,
+      id: selectedVariant ? selectedVariant.product_id : product.id,
       name: product.title,
       price: currentPrice,
       description: product.description || '',
       image: currentImage,
-      stock_quantity: product.stock_quantity || 0
+      stock_quantity: currentStock,
+      variant_id: selectedVariant?.id,
+      color: selectedVariant?.color,
+      size: selectedVariant?.size
     };
     
     addToCart(cartProduct);
