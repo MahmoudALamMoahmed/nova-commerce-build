@@ -21,6 +21,7 @@ import {
 import { toast } from 'sonner';
 import { Trash2, Edit, Plus, Package, Upload, X } from 'lucide-react';
 import CategoryModal from '@/components/admin/CategoryModal';
+import ProductVariantForm from '@/components/admin/ProductVariantForm';
 
 interface Product {
   id: string;
@@ -30,6 +31,17 @@ interface Product {
   image: string | null;
   category_id: string | null;
   stock_quantity: number;
+  created_at: string;
+}
+
+interface ProductVariant {
+  id: string;
+  product_id: string;
+  color: string;
+  size: string;
+  stock_quantity: number;
+  image?: string;
+  price?: number;
   created_at: string;
 }
 
@@ -58,6 +70,8 @@ const AdminProducts = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
+  const [productVariants, setProductVariants] = useState<ProductVariant[]>([]);
+  const [showVariants, setShowVariants] = useState(false);
 
   const fetchProducts = async () => {
     try {
@@ -104,6 +118,27 @@ const AdminProducts = () => {
     } catch (error) {
       console.error('Error fetching categories:', error);
       toast.error('Failed to fetch categories');
+    }
+  };
+
+  const fetchProductVariants = async (productId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('product_variants')
+        .select('*')
+        .eq('product_id', productId)
+        .order('color', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching product variants:', error);
+        toast.error('Failed to fetch product variants');
+        return;
+      }
+
+      setProductVariants(data || []);
+    } catch (error) {
+      console.error('Error fetching product variants:', error);
+      toast.error('Failed to fetch product variants');
     }
   };
 
@@ -289,6 +324,7 @@ const AdminProducts = () => {
     });
     setSelectedFile(null);
     setShowForm(true);
+    fetchProductVariants(product.id);
   };
 
   const handleDelete = async (product: Product) => {
@@ -323,10 +359,19 @@ const AdminProducts = () => {
   };
 
   const resetForm = () => {
-    setFormData({ title: '', price: '', description: '', image: '', category_id: '', stock_quantity: '' });
-    setSelectedFile(null);
     setEditingProduct(null);
     setShowForm(false);
+    setShowVariants(false);
+    setFormData({
+      title: '',
+      price: '',
+      description: '',
+      image: '',
+      category_id: '',
+      stock_quantity: ''
+    });
+    setSelectedFile(null);
+    setProductVariants([]);
   };
 
   const removeSelectedFile = () => {
@@ -493,8 +538,28 @@ const AdminProducts = () => {
                   <Button type="button" variant="outline" onClick={resetForm}>
                     Cancel
                   </Button>
+                  {editingProduct && (
+                    <Button 
+                      type="button" 
+                      variant="secondary" 
+                      onClick={() => setShowVariants(!showVariants)}
+                    >
+                      {showVariants ? 'Hide Variants' : 'Manage Variants'}
+                    </Button>
+                  )}
                 </div>
               </form>
+            </div>
+          )}
+
+          {/* Product Variants Form */}
+          {showForm && editingProduct && showVariants && (
+            <div className="mb-6">
+              <ProductVariantForm
+                productId={editingProduct.id}
+                variants={productVariants}
+                onVariantsChange={setProductVariants}
+              />
             </div>
           )}
 

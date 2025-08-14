@@ -181,16 +181,32 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
 
       // Update stock quantities for each product using secure function
       for (const item of cartItems) {
-        const { data: updateResult, error: updateError } = await supabase
-          .rpc('update_product_stock', {
-            product_id_param: item.id,
-            quantity_to_reduce: item.quantity
-          });
+        if (item.variant_id) {
+          // Update variant stock
+          const { data: updateResult, error: updateError } = await supabase
+            .rpc('update_product_variant_stock', {
+              variant_id_param: item.variant_id,
+              quantity_to_reduce: item.quantity
+            });
 
-        if (updateError) {
-          console.error('Error updating product stock:', updateError);
-        } else if (!updateResult) {
-          console.error('Failed to update stock for product:', item.id);
+          if (updateError) {
+            console.error('Error updating variant stock:', updateError);
+          } else if (!updateResult) {
+            console.error('Failed to update stock for variant:', item.variant_id);
+          }
+        } else {
+          // Update product stock (for products without variants)
+          const { data: updateResult, error: updateError } = await supabase
+            .rpc('update_product_stock', {
+              product_id_param: item.id,
+              quantity_to_reduce: item.quantity
+            });
+
+          if (updateError) {
+            console.error('Error updating product stock:', updateError);
+          } else if (!updateResult) {
+            console.error('Failed to update stock for product:', item.id);
+          }
         }
       }
 

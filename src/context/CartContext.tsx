@@ -11,6 +11,9 @@ export interface CartItem {
   price: number;
   image: string;
   quantity: number;
+  variant_id?: string;
+  color?: string;
+  size?: string;
 }
 
 interface CartContextType {
