@@ -30,8 +30,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
       return;
     }
     
-    await addToCart(product);
-    toast.success(`${product.name} added to cart!`);
+    // Navigate to product details to select variant instead of adding directly
+    toast.info('Please select product options on the product page');
   };
 
   const handleToggleFavorite = async (e: React.MouseEvent) => {
@@ -111,15 +111,19 @@ const ProductCard = ({ product }: ProductCardProps) => {
             <Eye size={16} className={`${isRTL ? 'ml-2' : 'mr-2'}`} /> {t('products.viewDetails')}
           </Link>
 
-          <Button 
-            onClick={handleAddToCart}
-            variant="default" 
-            disabled={product.stock_quantity === 0}
-            className="w-full bg-brand-accent hover:bg-brand-accent/90 disabled:opacity-50 disabled:cursor-not-allowed"
+          <Link
+            to={`/products/${product.id}`}
+            className="w-full bg-brand-accent hover:bg-brand-accent/90 disabled:opacity-50 disabled:cursor-not-allowed text-white flex items-center justify-center py-2 rounded-md transition-colors"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (product.stock_quantity === 0) {
+                e.preventDefault();
+              }
+            }}
           >
             <ShoppingCart size={16} className={`${isRTL ? 'ml-2' : 'mr-2'}`} /> 
-            {product.stock_quantity === 0 ? 'Out of Stock' : t('products.addToCart')}
-          </Button>
+            {product.stock_quantity === 0 ? 'Out of Stock' : 'Select Options'}
+          </Link>
         </div>
       </div>
     </Link>

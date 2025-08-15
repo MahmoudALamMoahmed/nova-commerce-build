@@ -173,11 +173,11 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
         return false;
       }
 
-      // Create order items - all items now have variant_id
+      // Create order items with variant_id
       const orderItems = cartItems.map(item => ({
         order_id: orderData.id,
-        product_id: null, // No longer using product_id directly
-        variant_id: item.variant_id,
+        product_id: item.variant_id ? null : item.id, // Keep product_id for items without variants
+        variant_id: item.variant_id || null,
         quantity: item.quantity,
         price: item.price
       }));
@@ -192,19 +192,34 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
         return false;
       }
 
-      // Update stock quantities for each variant using secure function
+      // Update stock quantities for each item
       for (const item of cartItems) {
-        // All items now have variant_id
-        const { data: updateResult, error: updateError } = await supabase
-          .rpc('update_product_variant_stock', {
-            variant_id_param: item.variant_id,
-            quantity_to_reduce: item.quantity
-          });
+        if (item.variant_id) {
+          // Update variant stock
+          const { data: updateResult, error: updateError } = await supabase
+            .rpc('update_product_variant_stock', {
+              variant_id_param: item.variant_id,
+              quantity_to_reduce: item.quantity
+            });
 
-        if (updateError) {
-          console.error('Error updating variant stock:', updateError);
-        } else if (!updateResult) {
-          console.error('Failed to update stock for variant:', item.variant_id);
+          if (updateError) {
+            console.error('Error updating variant stock:', updateError);
+          } else if (!updateResult) {
+            console.error('Failed to update stock for variant:', item.variant_id);
+          }
+        } else {
+          // Update product stock for items without variants
+          const { data: updateResult, error: updateError } = await supabase
+            .rpc('update_product_stock', {
+              product_id_param: item.id,
+              quantity_to_reduce: item.quantity
+            });
+
+          if (updateError) {
+            console.error('Error updating product stock:', updateError);
+          } else if (!updateResult) {
+            console.error('Failed to update stock for product:', item.id);
+          }
         }
       }
 
