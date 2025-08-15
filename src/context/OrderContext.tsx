@@ -173,11 +173,11 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
         return false;
       }
 
-      // Create order items
+      // Create order items - all items now have variant_id
       const orderItems = cartItems.map(item => ({
         order_id: orderData.id,
-        product_id: item.variant_id ? null : item.id,
-        variant_id: item.variant_id || null,
+        product_id: null, // No longer using product_id directly
+        variant_id: item.variant_id,
         quantity: item.quantity,
         price: item.price
       }));
@@ -192,34 +192,19 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
         return false;
       }
 
-      // Update stock quantities for each product using secure function
+      // Update stock quantities for each variant using secure function
       for (const item of cartItems) {
-        if (item.variant_id) {
-          // Update variant stock
-          const { data: updateResult, error: updateError } = await supabase
-            .rpc('update_product_variant_stock', {
-              variant_id_param: item.variant_id,
-              quantity_to_reduce: item.quantity
-            });
+        // All items now have variant_id
+        const { data: updateResult, error: updateError } = await supabase
+          .rpc('update_product_variant_stock', {
+            variant_id_param: item.variant_id,
+            quantity_to_reduce: item.quantity
+          });
 
-          if (updateError) {
-            console.error('Error updating variant stock:', updateError);
-          } else if (!updateResult) {
-            console.error('Failed to update stock for variant:', item.variant_id);
-          }
-        } else {
-          // Update product stock (for products without variants)
-          const { data: updateResult, error: updateError } = await supabase
-            .rpc('update_product_stock', {
-              product_id_param: item.id,
-              quantity_to_reduce: item.quantity
-            });
-
-          if (updateError) {
-            console.error('Error updating product stock:', updateError);
-          } else if (!updateResult) {
-            console.error('Failed to update stock for product:', item.id);
-          }
+        if (updateError) {
+          console.error('Error updating variant stock:', updateError);
+        } else if (!updateResult) {
+          console.error('Failed to update stock for variant:', item.variant_id);
         }
       }
 

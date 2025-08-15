@@ -67,11 +67,18 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
           variant_id,
           color,
           size,
-          products (
+          product_variants (
             id,
-            title,
+            color,
+            size,
             price,
-            image
+            image,
+            products (
+              id,
+              title,
+              price,
+              image
+            )
           )
         `)
         .eq('user_id', user.id);
@@ -83,14 +90,14 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       const formattedItems: CartItem[] = data?.map(item => ({
-        id: item.variant_id || item.products.id,
-        name: item.products.title,
-        price: item.products.price,
-        image: item.products.image || 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500',
+        id: item.variant_id,
+        name: item.product_variants.products.title,
+        price: item.product_variants.price || item.product_variants.products.price,
+        image: item.product_variants.image || item.product_variants.products.image || 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500',
         quantity: item.quantity,
         variant_id: item.variant_id,
-        color: item.color,
-        size: item.size
+        color: item.product_variants.color,
+        size: item.product_variants.size
       })) || [];
 
       setCartItems(formattedItems);
@@ -108,21 +115,19 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       return;
     }
 
+    if (!product.variant_id) {
+      toast.error('Product variant is required');
+      return;
+    }
+
     try {
-      // Check if item already exists in cart
-      let checkQuery = supabase
+      // Check if item already exists in cart using variant_id
+      const { data: existingItem, error: checkError } = await supabase
         .from('cart')
         .select('id, quantity')
         .eq('user_id', user.id)
-        .eq('product_id', product.id);
-
-      if (product.variant_id) {
-        checkQuery = checkQuery.eq('variant_id', product.variant_id);
-      } else {
-        checkQuery = checkQuery.is('variant_id', null);
-      }
-
-      const { data: existingItem, error: checkError } = await checkQuery.single();
+        .eq('variant_id', product.variant_id)
+        .single();
 
       if (checkError && checkError.code !== 'PGRST116') {
         console.error('Error checking existing cart item:', checkError);
@@ -149,7 +154,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
           .insert({
             user_id: user.id,
             product_id: product.id,
-            variant_id: product.variant_id || null,
+            variant_id: product.variant_id,
             color: product.color || null,
             size: product.size || null,
             quantity: 1
@@ -175,22 +180,12 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     if (!user) return;
 
     try {
-      // Find the cart item by product_id or variant_id
-      const cartItem = cartItems.find(item => item.id === itemId);
-      if (!cartItem) return;
-
-      let deleteQuery = supabase
+      // Remove cart item by variant_id (itemId is now variant_id)
+      const { error } = await supabase
         .from('cart')
         .delete()
-        .eq('user_id', user.id);
-
-      if (cartItem.variant_id) {
-        deleteQuery = deleteQuery.eq('variant_id', cartItem.variant_id);
-      } else {
-        deleteQuery = deleteQuery.eq('product_id', itemId).is('variant_id', null);
-      }
-
-      const { error } = await deleteQuery;
+        .eq('user_id', user.id)
+        .eq('variant_id', itemId);
 
       if (error) {
         console.error('Error removing from cart:', error);
@@ -216,22 +211,12 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     try {
-      // Find the cart item by product_id or variant_id
-      const cartItem = cartItems.find(item => item.id === itemId);
-      if (!cartItem) return;
-
-      let updateQuery = supabase
+      // Update cart item by variant_id (itemId is now variant_id)
+      const { error } = await supabase
         .from('cart')
         .update({ quantity })
-        .eq('user_id', user.id);
-
-      if (cartItem.variant_id) {
-        updateQuery = updateQuery.eq('variant_id', cartItem.variant_id);
-      } else {
-        updateQuery = updateQuery.eq('product_id', itemId).is('variant_id', null);
-      }
-
-      const { error } = await updateQuery;
+        .eq('user_id', user.id)
+        .eq('variant_id', itemId);
 
       if (error) {
         console.error('Error updating quantity:', error);
