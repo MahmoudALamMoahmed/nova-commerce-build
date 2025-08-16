@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { Trash2, Plus, Upload, X, Package } from 'lucide-react';
+import { Trash2, Plus, Upload, X, Package, Check, Edit } from 'lucide-react';
 
 interface ProductVariant {
   id: string;
@@ -36,6 +36,12 @@ const ProductVariantForm = ({ productId, variants, onVariantsChange }: ProductVa
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [editingVariant, setEditingVariant] = useState<string | null>(null);
+  const [editingData, setEditingData] = useState<{
+    color: string;
+    size: string;
+    stock_quantity: number;
+    price: number | null;
+  } | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -143,21 +149,34 @@ const ProductVariantForm = ({ productId, variants, onVariantsChange }: ProductVa
     }
   };
 
-  const handleUpdateVariant = async (variantId: string, field: string, value: string) => {
-    try {
-      const updateData: any = {};
-      if (field === 'stock_quantity') {
-        updateData.stock_quantity = parseInt(value);
-      } else if (field === 'price') {
-        updateData.price = value ? parseFloat(value) : null;
-      } else {
-        updateData[field] = value;
-      }
+  const startEditing = (variant: ProductVariant) => {
+    setEditingVariant(variant.id);
+    setEditingData({
+      color: variant.color,
+      size: variant.size,
+      stock_quantity: variant.stock_quantity,
+      price: variant.price || null
+    });
+  };
 
+  const cancelEditing = () => {
+    setEditingVariant(null);
+    setEditingData(null);
+  };
+
+  const saveVariant = async () => {
+    if (!editingData || !editingVariant) return;
+
+    try {
       const { error } = await supabase
         .from('product_variants')
-        .update(updateData)
-        .eq('id', variantId);
+        .update({
+          color: editingData.color,
+          size: editingData.size,
+          stock_quantity: editingData.stock_quantity,
+          price: editingData.price
+        })
+        .eq('id', editingVariant);
 
       if (error) {
         console.error('Error updating variant:', error);
@@ -166,10 +185,11 @@ const ProductVariantForm = ({ productId, variants, onVariantsChange }: ProductVa
       }
 
       const updatedVariants = variants.map(v => 
-        v.id === variantId ? { ...v, [field]: field === 'stock_quantity' ? parseInt(value) : (field === 'price' ? (value ? parseFloat(value) : null) : value) } : v
+        v.id === editingVariant ? { ...v, ...editingData } : v
       );
       onVariantsChange(updatedVariants);
       setEditingVariant(null);
+      setEditingData(null);
       toast.success('Variant updated successfully');
     } catch (error) {
       console.error('Error updating variant:', error);
@@ -263,86 +283,84 @@ const ProductVariantForm = ({ productId, variants, onVariantsChange }: ProductVa
                     )}
                   </TableCell>
                   <TableCell>
-                    {editingVariant === variant.id ? (
+                    {editingVariant === variant.id && editingData ? (
                       <Input
-                        defaultValue={variant.color}
-                        onBlur={(e) => handleUpdateVariant(variant.id, 'color', e.target.value)}
-                        autoFocus
+                        value={editingData.color}
+                        onChange={(e) => setEditingData(prev => prev ? { ...prev, color: e.target.value } : null)}
                       />
                     ) : (
-                      <span 
-                        onClick={() => setEditingVariant(variant.id)}
-                        className="cursor-pointer hover:underline"
-                      >
-                        {variant.color}
-                      </span>
+                      <span>{variant.color}</span>
                     )}
                   </TableCell>
                   <TableCell>
-                    {editingVariant === variant.id ? (
+                    {editingVariant === variant.id && editingData ? (
                       <Input
-                        defaultValue={variant.size}
-                        onBlur={(e) => handleUpdateVariant(variant.id, 'size', e.target.value)}
+                        value={editingData.size}
+                        onChange={(e) => setEditingData(prev => prev ? { ...prev, size: e.target.value } : null)}
                       />
                     ) : (
-                      <span 
-                        onClick={() => setEditingVariant(variant.id)}
-                        className="cursor-pointer hover:underline"
-                      >
-                        {variant.size}
-                      </span>
+                      <span>{variant.size}</span>
                     )}
                   </TableCell>
                   <TableCell>
-                    {editingVariant === variant.id ? (
+                    {editingVariant === variant.id && editingData ? (
                       <Input
                         type="number"
-                        defaultValue={variant.stock_quantity}
-                        onBlur={(e) => handleUpdateVariant(variant.id, 'stock_quantity', e.target.value)}
+                        value={editingData.stock_quantity}
+                        onChange={(e) => setEditingData(prev => prev ? { ...prev, stock_quantity: parseInt(e.target.value) || 0 } : null)}
                       />
                     ) : (
-                      <span 
-                        onClick={() => setEditingVariant(variant.id)}
-                        className="cursor-pointer hover:underline"
-                      >
-                        {variant.stock_quantity}
-                      </span>
+                      <span>{variant.stock_quantity}</span>
                     )}
                   </TableCell>
                   <TableCell>
-                    {editingVariant === variant.id ? (
+                    {editingVariant === variant.id && editingData ? (
                       <Input
                         type="number"
                         step="0.01"
-                        defaultValue={variant.price || ''}
-                        onBlur={(e) => handleUpdateVariant(variant.id, 'price', e.target.value)}
+                        value={editingData.price || ''}
+                        onChange={(e) => setEditingData(prev => prev ? { ...prev, price: e.target.value ? parseFloat(e.target.value) : null } : null)}
                       />
                     ) : (
-                      <span 
-                        onClick={() => setEditingVariant(variant.id)}
-                        className="cursor-pointer hover:underline"
-                      >
-                        {variant.price ? `$${variant.price}` : '-'}
-                      </span>
+                      <span>{variant.price ? `$${variant.price}` : '-'}</span>
                     )}
                   </TableCell>
                   <TableCell>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setEditingVariant(variant.id)}
-                      >
-                        <Package className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleDeleteVariant(variant.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
+                    {editingVariant === variant.id ? (
+                      <div className="flex gap-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={saveVariant}
+                        >
+                          <Check className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={cancelEditing}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex gap-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => startEditing(variant)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDeleteVariant(variant.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
