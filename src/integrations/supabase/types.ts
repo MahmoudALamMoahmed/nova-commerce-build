@@ -172,27 +172,27 @@ export type Database = {
           id: string
           order_id: string
           price: number
-          product_id: string
+          product_id: string | null
           quantity: number
-          variant_id: string
+          variant_id: string | null
         }
         Insert: {
           created_at?: string
           id?: string
           order_id: string
           price: number
-          product_id: string
+          product_id?: string | null
           quantity?: number
-          variant_id: string
+          variant_id?: string | null
         }
         Update: {
           created_at?: string
           id?: string
           order_id?: string
           price?: number
-          product_id?: string
+          product_id?: string | null
           quantity?: number
-          variant_id?: string
+          variant_id?: string | null
         }
         Relationships: [
           {

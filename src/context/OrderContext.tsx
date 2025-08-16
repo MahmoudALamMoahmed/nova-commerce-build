@@ -176,7 +176,7 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
       // Create order items with variant_id
       const orderItems = cartItems.map(item => ({
         order_id: orderData.id,
-        product_id: item.variant_id ? null : item.id, // Keep product_id for items without variants
+        product_id: item.id, // Always use item.id as the product_id
         variant_id: item.variant_id || null,
         quantity: item.quantity,
         price: item.price
