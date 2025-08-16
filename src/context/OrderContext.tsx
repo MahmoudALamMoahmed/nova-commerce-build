@@ -20,9 +20,16 @@ export interface OrderItem {
     image?: string;
   };
   product_variants?: {
+    id: string;
     color: string;
     size: string;
     image?: string;
+    products?: {
+      id: string;
+      title: string;
+      price: number;
+      image?: string;
+    };
   };
 }
 
@@ -107,9 +114,16 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
               image
             ),
             product_variants (
+              id,
               color,
               size,
-              image
+              image,
+              products (
+                id,
+                title,
+                price,
+                image
+              )
             )
           )
         `)
@@ -173,13 +187,24 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
         return false;
       }
 
-      // Create order items with variant_id
-      const orderItems = cartItems.map(item => ({
-        order_id: orderData.id,
-        product_id: item.id, // Always use item.id as the product_id
-        variant_id: item.variant_id || null,
-        quantity: item.quantity,
-        price: item.price
+      // Create order items with correct product_id and variant_id mapping
+      // Note: cart items have id = variant_id, we need to get product_id from the cart database
+      const orderItems = await Promise.all(cartItems.map(async (item) => {
+        // Get the product_id from cart table since cart item.id is variant_id
+        const { data: cartData } = await supabase
+          .from('cart')
+          .select('product_id')
+          .eq('user_id', user.id)
+          .eq('variant_id', item.variant_id)
+          .single();
+
+        return {
+          order_id: orderData.id,
+          product_id: cartData?.product_id || null,
+          variant_id: item.variant_id || null,
+          quantity: item.quantity,
+          price: item.price
+        };
       }));
 
       const { error: itemsError } = await supabase

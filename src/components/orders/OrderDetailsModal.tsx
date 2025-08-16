@@ -80,32 +80,44 @@ export const OrderDetailsModal = ({ order, onClose }: OrderDetailsModalProps) =>
             </CardHeader>
             <CardContent className="pt-0">
               <div className="space-y-3">
-                {order.order_items?.map((item: any) => (
-                  <div key={item.id} className="flex items-center gap-4 p-4 border rounded-lg bg-muted">
-                    {item.products?.image ? (
-                      <img 
-                        src={item.products.image} 
-                        alt={item.products.title} 
-                        className="h-16 w-16 rounded-lg object-cover border-2 border-background shadow-sm"
-                      />
-                    ) : (
-                      <div className="h-16 w-16 rounded-lg bg-background flex items-center justify-center border-2 border-background shadow-sm">
-                        <Package className="h-6 w-6 text-muted-foreground" />
+                {order.order_items?.map((item: any) => {
+                  // Get product info from either direct product or variant's product
+                  const product = item.products || item.product_variants?.products;
+                  const productImage = item.product_variants?.image || product?.image;
+                  const productTitle = product?.title || 'Unknown Product';
+                  
+                  return (
+                    <div key={item.id} className="flex items-center gap-4 p-4 border rounded-lg bg-muted">
+                      {productImage ? (
+                        <img 
+                          src={productImage} 
+                          alt={productTitle} 
+                          className="h-16 w-16 rounded-lg object-cover border-2 border-background shadow-sm"
+                        />
+                      ) : (
+                        <div className="h-16 w-16 rounded-lg bg-background flex items-center justify-center border-2 border-background shadow-sm">
+                          <Package className="h-6 w-6 text-muted-foreground" />
+                        </div>
+                      )}
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-foreground">{productTitle}</h4>
+                        {item.product_variants && (
+                          <p className="text-xs text-muted-foreground">
+                            Color: {item.product_variants.color} • Size: {item.product_variants.size}
+                          </p>
+                        )}
+                        <p className="text-sm text-muted-foreground mt-1">
+                          ${item.price.toFixed(2)} × {item.quantity} {item.quantity > 1 ? 'items' : 'item'}
+                        </p>
                       </div>
-                    )}
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-foreground">{item.products?.title || 'Unknown Product'}</h4>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        ${item.price.toFixed(2)} × {item.quantity} {item.quantity > 1 ? 'items' : 'item'}
-                      </p>
+                      <div className="text-right">
+                        <p className="font-bold text-lg text-foreground">
+                          ${(item.price * item.quantity).toFixed(2)}
+                        </p>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-bold text-lg text-foreground">
-                        ${(item.price * item.quantity).toFixed(2)}
-                      </p>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </CardContent>
           </Card>
