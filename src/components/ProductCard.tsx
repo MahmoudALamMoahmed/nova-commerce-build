@@ -89,7 +89,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       <div className="p-4">
         <h3 className="text-lg font-medium mb-2">{product.name}</h3>
         <div className="flex justify-between items-center mb-2">
-          <span className="text-brand-accent font-semibold">${product.price.toFixed(2)}ج.م</span>
+          <span className="text-brand-accent font-semibold">{product.price.toFixed(2)}ج.م</span>
         </div>
         <div className="mb-3">
           <span className={`text-xs px-2 py-1 rounded-full ${
