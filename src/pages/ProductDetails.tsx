@@ -213,7 +213,7 @@ const ProductDetails = () => {
             <p className="text-sm text-gray-500 mb-2">Category: {category.name}</p>
           )}
           <p className="text-2xl text-brand-accent font-semibold mb-2">
-            ${currentPrice.toFixed(2)}
+            {currentPrice.toFixed(2)}ج.م
           </p>
           
           {/* Variant Selection */}
