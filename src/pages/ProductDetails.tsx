@@ -147,7 +147,7 @@ const ProductDetails = () => {
 
   // Get current price and stock
   const currentPrice = selectedVariant?.price || product?.price || 0;
-  const currentStock = selectedVariant?.stock_quantity || product?.stock_quantity || 0;
+  const currentStock = selectedVariant ? selectedVariant.stock_quantity : (product?.stock_quantity || 0);
   const currentImage = selectedVariant?.image || product?.image || 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500';
 
   const handleAddToCart = () => {
