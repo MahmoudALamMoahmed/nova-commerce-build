@@ -15,7 +15,6 @@ interface Product {
   description: string | null;
   image: string | null;
   category_id: string | null;
-  stock_quantity: number;
 }
 
 interface Category {
@@ -189,7 +188,7 @@ const Products = () => {
                   price: product.price,
                   description: product.description || '',
                   image: product.image || 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500',
-                  stock_quantity: product.stock_quantity || 0
+                  
                 }} />
               ))}
             </div>

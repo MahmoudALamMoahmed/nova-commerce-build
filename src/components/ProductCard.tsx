@@ -22,7 +22,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const { addToCart } = useCart();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const { user } = useUser();
-  const [totalStock, setTotalStock] = useState(product.stock_quantity);
+  const [totalStock, setTotalStock] = useState(0);
 
   useEffect(() => {
     const fetchVariantStock = async () => {
@@ -36,17 +36,16 @@ const ProductCard = ({ product }: ProductCardProps) => {
           const variantTotalStock = variants.reduce((sum, variant) => sum + (variant.stock_quantity || 0), 0);
           setTotalStock(variantTotalStock);
         } else {
-          // If no variants, use the base product stock
-          setTotalStock(product.stock_quantity);
+          setTotalStock(0);
         }
       } catch (error) {
         console.error('Error fetching variant stock:', error);
-        setTotalStock(product.stock_quantity);
+        setTotalStock(0);
       }
     };
 
     fetchVariantStock();
-  }, [product.id, product.stock_quantity]);
+  }, [product.id]);
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
