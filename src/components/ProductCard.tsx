@@ -8,6 +8,8 @@ import { useFavorites } from '@/context/FavoritesContext';
 import { useUser } from '@/context/UserContext';
 import { Product } from '@/data/products';
 import { useTranslation } from 'react-i18next';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ProductCardProps {
   product: Product;
@@ -20,6 +22,31 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const { addToCart } = useCart();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const { user } = useUser();
+  const [totalStock, setTotalStock] = useState(product.stock_quantity);
+
+  useEffect(() => {
+    const fetchVariantStock = async () => {
+      try {
+        const { data: variants } = await supabase
+          .from('product_variants')
+          .select('stock_quantity')
+          .eq('product_id', product.id);
+
+        if (variants && variants.length > 0) {
+          const variantTotalStock = variants.reduce((sum, variant) => sum + (variant.stock_quantity || 0), 0);
+          setTotalStock(variantTotalStock);
+        } else {
+          // If no variants, use the base product stock
+          setTotalStock(product.stock_quantity);
+        }
+      } catch (error) {
+        console.error('Error fetching variant stock:', error);
+        setTotalStock(product.stock_quantity);
+      }
+    };
+
+    fetchVariantStock();
+  }, [product.id, product.stock_quantity]);
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -93,13 +120,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </div>
         <div className="mb-3">
           <span className={`text-xs px-2 py-1 rounded-full ${
-            product.stock_quantity === 0 
+            totalStock === 0 
               ? 'bg-red-100 text-red-800' 
-              : product.stock_quantity <= 5 
+              : totalStock <= 5 
               ? 'bg-yellow-100 text-yellow-800' 
               : 'bg-green-100 text-green-800'
           }`}>
-            {product.stock_quantity === 0 ? 'Out of Stock' : `${product.stock_quantity} in stock`}
+            {totalStock === 0 ? 'Out of Stock' : `${totalStock} in stock`}
           </span>
         </div>
         <div className="flex flex-col gap-2">
@@ -116,13 +143,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
             className="w-full bg-brand-accent hover:bg-brand-accent/90 disabled:opacity-50 disabled:cursor-not-allowed text-white flex items-center justify-center py-2 rounded-md transition-colors"
             onClick={(e) => {
               e.stopPropagation();
-              if (product.stock_quantity === 0) {
+              if (totalStock === 0) {
                 e.preventDefault();
               }
             }}
           >
             <ShoppingCart size={16} className={`${isRTL ? 'ml-2' : 'mr-2'}`} /> 
-            {product.stock_quantity === 0 ? 'Out of Stock' : 'Select Options'}
+            {totalStock === 0 ? 'Out of Stock' : 'Select Options'}
           </Link>
         </div>
       </div>
