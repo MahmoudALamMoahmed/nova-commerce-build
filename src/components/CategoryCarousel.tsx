@@ -66,9 +66,11 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
         <Carousel
         opts={{
           align: "start",
-          dragFree: true,
+          dragFree: false,
           containScroll: "trimSnaps",
-          slidesToScroll: 1,
+          slidesToScroll: "auto",
+          skipSnaps: false,
+          loop: false,
         }}
         className="w-full"
       >
@@ -138,11 +140,9 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
           ))}
         </CarouselContent>
         
-        {/* Navigation arrows - only show on larger screens */}
-        <div className="hidden md:block">
-          <CarouselPrevious className="absolute -left-12 top-1/2 -translate-y-1/2" />
-          <CarouselNext className="absolute -right-12 top-1/2 -translate-y-1/2" />
-        </div>
+        {/* Navigation arrows */}
+        <CarouselPrevious className="hidden md:flex -left-12 top-1/2 -translate-y-1/2" />
+        <CarouselNext className="hidden md:flex -right-12 top-1/2 -translate-y-1/2" />
       </Carousel>
     </div>
   );
