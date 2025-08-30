@@ -62,21 +62,21 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
   const { t } = useTranslation();
 
   return (
-    <div className="mb-8">
-        <Carousel
+    <div className="mb-8 relative">
+      <Carousel
         opts={{
           align: "start",
           dragFree: false,
           containScroll: "trimSnaps",
-          slidesToScroll: "auto",
+          slidesToScroll: 1,
           skipSnaps: false,
           loop: false,
         }}
         className="w-full"
       >
-        <CarouselContent className="-ml-2 md:-ml-4">
+        <CarouselContent className="-ml-1">
           {/* All Categories Item */}
-          <CarouselItem className="pl-2 md:pl-4 basis-auto">
+          <CarouselItem className="pl-1 basis-1/6 sm:basis-1/5 md:basis-1/6 lg:basis-1/8">
             <div 
               className={`flex flex-col items-center cursor-pointer transition-all duration-200 ${
                 !selectedCategory || selectedCategory === 'all' 
@@ -108,7 +108,7 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
 
           {/* Category Items */}
           {categories.map((category) => (
-            <CarouselItem key={category.id} className="pl-2 md:pl-4 basis-auto">
+            <CarouselItem key={category.id} className="pl-1 basis-1/6 sm:basis-1/5 md:basis-1/6 lg:basis-1/8">
               <div 
                 className={`flex flex-col items-center cursor-pointer transition-all duration-200 ${
                   selectedCategory === category.id 
@@ -141,8 +141,8 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
         </CarouselContent>
         
         {/* Navigation arrows */}
-        <CarouselPrevious className="hidden md:flex -left-12 top-1/2 -translate-y-1/2" />
-        <CarouselNext className="hidden md:flex -right-12 top-1/2 -translate-y-1/2" />
+        <CarouselPrevious className="hidden sm:flex" />
+        <CarouselNext className="hidden sm:flex" />
       </Carousel>
     </div>
   );
