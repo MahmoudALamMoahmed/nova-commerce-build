@@ -4,8 +4,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useTranslation } from 'react-i18next';
 import ProductCard from '../components/ProductCard';
 import Pagination from '../components/Pagination';
+import CategoryCarousel from '../components/CategoryCarousel';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search } from 'lucide-react';
 
 interface Product {
@@ -146,10 +146,17 @@ const Products = () => {
           Discover our curated collection of premium products.
         </p>
         
-        {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-8">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+        {/* Category Carousel */}
+        <CategoryCarousel
+          categories={categories}
+          selectedCategory={selectedCategory}
+          onCategoryChange={handleCategoryChange}
+        />
+        
+        {/* Search Filter */}
+        <div className="flex justify-center mb-8">
+          <div className="relative w-full max-w-md">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={20} />
             <Input
               type="text"
               placeholder={t('products.search')}
@@ -158,19 +165,6 @@ const Products = () => {
               className="pl-10"
             />
           </div>
-          <Select value={selectedCategory || 'all'} onValueChange={handleCategoryChange}>
-            <SelectTrigger className="w-full sm:w-48">
-              <SelectValue placeholder={t('products.allCategories')} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t('products.allCategories')}</SelectItem>
-              {categories.map((category) => (
-                <SelectItem key={category.id} value={category.id}>
-                  {category.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
         </div>
         
         {products.length === 0 ? (
