@@ -63,10 +63,12 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
 
   return (
     <div className="mb-8">
-      <Carousel
+        <Carousel
         opts={{
           align: "start",
           dragFree: true,
+          containScroll: "trimSnaps",
+          slidesToScroll: 1,
         }}
         className="w-full"
       >
@@ -81,7 +83,7 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
               }`}
               onClick={() => onCategoryChange('all')}
             >
-              <div className={`w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-3 transition-all duration-200 ${
+              <div className={`w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
                 !selectedCategory || selectedCategory === 'all'
                   ? 'border-primary shadow-lg scale-105'
                   : 'border-border hover:border-primary/50'
@@ -113,7 +115,7 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
                 }`}
                 onClick={() => onCategoryChange(category.id)}
               >
-                <div className={`w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-3 transition-all duration-200 ${
+                <div className={`w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
                   selectedCategory === category.id
                     ? 'border-primary shadow-lg scale-105'
                     : 'border-border hover:border-primary/50'
