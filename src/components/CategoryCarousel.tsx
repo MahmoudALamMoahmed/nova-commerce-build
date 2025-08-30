@@ -67,7 +67,7 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
         opts={{
           align: "start",
           dragFree: false,
-          containScroll: "trimSnaps",
+          containScroll: false,
           slidesToScroll: 1,
           skipSnaps: false,
           loop: false,
