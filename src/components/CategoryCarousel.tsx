@@ -65,18 +65,18 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
   return (
     <div className="mb-8 relative">
       <Carousel
-        dir="ltr"   // ✅ أجبر الاتجاه جوه الكاروسيل على LTR
+        dir="ltr"
         opts={{
-        align: "start",
-        dragFree: true,       // ✅ خلي السحب حر
-        containScroll: "trimSnaps", // ✅ يخلي الاسكرول يقف عند آخر عنصر
-        slidesToScroll: 1,
-        skipSnaps: true,      // ✅ يمنع الرجوع التلقائي
-        loop: false,
-      }}
+          align: "start",
+          dragFree: true,
+          containScroll: "trimSnaps",
+          slidesToScroll: 1,
+          skipSnaps: true,
+          loop: false,
+        }}
         className="w-full"
       >
-        <CarouselContent className="gap-0.5 sm:gap-0.5 md:gap-4 lg:gap-4">
+        <CarouselContent className="gap-0.5 sm:gap-1 md:gap-3 lg:gap-4">
           {/* All Categories Item */}
           <CarouselItem className="flex-shrink-0 basis-[80px] sm:basis-[90px] md:basis-[100px] lg:basis-[120px]">
             <div 
@@ -110,7 +110,10 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
 
           {/* Category Items */}
           {categories.map((category) => (
-            <CarouselItem key={category.id} className="basis-[100px] flex-shrink-0">
+            <CarouselItem
+              key={category.id}
+              className="flex-shrink-0 basis-[80px] sm:basis-[90px] md:basis-[100px] lg:basis-[120px]"
+            >
               <div 
                 className={`flex flex-col items-center cursor-pointer transition-all duration-200 ${
                   selectedCategory === category.id 
@@ -147,7 +150,8 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
         <CarouselNext className="hidden sm:flex" />
       </Carousel>
     </div>
-  );
+);
+
 };
 
 export default CategoryCarousel;
