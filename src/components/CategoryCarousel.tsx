@@ -65,13 +65,13 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
     <div className="mb-8 relative">
       <Carousel
         opts={{
-          align: "start",
-          dragFree: false,
-          containScroll: false,
-          slidesToScroll: 1,
-          skipSnaps: false,
-          loop: false,
-        }}
+        align: "start",
+        dragFree: true,       // ✅ خلي السحب حر
+        containScroll: "trimSnaps", // ✅ يخلي الاسكرول يقف عند آخر عنصر
+        slidesToScroll: 1,
+        skipSnaps: true,      // ✅ يمنع الرجوع التلقائي
+        loop: false,
+      }}
         className="w-full"
       >
         <CarouselContent className="-ml-1">
