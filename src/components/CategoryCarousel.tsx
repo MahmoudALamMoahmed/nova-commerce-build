@@ -65,7 +65,7 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
   return (
     <div className="mb-8 relative">
       <Carousel
-        className={` ${isRTL ? 'ltr' : 'ltr'}`}
+        dir={` ${isRTL ? 'ltr' : 'ltr'}`}
         opts={{
         align: "start",
         dragFree: true,       // ✅ خلي السحب حر
