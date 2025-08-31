@@ -59,7 +59,8 @@ const getCategoryImage = (categoryName: string) => {
 };
 
 const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: CategoryCarouselProps) => {
-  const { t } = useTranslation();
+  const { t,i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
 
   return (
     <div className="mb-8 relative">
@@ -73,7 +74,7 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
         skipSnaps: true,      // ✅ يمنع الرجوع التلقائي
         loop: false,
       }}
-        className="w-full"
+        className={`w-full ${isRTL ? 'rtl' : 'ltr'}`}
       >
         <CarouselContent className="-ml-1">
           {/* All Categories Item */}
