@@ -78,7 +78,7 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
       >
         <CarouselContent className="gap-4">
           {/* All Categories Item */}
-          <CarouselItem className="basis-[100px] flex-shrink-0">
+          <CarouselItem className="flex-shrink-0 basis-[80px] sm:basis-[90px] md:basis-[100px] lg:basis-[120px]">
             <div 
               className={`flex flex-col items-center cursor-pointer transition-all duration-200 ${
                 !selectedCategory || selectedCategory === 'all' 
