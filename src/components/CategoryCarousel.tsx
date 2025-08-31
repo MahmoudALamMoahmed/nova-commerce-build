@@ -76,7 +76,7 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
       }}
         className="w-full"
       >
-        <CarouselContent className="gap-6">
+        <CarouselContent className="gap-4">
           {/* All Categories Item */}
           <CarouselItem className="basis-[100px] flex-shrink-0">
             <div 
