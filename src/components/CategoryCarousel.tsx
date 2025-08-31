@@ -146,8 +146,8 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
         </CarouselContent>
         
         {/* Navigation arrows */}
-        <CarouselPrevious />
-        <CarouselNext />
+        <CarouselPrevious className="left-2 md:left-4 bg-white/80 rounded-full shadow p-2" />
+        <CarouselNext className="right-2 md:right-4 bg-white/80 rounded-full shadow p-2" />
       </Carousel>
     </div>
 );
