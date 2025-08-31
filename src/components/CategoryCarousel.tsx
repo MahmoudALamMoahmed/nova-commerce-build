@@ -24,7 +24,7 @@ const getCategoryImage = (categoryName: string) => {
   const name = categoryName.toLowerCase();
   
   if (name.includes('extra') || name.includes('side')) {
-    return 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&h=400&fit=crop&crop=center';
+    return 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
   }
   if (name.includes('salad')) {
     return 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=400&fit=crop&crop=center';
