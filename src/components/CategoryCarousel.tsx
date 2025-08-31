@@ -64,6 +64,7 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
   return (
     <div className="mb-8 relative">
       <Carousel
+        dir="ltr"   // ✅ أجبر الاتجاه جوه الكاروسيل على LTR
         opts={{
         align: "start",
         dragFree: true,       // ✅ خلي السحب حر
