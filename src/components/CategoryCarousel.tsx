@@ -76,9 +76,9 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
       }}
         className="w-full"
       >
-        <CarouselContent className="gap-4">
+        <CarouselContent className="gap-2">
           {/* All Categories Item */}
-          <CarouselItem className="basis-auto">
+          <CarouselItem className="w-auto">
             <div 
               className={`flex flex-col items-center cursor-pointer transition-all duration-200 ${
                 !selectedCategory || selectedCategory === 'all' 
@@ -110,7 +110,7 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
 
           {/* Category Items */}
           {categories.map((category) => (
-            <CarouselItem key={category.id} className="basis-auto">
+            <CarouselItem key={category.id} className="w-auto">
               <div 
                 className={`flex flex-col items-center cursor-pointer transition-all duration-200 ${
                   selectedCategory === category.id 
