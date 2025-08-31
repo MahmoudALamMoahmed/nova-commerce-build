@@ -63,9 +63,9 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
   const isRTL = i18n.language === 'ar';
 
   return (
-    <div className={`mb-8 relative ${isRTL ? 'ltr' : 'ltr'}`}>
+    <div className="mb-8 relative">
       <Carousel
-        dir={` ${isRTL ? 'ltr' : 'ltr'}`}
+        dir="ltr"   // ✅ أجبر الاتجاه جوه الكاروسيل على LTR
         opts={{
         align: "start",
         dragFree: true,       // ✅ خلي السحب حر
