@@ -65,7 +65,7 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
   return (
     <div className="mb-8 relative">
       <Carousel
-        dir="rtl"   // ✅ أجبر الاتجاه جوه الكاروسيل على LTR
+        dir={` ${isRTL ? 'ltr' : 'rtl'}`}
         opts={{
         align: "start",
         dragFree: true,       // ✅ خلي السحب حر
@@ -74,7 +74,7 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
         skipSnaps: true,      // ✅ يمنع الرجوع التلقائي
         loop: false,
       }}
-        className={`w-full ${isRTL ? 'rtl' : 'ltr'}`}
+        className="w-full"
       >
         <CarouselContent className="-ml-1">
           {/* All Categories Item */}
