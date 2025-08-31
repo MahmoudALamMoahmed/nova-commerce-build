@@ -93,7 +93,7 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
                   : 'border-border hover:border-primary/50'
               }`}>
                 <img
-                  src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&h=400&fit=crop&crop=center"
+                  src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                   alt="All Categories"
                   className="w-full h-full object-cover"
                 />
