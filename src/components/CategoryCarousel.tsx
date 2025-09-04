@@ -66,6 +66,7 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
     <div className="mb-8 relative">
       <Carousel
         dir="ltr"
+        className={`w-full ${isRTL ? '[&_.embla__container]:flex-row-reverse' : ''}`}
         opts={{
           align: "start",
           dragFree: true,
@@ -74,7 +75,6 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
           skipSnaps: true,
           loop: false,
         }}
-        className="w-full"
       >
         <CarouselContent className="gap-0.5 sm:gap-1 md:gap-3 lg:gap-4">
           {/* All Categories Item */}
