@@ -65,7 +65,8 @@ const CategoryCarousel = ({ categories, selectedCategory, onCategoryChange }: Ca
   return (
     <div className="mb-8 relative">
       <Carousel
-        className={`w-full ${isRTL ? '[&_.embla__container]:flex-row-reverse' : ''}`}
+        dir={isRTL ? "rtl" : "ltr"}   // يتحكم بالاتجاه حسب اللغة
+        className="w-full"
         opts={{
           align: "start",
           dragFree: true,
