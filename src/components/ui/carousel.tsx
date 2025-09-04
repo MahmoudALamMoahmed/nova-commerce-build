@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { useTranslation } from 'react-i18next';
 
 type CarouselApi = UseEmblaCarouselType[1]
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>
@@ -56,10 +57,13 @@ const Carousel = React.forwardRef<
     },
     ref
   ) => {
+    const { t,i18n } = useTranslation();
+    const isRTL = i18n.language === 'ar';
     const [carouselRef, api] = useEmblaCarousel(
       {
         ...opts,
         axis: orientation === "horizontal" ? "x" : "y",
+        direction: isRTL ? "rtl" : "ltr", // ✅ هنا
       },
       plugins
     )
