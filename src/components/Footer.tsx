@@ -57,15 +57,15 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-start">
                 <MapPin className={`h-5 w-5 text-brand-accent flex-shrink-0 ${isRTL ? 'ml-2' : 'mr-2'}`} />
-                <span className="text-gray-300">123 Commerce St, New York, NY 10001</span>
+                <span className="text-gray-300">Asiut , Qusia, Ray Street</span>
               </li>
               <li className="flex items-center">
                 <Phone className={`h-5 w-5 text-brand-accent flex-shrink-0 ${isRTL ? 'ml-2' : 'mr-2'}`} />
-                <a href="tel:+11234567890" dir="ltr" className="text-gray-300 hover:text-brand-accent transition-colors">+1 (123) 456-7890</a>
+                <a href="tel:+11234567890" dir="ltr" className="text-gray-300 hover:text-brand-accent transition-colors">+201062698964</a>
               </li>
               <li className="flex items-center">
                 <Mail className={`h-5 w-5 text-brand-accent flex-shrink-0 ${isRTL ? 'ml-2' : 'mr-2'}`} />
-                <a href="mailto:info@novashop.com" dir="ltr" className="text-gray-300 hover:text-brand-accent transition-colors">info@novashop.com</a>
+                <a href="mailto:info@novashop.com" dir="ltr" className="text-gray-300 hover:text-brand-accent transition-colors">novaecommerce@novashop.com</a>
               </li>
             </ul>
           </div>
