@@ -108,9 +108,9 @@ const Contact = () => {
                 <div>
                   <h3 className="text-lg font-medium text-gray-700 mb-2">{t('contact.address')}</h3>
                   <p className="text-gray-600">
-                    123 Design Street<br />
-                    San Francisco, CA 94107<br />
-                    United States
+                   Ray Street<br />
+                    Qusia<br />
+                    Asuit
                   </p>
                 </div>
                 
@@ -126,8 +126,8 @@ const Contact = () => {
                 <div>
                   <h3 className="text-lg font-medium text-gray-700 mb-2">{t('contact.phone')}</h3>
                   <p className="text-gray-600">
-                    Email: info@novashop.com<br />
-                    Phone: (555) 123-4567
+                    Email: novaecommerce@novashop.com<br />
+                    Phone: +201062698964
                   </p>
                 </div>
               </CardContent>
