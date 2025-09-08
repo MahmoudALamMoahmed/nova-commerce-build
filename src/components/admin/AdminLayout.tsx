@@ -14,7 +14,9 @@ import {
   LogOut,
   Tag,
   BarChart3,
-  Menu
+  Menu,
+  User,
+  ChevronDown
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
@@ -23,6 +25,14 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useState, useEffect } from 'react';
 
 interface AdminLayoutProps {
@@ -198,9 +208,42 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               </h2>
             </div>
             
-            <div className="text-sm text-gray-500">
-              {t('Welcome')}, {user.email}
-            </div>
+            {/* User Menu */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-2 h-auto p-2">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-brand-accent text-white text-sm">
+                      {user.email?.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className={cn("hidden sm:block text-left", isRTL && "text-right")}>
+                    <div className="text-sm font-medium text-gray-900">
+                      {userProfile?.name || t('Admin')}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {user.email}
+                    </div>
+                  </div>
+                  <ChevronDown className="h-4 w-4 text-gray-400" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align={isRTL ? "start" : "end"} className="w-56">
+                <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer">
+                  <User className={cn("h-4 w-4", isRTL ? "ml-2" : "mr-2")} />
+                  {t('Profile')}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/admin/settings')} className="cursor-pointer">
+                  <Settings className={cn("h-4 w-4", isRTL ? "ml-2" : "mr-2")} />
+                  {t('Settings')}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 focus:text-red-600">
+                  <LogOut className={cn("h-4 w-4", isRTL ? "ml-2" : "mr-2")} />
+                  {t('Logout')}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </header>
 
