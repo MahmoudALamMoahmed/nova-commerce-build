@@ -1,6 +1,5 @@
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { useUser } from '@/context/UserContext';
-import { Navigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -18,13 +17,11 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
-import { useIsMobile } from '@/hooks/use-mobile';
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { useState } from 'react';
 
 interface AdminLayoutProps {
   children?: React.ReactNode;
@@ -36,8 +33,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
-  const isMobile = useIsMobile();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   if (isLoading) {
     return (
@@ -75,9 +70,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
   const handleNavigationClick = (href: string) => {
     navigate(href);
-    if (isMobile) {
-      setMobileMenuOpen(false);
-    }
   };
 
   const SidebarContent = () => (
@@ -138,20 +130,24 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   return (
     <div className="bg-gray-50 flex min-h-[calc(100vh-5rem)]" dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Desktop Sidebar */}
-      {!isMobile && (
-        <div
-          className={cn(
-            "w-64 bg-white shadow-sm border-gray-200 fixed h-[calc(100vh-5rem)] top-20",
-            isRTL ? "right-0 border-l" : "left-0 border-r"
-          )}
-        >
-          <SidebarContent />
-        </div>
-      )}
+      <div
+        className={cn(
+          "hidden md:flex w-64 bg-white shadow-sm border-gray-200 fixed h-[calc(100vh-5rem)] top-20",
+          isRTL ? "right-0 border-l" : "left-0 border-r"
+        )}
+      >
+        <SidebarContent />
+      </div>
 
       {/* Mobile Sidebar Sheet */}
-      {isMobile && (
-        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+      <div className="block md:hidden">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <Menu className="h-5 w-5" />
+              <span className="sr-only">{t('Toggle menu')}</span>
+            </Button>
+          </SheetTrigger>
           <SheetContent 
             side={isRTL ? "right" : "left"}
             className="w-64 p-0"
@@ -159,39 +155,23 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             <SidebarContent />
           </SheetContent>
         </Sheet>
-      )}
+      </div>
 
       {/* Main Content */}
       <div
         className={cn(
           "flex-1 flex flex-col",
-          !isMobile && (isRTL ? "mr-64" : "ml-64")
+          "md:ml-64", // margin when sidebar visible
+          isRTL && "md:mr-64 md:ml-0"
         )}
       >
         {/* Top Navbar */}
-        <header className="bg-white shadow-sm border-b border-gray-200 px-4 lg:px-6 py-4">
-          <div className={cn("flex items-center justify-between", isRTL && "flex-row-reverse")}>
-            <div className="flex items-center gap-4">
-              {/* Mobile Menu Button */}
-              {isMobile && (
-                <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-                  <SheetTrigger asChild>
-                    <Button variant="ghost" size="icon" className="lg:hidden">
-                      <Menu className="h-5 w-5" />
-                      <span className="sr-only">{t('Toggle menu')}</span>
-                    </Button>
-                  </SheetTrigger>
-                </Sheet>
-              )}
-              
-              <h2 className="text-lg font-semibold text-gray-900">
-                {navigation.find(item => item.href === location.pathname)?.name || t('Dashboard')}
-              </h2>
-            </div>
-            
-            <div className="text-sm text-gray-500">
-              {t('Welcome')}, {user.email}
-            </div>
+        <header className="bg-white shadow-sm border-b border-gray-200 px-4 lg:px-6 py-4 flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-gray-900">
+            {navigation.find(item => item.href === location.pathname)?.name || t('Dashboard')}
+          </h2>
+          <div className="text-sm text-gray-500">
+            {t('Welcome')}, {user.email}
           </div>
         </header>
 
