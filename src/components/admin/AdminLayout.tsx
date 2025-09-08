@@ -13,10 +13,18 @@ import {
   Settings,
   LogOut,
   Tag,
-  BarChart3
+  BarChart3,
+  Menu
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import { useIsMobile } from '@/hooks/use-mobile';
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from '@/components/ui/sheet';
+import { useState } from 'react';
 
 interface AdminLayoutProps {
   children?: React.ReactNode;
@@ -28,6 +36,8 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
+  const isMobile = useIsMobile();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   if (isLoading) {
     return (
@@ -63,82 +73,122 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     { name: t('Settings'), href: '/admin/settings', icon: Settings },
   ];
 
-  return (
-    <div className="bg-gray-50 flex min-h-[calc(100vh-5rem)]" dir={isRTL ? 'rtl' : 'ltr'}>
-      {/* Sidebar */}
-      <div
-        className={cn(
-          "w-64 bg-white shadow-sm border-gray-200 fixed h-[calc(100vh-5rem)] top-20",
-          isRTL ? "right-0 border-l" : "left-0 border-r"
-        )}
-      >
-        <div className="flex flex-col h-full">
-          {/* Logo/Header */}
-          <div className="p-6 border-b border-gray-200">
-            <h1 className="text-xl font-bold text-gray-900">{t('Admin Panel')}</h1>
-          </div>
+  const handleNavigationClick = (href: string) => {
+    navigate(href);
+    if (isMobile) {
+      setMobileMenuOpen(false);
+    }
+  };
 
-          {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-2">
-            {navigation.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.href;
+  const SidebarContent = () => (
+    <div className="flex flex-col h-full">
+      {/* Logo/Header */}
+      <div className="p-6 border-b border-gray-200">
+        <h1 className="text-xl font-bold text-gray-900">{t('Admin Panel')}</h1>
+      </div>
 
-              return (
-                <Button
-                  key={item.name}
-                  variant="ghost"
-                  className={cn(
-                    "w-full justify-start h-10 px-3",
-                    isRTL && "flex-row-reverse",
-                    isActive
-                      ? "bg-brand-accent text-white hover:bg-brand-accent/90"
-                      : "text-gray-700 hover:bg-gray-100"
-                  )}
-                  onClick={() => navigate(item.href)}
-                >
-                  <Icon
-                    className={cn(
-                      "h-4 w-4",
-                      isRTL ? "ml-3" : "mr-3"
-                    )}
-                  />
-                  {item.name}
-                </Button>
-              );
-            })}
-          </nav>
+      {/* Navigation */}
+      <nav className="flex-1 p-4 space-y-2">
+        {navigation.map((item) => {
+          const Icon = item.icon;
+          const isActive = location.pathname === item.href;
 
-          {/* Logout */}
-          <div className="p-4 border-t border-gray-200">
+          return (
             <Button
+              key={item.name}
               variant="ghost"
               className={cn(
-                "w-full justify-start h-10 px-3 text-red-600 hover:bg-red-50 hover:text-red-700",
-                isRTL && "flex-row-reverse"
+                "w-full justify-start h-10 px-3",
+                isRTL && "flex-row-reverse",
+                isActive
+                  ? "bg-brand-accent text-white hover:bg-brand-accent/90"
+                  : "text-gray-700 hover:bg-gray-100"
               )}
-              onClick={handleLogout}
+              onClick={() => handleNavigationClick(item.href)}
             >
-              <LogOut className={cn("h-4 w-4", isRTL ? "ml-3" : "mr-3")} />
-              {t('Logout')}
+              <Icon
+                className={cn(
+                  "h-4 w-4",
+                  isRTL ? "ml-3" : "mr-3"
+                )}
+              />
+              {item.name}
             </Button>
-          </div>
-        </div>
+          );
+        })}
+      </nav>
+
+      {/* Logout */}
+      <div className="p-4 border-t border-gray-200">
+        <Button
+          variant="ghost"
+          className={cn(
+            "w-full justify-start h-10 px-3 text-red-600 hover:bg-red-50 hover:text-red-700",
+            isRTL && "flex-row-reverse"
+          )}
+          onClick={handleLogout}
+        >
+          <LogOut className={cn("h-4 w-4", isRTL ? "ml-3" : "mr-3")} />
+          {t('Logout')}
+        </Button>
       </div>
+    </div>
+  );
+
+  return (
+    <div className="bg-gray-50 flex min-h-[calc(100vh-5rem)]" dir={isRTL ? 'rtl' : 'ltr'}>
+      {/* Desktop Sidebar */}
+      {!isMobile && (
+        <div
+          className={cn(
+            "w-64 bg-white shadow-sm border-gray-200 fixed h-[calc(100vh-5rem)] top-20",
+            isRTL ? "right-0 border-l" : "left-0 border-r"
+          )}
+        >
+          <SidebarContent />
+        </div>
+      )}
+
+      {/* Mobile Sidebar Sheet */}
+      {isMobile && (
+        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+          <SheetContent 
+            side={isRTL ? "right" : "left"}
+            className="w-64 p-0"
+          >
+            <SidebarContent />
+          </SheetContent>
+        </Sheet>
+      )}
 
       {/* Main Content */}
       <div
         className={cn(
           "flex-1 flex flex-col",
-          isRTL ? "mr-64" : "ml-64"
+          !isMobile && (isRTL ? "mr-64" : "ml-64")
         )}
       >
         {/* Top Navbar */}
-        <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+        <header className="bg-white shadow-sm border-b border-gray-200 px-4 lg:px-6 py-4">
           <div className={cn("flex items-center justify-between", isRTL && "flex-row-reverse")}>
-            <h2 className="text-lg font-semibold text-gray-900">
-              {navigation.find(item => item.href === location.pathname)?.name || t('Dashboard')}
-            </h2>
+            <div className="flex items-center gap-4">
+              {/* Mobile Menu Button */}
+              {isMobile && (
+                <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                  <SheetTrigger asChild>
+                    <Button variant="ghost" size="icon" className="lg:hidden">
+                      <Menu className="h-5 w-5" />
+                      <span className="sr-only">{t('Toggle menu')}</span>
+                    </Button>
+                  </SheetTrigger>
+                </Sheet>
+              )}
+              
+              <h2 className="text-lg font-semibold text-gray-900">
+                {navigation.find(item => item.href === location.pathname)?.name || t('Dashboard')}
+              </h2>
+            </div>
+            
             <div className="text-sm text-gray-500">
               {t('Welcome')}, {user.email}
             </div>
@@ -146,7 +196,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-6 overflow-auto">
+        <main className="flex-1 p-4 lg:p-6 overflow-auto">
           {children || <Outlet />}
         </main>
       </div>
