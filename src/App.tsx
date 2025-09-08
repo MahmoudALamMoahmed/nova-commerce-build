@@ -83,16 +83,16 @@ function App() {
                       <Route path="/favorites" element={<Layout><Favorites /></Layout>} />
                       <Route path="/orders" element={<Layout><Orders /></Layout>} />
                       
-                      {/* Admin routes with admin layout */}
-                      <Route path="/admin" element={<Layout><AdminLayout><Admin /></AdminLayout></Layout>} />
-                      <Route path="/admin/dashboard" element={<Layout><AdminLayout><Dashboard /></AdminLayout></Layout>} />
-                      <Route path="/admin/products" element={<Layout><AdminLayout><AdminProducts /></AdminLayout></Layout>} />
-                      <Route path="/admin/categories" element={<Layout><AdminLayout><AdminCategories /></AdminLayout></Layout>} />
-                      <Route path="/admin/orders" element={<Layout><AdminLayout><AdminOrders /></AdminLayout></Layout>} />
-                      <Route path="/admin/users" element={<Layout><AdminLayout><AdminUsers /></AdminLayout></Layout>} />
-                      <Route path="/admin/messages" element={<Layout><AdminLayout><AdminMessages /></AdminLayout></Layout>} />
-                      <Route path="/admin/analytics" element={<Layout><AdminLayout><AdminAnalytics /></AdminLayout></Layout>} />
-                      <Route path="/admin/settings" element={<Layout><AdminLayout><AdminSettings /></AdminLayout></Layout>} />
+                      {/* Admin routes with admin layout (no navbar/footer) */}
+                      <Route path="/admin" element={<AdminLayout><Admin /></AdminLayout>} />
+                      <Route path="/admin/dashboard" element={<AdminLayout><Dashboard /></AdminLayout>} />
+                      <Route path="/admin/products" element={<AdminLayout><AdminProducts /></AdminLayout>} />
+                      <Route path="/admin/categories" element={<AdminLayout><AdminCategories /></AdminLayout>} />
+                      <Route path="/admin/orders" element={<AdminLayout><AdminOrders /></AdminLayout>} />
+                      <Route path="/admin/users" element={<AdminLayout><AdminUsers /></AdminLayout>} />
+                      <Route path="/admin/messages" element={<AdminLayout><AdminMessages /></AdminLayout>} />
+                      <Route path="/admin/analytics" element={<AdminLayout><AdminAnalytics /></AdminLayout>} />
+                      <Route path="/admin/settings" element={<AdminLayout><AdminSettings /></AdminLayout>} />
                       
                       {/* 404 page */}
                       <Route path="*" element={<Layout><NotFound /></Layout>} />
