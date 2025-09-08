@@ -18,13 +18,12 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
-import { useIsMobile } from '@/hooks/use-mobile';
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface AdminLayoutProps {
   children?: React.ReactNode;
@@ -36,8 +35,18 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
-  const isMobile = useIsMobile();
+  const [isXlScreen, setIsXlScreen] = useState(window.innerWidth >= 1280);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Listen for screen size changes at xl breakpoint (1280px)
+  useEffect(() => {
+    const handleResize = () => {
+      setIsXlScreen(window.innerWidth >= 1280);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   if (isLoading) {
     return (
@@ -75,7 +84,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
   const handleNavigationClick = (href: string) => {
     navigate(href);
-    if (isMobile) {
+    if (!isXlScreen) {
       setMobileMenuOpen(false);
     }
   };
@@ -138,7 +147,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   return (
     <div className="bg-gray-50 flex min-h-[calc(100vh-5rem)]" dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Desktop Sidebar */}
-      {!isMobile && (
+      {isXlScreen && (
         <div
           className={cn(
             "w-64 bg-white shadow-sm border-gray-200 fixed h-[calc(100vh-5rem)] top-20",
@@ -150,7 +159,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       )}
 
       {/* Mobile Sidebar Sheet */}
-      {isMobile && (
+      {!isXlScreen && (
         <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
           <SheetContent 
             side={isRTL ? "right" : "left"}
@@ -165,7 +174,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       <div
         className={cn(
           "flex-1 flex flex-col",
-          !isMobile && (isRTL ? "mr-64" : "ml-64")
+          isXlScreen && (isRTL ? "mr-64" : "ml-64")
         )}
       >
         {/* Top Navbar */}
@@ -173,10 +182,10 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           <div className={cn("flex items-center justify-between", isRTL && "flex-row-reverse")}>
             <div className="flex items-center gap-4">
               {/* Mobile Menu Button */}
-              {isMobile && (
+              {!isXlScreen && (
                 <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                   <SheetTrigger asChild>
-                    <Button variant="ghost" size="icon" className="lg:hidden">
+                    <Button variant="ghost" size="icon" className="xl:hidden">
                       <Menu className="h-5 w-5" />
                       <span className="sr-only">{t('Toggle menu')}</span>
                     </Button>
