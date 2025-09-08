@@ -22,6 +22,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import { useState } from 'react';
 
 interface AdminLayoutProps {
   children?: React.ReactNode;
@@ -33,6 +34,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   if (isLoading) {
     return (
@@ -70,6 +72,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
   const handleNavigationClick = (href: string) => {
     navigate(href);
+    setMobileMenuOpen(false);
   };
 
   const SidebarContent = () => (
@@ -129,33 +132,54 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
   return (
     <div className="bg-gray-50 flex min-h-[calc(100vh-5rem)]" dir={isRTL ? 'rtl' : 'ltr'}>
+      {/* Desktop Sidebar */}
+      <div
+        className={cn(
+          "hidden xl:block w-64 bg-white shadow-sm border-gray-200 fixed h-[calc(100vh-5rem)] top-20",
+          isRTL ? "right-0 border-l" : "left-0 border-r"
+        )}
+      >
+        <SidebarContent />
+      </div>
+
+      {/* Mobile Sidebar Sheet */}
+      <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+        <SheetContent 
+          side={isRTL ? "right" : "left"}
+          className="w-64 p-0 xl:hidden"
+        >
+          <SidebarContent />
+        </SheetContent>
+      </Sheet>
+
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div
+        className={cn(
+          "flex-1 flex flex-col",
+          "xl:ml-64",
+          isRTL && "xl:mr-64 xl:ml-0"
+        )}
+      >
         {/* Top Navbar */}
-        <header className="bg-white shadow-sm border-b border-gray-200 px-4 lg:px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {/* Always show hamburger menu */}
-            <Sheet>
+        <header className="bg-white shadow-sm border-b border-gray-200 px-4 lg:px-6 py-4">
+          <div className={cn("flex items-center justify-between", isRTL && "flex-row-reverse")}>
+            <div className="flex items-center gap-4">
+              {/* Mobile Menu Button */}
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" className="xl:hidden">
                   <Menu className="h-5 w-5" />
                   <span className="sr-only">{t('Toggle menu')}</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent 
-                side={isRTL ? "right" : "left"}
-                className="w-64 p-0"
-              >
-                <SidebarContent />
-              </SheetContent>
-            </Sheet>
 
-            <h2 className="text-lg font-semibold text-gray-900">
-              {navigation.find(item => item.href === location.pathname)?.name || t('Dashboard')}
-            </h2>
-          </div>
-          <div className="text-sm text-gray-500">
-            {t('Welcome')}, {user.email}
+              <h2 className="text-lg font-semibold text-gray-900">
+                {navigation.find(item => item.href === location.pathname)?.name || t('Dashboard')}
+              </h2>
+            </div>
+            
+            <div className="text-sm text-gray-500">
+              {t('Welcome')}, {user.email}
+            </div>
           </div>
         </header>
 
