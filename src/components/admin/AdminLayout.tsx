@@ -4,50 +4,53 @@ import { Navigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { LayoutDashboard, Package, ShoppingCart, Users, MessageSquare, Settings, LogOut, Tag, BarChart3, Menu, User, ChevronDown } from 'lucide-react';
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  Users,
+  MessageSquare,
+  Settings,
+  LogOut,
+  Tag,
+  BarChart3,
+  Menu
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { useState, useEffect } from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from '@/components/ui/sheet';
+import { useState } from 'react';
+
 interface AdminLayoutProps {
   children?: React.ReactNode;
 }
-const AdminLayout = ({
-  children
-}: AdminLayoutProps) => {
-  const {
-    user,
-    userProfile,
-    isLoading
-  } = useUser();
+
+const AdminLayout = ({ children }: AdminLayoutProps) => {
+  const { user, userProfile, isLoading } = useUser();
   const location = useLocation();
   const navigate = useNavigate();
-  const {
-    t,
-    i18n
-  } = useTranslation();
+  const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
-  const [isXlScreen, setIsXlScreen] = useState(window.innerWidth >= 1280);
+  const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Listen for screen size changes at xl breakpoint (1280px)
-  useEffect(() => {
-    const handleResize = () => {
-      setIsXlScreen(window.innerWidth >= 1280);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
   if (isLoading) {
-    return <div className="flex justify-center items-center min-h-screen">
+    return (
+      <div className="flex justify-center items-center min-h-screen">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-accent"></div>
-      </div>;
+      </div>
+    );
   }
+
   if (!user || !userProfile?.is_admin) {
     return <Navigate to="/" replace />;
   }
+
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
@@ -58,46 +61,27 @@ const AdminLayout = ({
       toast.error(t('Failed to logout'));
     }
   };
-  const navigation = [{
-    name: t('Dashboard'),
-    href: '/admin',
-    icon: LayoutDashboard
-  }, {
-    name: t('Products'),
-    href: '/admin/products',
-    icon: Package
-  }, {
-    name: t('Categories'),
-    href: '/admin/categories',
-    icon: Tag
-  }, {
-    name: t('Orders'),
-    href: '/admin/orders',
-    icon: ShoppingCart
-  }, {
-    name: t('Users'),
-    href: '/admin/users',
-    icon: Users
-  }, {
-    name: t('Messages'),
-    href: '/admin/messages',
-    icon: MessageSquare
-  }, {
-    name: t('Analytics'),
-    href: '/admin/analytics',
-    icon: BarChart3
-  }, {
-    name: t('Settings'),
-    href: '/admin/settings',
-    icon: Settings
-  }];
+
+  const navigation = [
+    { name: t('Dashboard'), href: '/admin', icon: LayoutDashboard },
+    { name: t('Products'), href: '/admin/products', icon: Package },
+    { name: t('Categories'), href: '/admin/categories', icon: Tag },
+    { name: t('Orders'), href: '/admin/orders', icon: ShoppingCart },
+    { name: t('Users'), href: '/admin/users', icon: Users },
+    { name: t('Messages'), href: '/admin/messages', icon: MessageSquare },
+    { name: t('Analytics'), href: '/admin/analytics', icon: BarChart3 },
+    { name: t('Settings'), href: '/admin/settings', icon: Settings },
+  ];
+
   const handleNavigationClick = (href: string) => {
     navigate(href);
-    if (!isXlScreen) {
+    if (isMobile) {
       setMobileMenuOpen(false);
     }
   };
-  const SidebarContent = () => <div className="flex flex-col h-full">
+
+  const SidebarContent = () => (
+    <div className="flex flex-col h-full">
       {/* Logo/Header */}
       <div className="p-6 border-b border-gray-200">
         <h1 className="text-xl font-bold text-gray-900">{t('Admin Panel')}</h1>
@@ -105,47 +89,119 @@ const AdminLayout = ({
 
       {/* Navigation */}
       <nav className="flex-1 p-4 space-y-2">
-        {navigation.map(item => {
-        const Icon = item.icon;
-        const isActive = location.pathname === item.href;
-        return <Button key={item.name} variant="ghost" className={cn("w-full justify-start h-10 px-3", isRTL && "flex-row-reverse", isActive ? "bg-brand-accent text-white hover:bg-brand-accent/90" : "text-gray-700 hover:bg-gray-100")} onClick={() => handleNavigationClick(item.href)}>
-              <Icon className={cn("h-4 w-4", isRTL ? "ml-3" : "mr-3")} />
+        {navigation.map((item) => {
+          const Icon = item.icon;
+          const isActive = location.pathname === item.href;
+
+          return (
+            <Button
+              key={item.name}
+              variant="ghost"
+              className={cn(
+                "w-full justify-start h-10 px-3",
+                isRTL && "flex-row-reverse",
+                isActive
+                  ? "bg-brand-accent text-white hover:bg-brand-accent/90"
+                  : "text-gray-700 hover:bg-gray-100"
+              )}
+              onClick={() => handleNavigationClick(item.href)}
+            >
+              <Icon
+                className={cn(
+                  "h-4 w-4",
+                  isRTL ? "ml-3" : "mr-3"
+                )}
+              />
               {item.name}
-            </Button>;
-      })}
+            </Button>
+          );
+        })}
       </nav>
 
       {/* Logout */}
       <div className="p-4 border-t border-gray-200">
-        <Button variant="ghost" className={cn("w-full justify-start h-10 px-3 text-red-600 hover:bg-red-50 hover:text-red-700", isRTL && "flex-row-reverse")} onClick={handleLogout}>
+        <Button
+          variant="ghost"
+          className={cn(
+            "w-full justify-start h-10 px-3 text-red-600 hover:bg-red-50 hover:text-red-700",
+            isRTL && "flex-row-reverse"
+          )}
+          onClick={handleLogout}
+        >
           <LogOut className={cn("h-4 w-4", isRTL ? "ml-3" : "mr-3")} />
           {t('Logout')}
         </Button>
       </div>
-    </div>;
-  return <div className="bg-gray-50 flex min-h-[calc(100vh-5rem)]" dir={isRTL ? 'rtl' : 'ltr'}>
+    </div>
+  );
+
+  return (
+    <div className="bg-gray-50 flex min-h-[calc(100vh-5rem)]" dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Desktop Sidebar */}
-      {isXlScreen && <div className={cn("w-64 bg-white shadow-sm border-gray-200 fixed h-[calc(100vh-5rem)] top-20", isRTL ? "right-0 border-l" : "left-0 border-r")}>
+      {!isMobile && (
+        <div
+          className={cn(
+            "w-64 bg-white shadow-sm border-gray-200 fixed h-[calc(100vh-5rem)] top-20",
+            isRTL ? "right-0 border-l" : "left-0 border-r"
+          )}
+        >
           <SidebarContent />
-        </div>}
+        </div>
+      )}
 
       {/* Mobile Sidebar Sheet */}
-      {!isXlScreen && <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-          <SheetContent side={isRTL ? "right" : "left"} className="w-64 p-0">
+      {isMobile && (
+        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+          <SheetContent 
+            side={isRTL ? "right" : "left"}
+            className="w-64 p-0"
+          >
             <SidebarContent />
           </SheetContent>
-        </Sheet>}
+        </Sheet>
+      )}
 
       {/* Main Content */}
-      <div className={cn("flex-1 flex flex-col", isXlScreen && (isRTL ? "mr-64" : "ml-64"))}>
+      <div
+        className={cn(
+          "flex-1 flex flex-col",
+          !isMobile && (isRTL ? "mr-64" : "ml-64")
+        )}
+      >
         {/* Top Navbar */}
-        
+        <header className="bg-white shadow-sm border-b border-gray-200 px-4 lg:px-6 py-4">
+          <div className={cn("flex items-center justify-between", isRTL && "flex-row-reverse")}>
+            <div className="flex items-center gap-4">
+              {/* Mobile Menu Button */}
+              {isMobile && (
+                <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                  <SheetTrigger asChild>
+                    <Button variant="ghost" size="icon" className="lg:hidden">
+                      <Menu className="h-5 w-5" />
+                      <span className="sr-only">{t('Toggle menu')}</span>
+                    </Button>
+                  </SheetTrigger>
+                </Sheet>
+              )}
+              
+              <h2 className="text-lg font-semibold text-gray-900">
+                {navigation.find(item => item.href === location.pathname)?.name || t('Dashboard')}
+              </h2>
+            </div>
+            
+            <div className="text-sm text-gray-500">
+              {t('Welcome')}, {user.email}
+            </div>
+          </div>
+        </header>
 
         {/* Page Content */}
         <main className="flex-1 p-4 lg:p-6 overflow-auto">
           {children || <Outlet />}
         </main>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default AdminLayout;
