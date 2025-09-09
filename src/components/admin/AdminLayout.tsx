@@ -24,6 +24,8 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -63,6 +65,8 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
+  const isMobile = useIsMobile();
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   if (isLoading) {
     return (
@@ -103,19 +107,31 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     return currentNav?.name || t('Dashboard');
   };
 
+  const handleToggleSidebar = () => {
+    if (isMobile) return; // On mobile, we use sheet instead
+    setIsCollapsed(!isCollapsed);
+  };
+
   return (
     <TooltipProvider>
       <div className="flex min-h-screen w-full flex-col bg-muted/40" dir={isRTL ? 'rtl' : 'ltr'}>
         {/* Desktop Sidebar */}
-        <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
+        <aside className={cn(
+          "fixed inset-y-0 left-0 z-10 hidden flex-col border-r bg-background sm:flex transition-all duration-300",
+          isCollapsed ? "w-14" : "w-64"
+        )}>
           <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
             <Button
               variant="outline"
-              size="icon"
-              className="overflow-hidden rounded-lg"
+              size={isCollapsed ? "icon" : "default"}
+              className={cn(
+                "overflow-hidden rounded-lg transition-all duration-300",
+                isCollapsed ? "w-10 h-10" : "w-full justify-start"
+              )}
               onClick={() => navigate('/admin')}
             >
               <Package2 className="h-5 w-5" />
+              {!isCollapsed && <span className="ml-2">{t('Admin Panel')}</span>}
               <span className="sr-only">{t('Admin Panel')}</span>
             </Button>
             
@@ -124,19 +140,23 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               const isActive = location.pathname === item.href;
               
               return (
-                <Tooltip key={item.name}>
+                <Tooltip key={item.name} delayDuration={isCollapsed ? 0 : 1000}>
                   <TooltipTrigger asChild>
                     <Button
                       variant={isActive ? "default" : "ghost"}
-                      size="icon"
-                      className="rounded-lg"
+                      size={isCollapsed ? "icon" : "default"}
+                      className={cn(
+                        "rounded-lg transition-all duration-300",
+                        isCollapsed ? "w-10 h-10" : "w-full justify-start"
+                      )}
                       onClick={() => navigate(item.href)}
                     >
                       <Icon className="h-5 w-5" />
+                      {!isCollapsed && <span className="ml-2">{item.name}</span>}
                       <span className="sr-only">{item.name}</span>
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent side="right">{item.name}</TooltipContent>
+                  {isCollapsed && <TooltipContent side="right">{item.name}</TooltipContent>}
                 </Tooltip>
               );
             })}
@@ -156,12 +176,29 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         </aside>
 
         {/* Mobile Layout */}
-        <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
+        <div className={cn(
+          "flex flex-col sm:gap-4 sm:py-4 transition-all duration-300",
+          isCollapsed ? "sm:pl-14" : "sm:pl-64"
+        )}>
           <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-            {/* Mobile Menu */}
+            {/* Toggle Button - Mobile uses Sheet, Desktop toggles sidebar */}
+            <Button 
+              size="icon" 
+              variant="outline" 
+              className="hidden sm:flex"
+              onClick={handleToggleSidebar}
+            >
+              <PanelLeft className="h-5 w-5" />
+              <span className="sr-only">{t('Toggle Sidebar')}</span>
+            </Button>
+            
             <Sheet>
               <SheetTrigger asChild>
-                <Button size="icon" variant="outline" className="sm:hidden">
+                <Button 
+                  size="icon" 
+                  variant="outline" 
+                  className="sm:hidden"
+                >
                   <PanelLeft className="h-5 w-5" />
                   <span className="sr-only">{t('Toggle Menu')}</span>
                 </Button>
