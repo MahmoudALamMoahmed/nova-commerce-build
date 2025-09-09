@@ -549,91 +549,171 @@ const AdminProducts = () => {
             </div>
           )}
 
-          {/* Products Table */}
+          {/* Products Display */}
           {isProductsLoading ? (
             <div className="flex justify-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-accent"></div>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <Table className="min-w-full">
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className={`text-center w-20`}>Image</TableHead>
-                    <TableHead className={`min-w-[120px] ${isRTL ? 'text-right' : 'text-left'}`}>Title</TableHead>
-                    <TableHead className={`text-center min-w-[100px]`}>Category</TableHead>
-                    <TableHead className={`text-center min-w-[80px]`}>Price</TableHead>
-                    <TableHead className={`text-center min-w-[80px]`}>Stock</TableHead>
-                    <TableHead className={`min-w-[150px] ${isRTL ? 'text-right' : 'text-left'}`}>Description</TableHead>
-                    <TableHead className={`text-center min-w-[100px]`}>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {products.map((product) => (
-                    <TableRow key={product.id}>
-                      <TableCell className="text-center">
-                        {product.image ? (
-                          <div className="flex justify-center">
-                            <img src={product.image} alt={product.title} className="w-16 h-16 object-cover rounded" />
-                          </div>
-                        ) : (
-                          <div className="flex justify-center">
-                            <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
-                              <Package className="h-6 w-6 text-gray-400" />
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden lg:block">
+                <div className="overflow-x-auto">
+                  <Table className="min-w-full">
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-center w-20">Image</TableHead>
+                        <TableHead className={`min-w-[150px] ${isRTL ? 'text-right' : 'text-left'}`}>Title</TableHead>
+                        <TableHead className="text-center min-w-[120px]">Category</TableHead>
+                        <TableHead className="text-center min-w-[100px]">Price</TableHead>
+                        <TableHead className="text-center min-w-[100px]">Stock</TableHead>
+                        <TableHead className={`min-w-[200px] ${isRTL ? 'text-right' : 'text-left'}`}>Description</TableHead>
+                        <TableHead className="text-center min-w-[120px]">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {products.map((product) => (
+                        <TableRow key={product.id}>
+                          <TableCell className="text-center">
+                            {product.image ? (
+                              <div className="flex justify-center">
+                                <img src={product.image} alt={product.title} className="w-16 h-16 object-cover rounded" />
+                              </div>
+                            ) : (
+                              <div className="flex justify-center">
+                                <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
+                                  <Package className="h-6 w-6 text-gray-400" />
+                                </div>
+                              </div>
+                            )}
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            <div className="break-words max-w-[200px]">
+                              {product.title}
                             </div>
+                          </TableCell>
+                          <TableCell className="text-center">
+                            <div className="flex justify-center">
+                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 whitespace-nowrap">
+                                {getCategoryName(product.category_id)}
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-center font-medium">
+                            ${product.price.toFixed(2)}
+                          </TableCell>
+                          <TableCell className="text-center">
+                            <Badge variant="outline">
+                              Managed by variants
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="max-w-[200px] break-words" title={product.description || 'No description'}>
+                              {product.description || 'No description'}
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-center">
+                            <div className="flex gap-2 justify-center">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleEdit(product)}
+                                className="min-w-[40px]"
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => handleDelete(product)}
+                                className="min-w-[40px]"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+
+              {/* Mobile/Tablet Card View */}
+              <div className="lg:hidden space-y-4">
+                {products.map((product) => (
+                  <Card key={product.id} className="p-4">
+                    <div className="flex gap-4">
+                      {/* Product Image */}
+                      <div className="flex-shrink-0">
+                        {product.image ? (
+                          <img src={product.image} alt={product.title} className="w-20 h-20 object-cover rounded" />
+                        ) : (
+                          <div className="w-20 h-20 bg-gray-200 rounded flex items-center justify-center">
+                            <Package className="h-8 w-8 text-gray-400" />
                           </div>
                         )}
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        <div className="break-words max-w-[200px]">
-                          {product.title}
+                      </div>
+
+                      {/* Product Details */}
+                      <div className="flex-1 min-w-0">
+                        <div className="mb-3">
+                          <h3 className="font-semibold text-lg leading-tight mb-1 break-words">
+                            {product.title}
+                          </h3>
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-xl font-bold text-brand-accent">
+                              ${product.price.toFixed(2)}
+                            </span>
+                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                              {getCategoryName(product.category_id)}
+                            </span>
+                          </div>
                         </div>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <div className="flex justify-center">
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 whitespace-nowrap">
-                            {getCategoryName(product.category_id)}
-                          </span>
+
+                        {/* Stock Status */}
+                        <div className="mb-3">
+                          <Badge variant="outline" className="mb-2">
+                            Managed by variants
+                          </Badge>
                         </div>
-                      </TableCell>
-                      <TableCell className="text-center font-medium">
-                        ${product.price.toFixed(2)}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <Badge variant="outline">
-                          Managed by variants
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="max-w-[200px] break-words" title={product.description || 'No description'}>
-                          {product.description || 'No description'}
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <div className="flex gap-2 justify-center">
+
+                        {/* Description */}
+                        {product.description && (
+                          <div className="mb-3">
+                            <p className="text-sm text-gray-600 break-words line-clamp-2">
+                              {product.description}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Actions */}
+                        <div className="flex gap-2">
                           <Button
                             size="sm"
                             variant="outline"
                             onClick={() => handleEdit(product)}
-                            className="min-w-[40px]"
+                            className="flex-1 sm:flex-none"
                           >
-                            <Edit className="h-4 w-4" />
+                            <Edit className="h-4 w-4 mr-2" />
+                            Edit
                           </Button>
                           <Button
                             size="sm"
                             variant="destructive"
                             onClick={() => handleDelete(product)}
-                            className="min-w-[40px]"
+                            className="flex-1 sm:flex-none"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Delete
                           </Button>
                         </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </>
           )}
 
           {products.length === 0 && !isProductsLoading && (
