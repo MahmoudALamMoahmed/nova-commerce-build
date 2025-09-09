@@ -14,17 +14,44 @@ import {
   LogOut,
   Tag,
   BarChart3,
-  Menu
+  Menu,
+  Search,
+  CircleUser,
+  Home,
+  MoreHorizontal,
+  Package2,
+  PanelLeft
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
-import { useIsMobile } from '@/hooks/use-mobile';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { useState } from 'react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  TooltipProvider,
+} from '@/components/ui/tooltip';
 
 interface AdminLayoutProps {
   children?: React.ReactNode;
@@ -36,13 +63,11 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
-  const isMobile = useIsMobile();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-accent"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -73,134 +98,166 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     { name: t('Settings'), href: '/admin/settings', icon: Settings },
   ];
 
-  const handleNavigationClick = (href: string) => {
-    navigate(href);
-    if (isMobile) {
-      setMobileMenuOpen(false);
-    }
+  const getCurrentPageName = () => {
+    const currentNav = navigation.find(item => item.href === location.pathname);
+    return currentNav?.name || t('Dashboard');
   };
 
-  const SidebarContent = () => (
-    <div className="flex flex-col h-full">
-      {/* Logo/Header */}
-      <div className="p-6 border-b border-gray-200">
-        <h1 className="text-xl font-bold text-gray-900">{t('Admin Panel')}</h1>
-      </div>
-
-      {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-2">
-        {navigation.map((item) => {
-          const Icon = item.icon;
-          const isActive = location.pathname === item.href;
-
-          return (
-            <Button
-              key={item.name}
-              variant="ghost"
-              className={cn(
-                "w-full justify-start h-10 px-3",
-                isRTL && "flex-row-reverse",
-                isActive
-                  ? "bg-brand-accent text-white hover:bg-brand-accent/90"
-                  : "text-gray-700 hover:bg-gray-100"
-              )}
-              onClick={() => handleNavigationClick(item.href)}
-            >
-              <Icon
-                className={cn(
-                  "h-4 w-4",
-                  isRTL ? "ml-3" : "mr-3"
-                )}
-              />
-              {item.name}
-            </Button>
-          );
-        })}
-      </nav>
-
-      {/* Logout */}
-      <div className="p-4 border-t border-gray-200">
-        <Button
-          variant="ghost"
-          className={cn(
-            "w-full justify-start h-10 px-3 text-red-600 hover:bg-red-50 hover:text-red-700",
-            isRTL && "flex-row-reverse"
-          )}
-          onClick={handleLogout}
-        >
-          <LogOut className={cn("h-4 w-4", isRTL ? "ml-3" : "mr-3")} />
-          {t('Logout')}
-        </Button>
-      </div>
-    </div>
-  );
-
   return (
-    <div className="bg-gray-50 flex min-h-[calc(100vh-5rem)]" dir={isRTL ? 'rtl' : 'ltr'}>
-      {/* Desktop Sidebar */}
-      {!isMobile && (
-        <div
-          className={cn(
-            "w-64 bg-white shadow-sm border-gray-200 fixed h-[calc(100vh-5rem)] top-20",
-            isRTL ? "right-0 border-l" : "left-0 border-r"
-          )}
-        >
-          <SidebarContent />
-        </div>
-      )}
-
-      {/* Mobile Sidebar Sheet */}
-      {isMobile && (
-        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-          <SheetContent 
-            side={isRTL ? "right" : "left"}
-            className="w-64 p-0"
-          >
-            <SidebarContent />
-          </SheetContent>
-        </Sheet>
-      )}
-
-      {/* Main Content */}
-      <div
-        className={cn(
-          "flex-1 flex flex-col",
-          !isMobile && (isRTL ? "mr-64" : "ml-64")
-        )}
-      >
-        {/* Top Navbar */}
-        <header className="bg-white shadow-sm border-b border-gray-200 px-4 lg:px-6 py-4">
-          <div className={cn("flex items-center justify-between", isRTL && "flex-row-reverse")}>
-            <div className="flex items-center gap-4">
-              {/* Mobile Menu Button */}
-              {isMobile && (
-                <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-                  <SheetTrigger asChild>
-                    <Button variant="ghost" size="icon" className="lg:hidden">
-                      <Menu className="h-5 w-5" />
-                      <span className="sr-only">{t('Toggle menu')}</span>
-                    </Button>
-                  </SheetTrigger>
-                </Sheet>
-              )}
+    <TooltipProvider>
+      <div className="flex min-h-screen w-full flex-col bg-muted/40" dir={isRTL ? 'rtl' : 'ltr'}>
+        {/* Desktop Sidebar */}
+        <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
+          <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
+            <Button
+              variant="outline"
+              size="icon"
+              className="overflow-hidden rounded-lg"
+              onClick={() => navigate('/admin')}
+            >
+              <Package2 className="h-5 w-5" />
+              <span className="sr-only">{t('Admin Panel')}</span>
+            </Button>
+            
+            {navigation.map((item) => {
+              const Icon = item.icon;
+              const isActive = location.pathname === item.href;
               
-              <h2 className="text-lg font-semibold text-gray-900">
-                {navigation.find(item => item.href === location.pathname)?.name || t('Dashboard')}
-              </h2>
+              return (
+                <Tooltip key={item.name}>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant={isActive ? "default" : "ghost"}
+                      size="icon"
+                      className="rounded-lg"
+                      onClick={() => navigate(item.href)}
+                    >
+                      <Icon className="h-5 w-5" />
+                      <span className="sr-only">{item.name}</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">{item.name}</TooltipContent>
+                </Tooltip>
+              );
+            })}
+          </nav>
+          
+          <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" className="rounded-lg">
+                  <Settings className="h-5 w-5" />
+                  <span className="sr-only">{t('Settings')}</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">{t('Settings')}</TooltipContent>
+            </Tooltip>
+          </nav>
+        </aside>
+
+        {/* Mobile Layout */}
+        <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
+          <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+            {/* Mobile Menu */}
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button size="icon" variant="outline" className="sm:hidden">
+                  <PanelLeft className="h-5 w-5" />
+                  <span className="sr-only">{t('Toggle Menu')}</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="sm:max-w-xs">
+                <nav className="grid gap-6 text-lg font-medium">
+                  <Button
+                    variant="ghost"
+                    className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
+                    onClick={() => navigate('/admin')}
+                  >
+                    <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
+                    <span className="sr-only">{t('Admin Panel')}</span>
+                  </Button>
+                  
+                  {navigation.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = location.pathname === item.href;
+                    
+                    return (
+                      <Button
+                        key={item.name}
+                        variant="ghost"
+                        className={cn(
+                          "flex items-center gap-4 px-2.5 justify-start",
+                          isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                        )}
+                        onClick={() => navigate(item.href)}
+                      >
+                        <Icon className="h-5 w-5" />
+                        {item.name}
+                      </Button>
+                    );
+                  })}
+                </nav>
+              </SheetContent>
+            </Sheet>
+
+            {/* Breadcrumb */}
+            <Breadcrumb className="hidden md:flex">
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Button variant="ghost" onClick={() => navigate('/admin')}>
+                      {t('Admin Panel')}
+                    </Button>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>{getCurrentPageName()}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+
+            {/* Search and User Menu */}
+            <div className="relative ml-auto flex-1 md:grow-0">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder={t('Search...')}
+                className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
+              />
             </div>
             
-            <div className="text-sm text-gray-500">
-              {t('Welcome')}, {user.email}
-            </div>
-          </div>
-        </header>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon" className="overflow-hidden rounded-full">
+                  <CircleUser className="h-5 w-5" />
+                  <span className="sr-only">{t('Toggle user menu')}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate('/profile')}>
+                  {t('Profile')}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/admin/settings')}>
+                  {t('Settings')}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout}>
+                  {t('Logout')}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </header>
 
-        {/* Page Content */}
-        <main className="flex-1 p-4 lg:p-6 overflow-auto">
-          {children || <Outlet />}
-        </main>
+          {/* Main Content */}
+          <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+            {children || <Outlet />}
+          </main>
+        </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 };
 
