@@ -184,6 +184,39 @@ const AdminOrders = () => {
         case '30days':
           filterDate.setDate(now.getDate() - 30);
           break;
+        case '2months':
+          filterDate.setMonth(now.getMonth() - 2);
+          break;
+        case '3months':
+          filterDate.setMonth(now.getMonth() - 3);
+          break;
+        case '4months':
+          filterDate.setMonth(now.getMonth() - 4);
+          break;
+        case '5months':
+          filterDate.setMonth(now.getMonth() - 5);
+          break;
+        case '6months':
+          filterDate.setMonth(now.getMonth() - 6);
+          break;
+        case '7months':
+          filterDate.setMonth(now.getMonth() - 7);
+          break;
+        case '8months':
+          filterDate.setMonth(now.getMonth() - 8);
+          break;
+        case '9months':
+          filterDate.setMonth(now.getMonth() - 9);
+          break;
+        case '10months':
+          filterDate.setMonth(now.getMonth() - 10);
+          break;
+        case '11months':
+          filterDate.setMonth(now.getMonth() - 11);
+          break;
+        case '12months':
+          filterDate.setMonth(now.getMonth() - 12);
+          break;
       }
 
       if (dateFilter !== 'all') {
@@ -320,6 +353,17 @@ const AdminOrders = () => {
                   <SelectItem value="7days">Last 7 days</SelectItem>
                   <SelectItem value="21days">Last 21 days</SelectItem>
                   <SelectItem value="30days">Last month</SelectItem>
+                  <SelectItem value="2months">Last 2 months</SelectItem>
+                  <SelectItem value="3months">Last 3 months</SelectItem>
+                  <SelectItem value="4months">Last 4 months</SelectItem>
+                  <SelectItem value="5months">Last 5 months</SelectItem>
+                  <SelectItem value="6months">Last 6 months</SelectItem>
+                  <SelectItem value="7months">Last 7 months</SelectItem>
+                  <SelectItem value="8months">Last 8 months</SelectItem>
+                  <SelectItem value="9months">Last 9 months</SelectItem>
+                  <SelectItem value="10months">Last 10 months</SelectItem>
+                  <SelectItem value="11months">Last 11 months</SelectItem>
+                  <SelectItem value="12months">Last 12 months</SelectItem>
                 </SelectContent>
               </Select>
             </div>
