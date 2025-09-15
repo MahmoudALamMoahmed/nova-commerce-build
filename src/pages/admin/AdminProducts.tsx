@@ -70,6 +70,7 @@ const AdminProducts = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [productVariants, setProductVariants] = useState<ProductVariant[]>([]);
+  const [allVariants, setAllVariants] = useState<ProductVariant[]>([]);
   const [showVariants, setShowVariants] = useState(false);
 
   const fetchProducts = async () => {
@@ -141,9 +142,27 @@ const AdminProducts = () => {
     }
   };
 
+  const fetchAllVariants = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('product_variants')
+        .select('*');
+
+      if (error) {
+        console.error('Error fetching all variants:', error);
+        return;
+      }
+
+      setAllVariants(data || []);
+    } catch (error) {
+      console.error('Error fetching all variants:', error);
+    }
+  };
+
   useEffect(() => {
     fetchProducts();
     fetchCategories();
+    fetchAllVariants();
   }, []);
 
   const extractImagePath = (imageUrl: string | null): string | null => {
@@ -604,7 +623,7 @@ const AdminProducts = () => {
                           </TableCell>
                           <TableCell className="text-center">
                             <Badge variant="outline">
-                              Managed by variants
+                              {allVariants.filter(v => v.product_id === product.id).reduce((total, variant) => total + variant.stock_quantity, 0)} في المخزون
                             </Badge>
                           </TableCell>
                           <TableCell>
@@ -674,7 +693,7 @@ const AdminProducts = () => {
                         {/* Stock Status */}
                         <div className="mb-3">
                           <Badge variant="outline" className="mb-2">
-                            Managed by variants
+                            {allVariants.filter(v => v.product_id === product.id).reduce((total, variant) => total + variant.stock_quantity, 0)} في المخزون
                           </Badge>
                         </div>
 
