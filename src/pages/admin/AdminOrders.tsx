@@ -332,8 +332,8 @@ const AdminOrders = () => {
             </div>
           ) : (
             <>
-              {/* Orders Table */}
-              <div className="overflow-x-auto">
+              {/* Desktop Table View */}
+              <div className="hidden lg:block overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -398,6 +398,132 @@ const AdminOrders = () => {
                     ))}
                   </TableBody>
                 </Table>
+              </div>
+
+              {/* Tablet Horizontal Scroll Table View */}
+              <div className="hidden md:block lg:hidden overflow-x-auto">
+                <div className="min-w-[800px]">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className='text-center'>Order ID</TableHead>
+                        <TableHead className={`${isRTL ? "text-right" : "text-left"}`}>Customer Email</TableHead>
+                        <TableHead className='text-center'>Date</TableHead>
+                        <TableHead className='text-center'>Payment</TableHead>
+                        <TableHead className='text-center'>Status</TableHead>
+                        <TableHead className='text-center'>Total</TableHead>
+                        <TableHead className='text-center'>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {currentOrders.map((order) => (
+                        <TableRow key={order.id}>
+                          <TableCell className="font-mono text-sm">
+                            #{order.id.slice(0, 8)}
+                          </TableCell>
+                          <TableCell className="max-w-[150px] truncate">
+                            {order.user_email}
+                          </TableCell>
+                          <TableCell>{format(new Date(order.created_at), 'MMM dd')}</TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-1">
+                              {getPaymentMethodIcon(order.payment_method || 'cash')}
+                              <span className="capitalize text-sm">{order.payment_method || 'cash'}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge className={getStatusColor(order.status)} variant="outline">
+                              {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {order.total_price ? `$${order.total_price.toFixed(2)}` : 'N/A'}
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setSelectedOrder(order)}
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="grid gap-4 md:hidden">
+                {currentOrders.map((order) => (
+                  <Card key={order.id} className="w-full">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="font-mono text-sm font-medium">
+                          #{order.id.slice(0, 8)}
+                        </div>
+                        <Badge className={getStatusColor(order.status)} variant="outline">
+                          {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                        </Badge>
+                      </div>
+                      
+                      <div className="space-y-2 text-sm">
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Customer:</span>
+                          <span className="truncate max-w-[180px]">{order.user_email}</span>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Date:</span>
+                          <span>{format(new Date(order.created_at), 'MMM dd, yyyy')}</span>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Payment:</span>
+                          <div className="flex items-center gap-1">
+                            {getPaymentMethodIcon(order.payment_method || 'cash')}
+                            <span className="capitalize">{order.payment_method || 'cash'}</span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Total:</span>
+                          <span className="font-medium">
+                            {order.total_price ? `$${order.total_price.toFixed(2)}` : 'N/A'}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-2 mt-4">
+                        <Select
+                          value={order.status}
+                          onValueChange={(value) => updateOrderStatus(order.id, value)}
+                        >
+                          <SelectTrigger className="flex-1">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="pending">Pending</SelectItem>
+                            <SelectItem value="confirmed">Confirmed</SelectItem>
+                            <SelectItem value="shipped">Shipped</SelectItem>
+                            <SelectItem value="cancelled">Cancelled</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setSelectedOrder(order)}
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          View
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
 
               {/* Pagination */}
