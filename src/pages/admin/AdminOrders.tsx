@@ -304,8 +304,63 @@ const AdminOrders = () => {
     );
   }
 
+  // Calculate totals for filtered orders
+  const totalOrdersCount = filteredOrders.length;
+  const totalOrdersValue = filteredOrders.reduce((sum, order) => sum + (order.total_price || 0), 0);
+
   return (
     <div className="space-y-6">
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalOrdersCount}</div>
+            <p className="text-xs text-muted-foreground">
+              {statusFilter !== 'all' ? `Filtered by ${statusFilter}` : 'All orders'}
+            </p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Value</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">${totalOrdersValue.toFixed(2)}</div>
+            <p className="text-xs text-muted-foreground">
+              {dateFilter !== 'all' ? `Filtered by date` : 'All time'}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Average Order</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              ${totalOrdersCount > 0 ? (totalOrdersValue / totalOrdersCount).toFixed(2) : '0.00'}
+            </div>
+            <p className="text-xs text-muted-foreground">Per order</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Status Distribution</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {statusFilter !== 'all' ? statusFilter : 'Mixed'}
+            </div>
+            <p className="text-xs text-muted-foreground">Current filter</p>
+          </CardContent>
+        </Card>
+      </div>
+
       <Card>
         <CardHeader>
           <CardTitle>Order Management</CardTitle>
