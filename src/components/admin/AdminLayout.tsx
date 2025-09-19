@@ -165,6 +165,15 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
             <Tooltip>
               <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" className="rounded-lg" onClick={() => navigate('/')}>
+                  <Home className="h-5 w-5" />
+                  <span className="sr-only">{t('Home')}</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">{t('Home')}</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-lg">
                   <Settings className="h-5 w-5" />
                   <span className="sr-only">{t('Settings')}</span>
