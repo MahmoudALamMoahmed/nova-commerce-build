@@ -126,18 +126,6 @@ const Products = () => {
     setCurrentPage(1); // Reset to first page when filtering
   };
 
-  if (isLoading) {
-    return (
-      <div className="pt-24 pb-16">
-        <div className="container mx-auto px-6">
-          <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-accent"></div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="pt-24 pb-16">
       <div className="container mx-auto px-6">
@@ -167,33 +155,40 @@ const Products = () => {
           </div>
         </div>
         
-        {products.length === 0 ? (
-          <div className="text-center py-12">
-            <h2 className="text-xl font-semibold mb-2">{t('products.noProducts')}</h2>
-            <p className="text-gray-500">{t('products.noProductsMessage')}</p>
-          </div>
-        ) : (
-          <>
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {products.map(product => (
-                <ProductCard key={product.id} product={{
-                  id: product.id,
-                  name: product.title,
-                  price: product.price,
-                  description: product.description || '',
-                  image: product.image || 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500',
-                  
-                }} />
-              ))}
+        {/* Products Section with Loading */}
+        <div className="min-h-[400px]">
+          {isLoading ? (
+            <div className="flex justify-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
             </div>
-            
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
-          </>
-        )}
+          ) : products.length === 0 ? (
+            <div className="text-center py-12">
+              <h2 className="text-xl font-semibold mb-2">{t('products.noProducts')}</h2>
+              <p className="text-gray-500">{t('products.noProductsMessage')}</p>
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {products.map(product => (
+                  <ProductCard key={product.id} product={{
+                    id: product.id,
+                    name: product.title,
+                    price: product.price,
+                    description: product.description || '',
+                    image: product.image || 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500',
+                    
+                  }} />
+                ))}
+              </div>
+              
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
