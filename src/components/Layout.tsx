@@ -18,7 +18,7 @@ export const Layout = ({ children }: LayoutProps) => {
   return (
     <div className="flex flex-col min-h-screen">
       <div className={cn(
-        "fixed top-0 left-0 right-0 z-40 transition-transform duration-300",
+        "fixed top-0 left-0 right-0 z-[80] transition-transform duration-300",
         scrollDirection === 'down' ? "md:translate-y-0 -translate-y-full" : "translate-y-0"
       )}>
         <Navbar currentPath={location.pathname} />
