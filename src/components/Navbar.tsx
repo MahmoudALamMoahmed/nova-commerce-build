@@ -37,7 +37,7 @@ const Navbar = ({ currentPath }: NavbarProps) => {
   };
 
   return (
-    <nav className="bg-white shadow-sm fixed w-full z-10">
+    <nav className="bg-white shadow-sm fixed w-full z-40">
       <div className="container mx-auto px-6 md:px-8 rtl:px-6 ltr:px-8 py-4">
         <div className="flex justify-between items-center">
           {/* Logo */}
@@ -178,7 +178,7 @@ const Navbar = ({ currentPath }: NavbarProps) => {
       {/* Mobile Navigation */}
       <div
         className={cn(
-          "fixed inset-0 z-50 bg-white transform transition-transform duration-300 ease-in-out md:hidden",
+          "fixed inset-0 z-[60] bg-white transform transition-transform duration-300 ease-in-out md:hidden",
           isMenuOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
