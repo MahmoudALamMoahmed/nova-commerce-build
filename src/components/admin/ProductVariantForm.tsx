@@ -242,11 +242,15 @@ const ProductVariantForm = ({ productId, variants, onVariantsChange }: ProductVa
               className="hidden"
               id="variant-image-upload"
             />
-            <label htmlFor="variant-image-upload" className="cursor-pointer">
-              <Button type="button" variant="outline" size="sm" disabled={isUploading}>
-                <Upload className="h-4 w-4" />
-              </Button>
-            </label>
+            <Button 
+              type="button" 
+              variant="outline" 
+              size="sm" 
+              disabled={isUploading}
+              onClick={() => document.getElementById('variant-image-upload')?.click()}
+            >
+              <Upload className="h-4 w-4" />
+            </Button>
             <Button 
               onClick={handleAddVariant} 
               size="sm"
