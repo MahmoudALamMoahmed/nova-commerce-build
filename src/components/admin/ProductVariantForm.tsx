@@ -308,15 +308,35 @@ const ProductVariantForm = ({ productId, variants, onVariantsChange }: ProductVa
               className="hidden"
               id="variant-image-upload"
             />
-            <Button 
-              type="button" 
-              variant="outline" 
-              size="sm" 
-              disabled={isUploading}
-              onClick={() => document.getElementById('variant-image-upload')?.click()}
-            >
-              <Upload className="h-4 w-4" />
-            </Button>
+            <div className="flex flex-col gap-2">
+              <Button 
+                type="button" 
+                variant="outline" 
+                size="sm" 
+                disabled={isUploading}
+                onClick={() => document.getElementById('variant-image-upload')?.click()}
+              >
+                <Upload className="h-4 w-4" />
+              </Button>
+              {selectedFile && (
+                <div className="flex items-center gap-2">
+                  <img 
+                    src={URL.createObjectURL(selectedFile)} 
+                    alt="Preview"
+                    className="w-8 h-8 object-cover rounded"
+                  />
+                  <span className="text-xs text-green-600">Image selected</span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setSelectedFile(null)}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </div>
+              )}
+            </div>
             <Button 
               onClick={handleAddVariant} 
               size="sm"
