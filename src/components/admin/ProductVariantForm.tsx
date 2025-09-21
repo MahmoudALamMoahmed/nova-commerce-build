@@ -131,6 +131,10 @@ const ProductVariantForm = ({ productId, variants, onVariantsChange }: ProductVa
 
   const handleDeleteVariant = async (variantId: string) => {
     try {
+      // Get the variant data to access the image URL before deletion
+      const variantToDelete = variants.find(v => v.id === variantId);
+      
+      // Delete the variant from database first
       const { error } = await supabase
         .from('product_variants')
         .delete()
@@ -140,6 +144,11 @@ const ProductVariantForm = ({ productId, variants, onVariantsChange }: ProductVa
         console.error('Error deleting variant:', error);
         toast.error('Failed to delete variant');
         return;
+      }
+
+      // Delete the image from storage if it exists
+      if (variantToDelete?.image) {
+        await deleteImageFromStorage(variantToDelete.image);
       }
 
       const updatedVariants = variants.filter(v => v.id !== variantId);
