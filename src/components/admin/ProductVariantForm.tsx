@@ -42,6 +42,8 @@ const ProductVariantForm = ({ productId, variants, onVariantsChange }: ProductVa
     stock_quantity: number;
     price: number | null;
   } | null>(null);
+  const [editingFile, setEditingFile] = useState<File | null>(null);
+  const [isUpdatingImage, setIsUpdatingImage] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -162,20 +164,62 @@ const ProductVariantForm = ({ productId, variants, onVariantsChange }: ProductVa
   const cancelEditing = () => {
     setEditingVariant(null);
     setEditingData(null);
+    setEditingFile(null);
+  };
+
+  const deleteImageFromStorage = async (imageUrl: string | null): Promise<void> => {
+    if (!imageUrl) return;
+    
+    try {
+      // Extract file path from URL
+      const url = new URL(imageUrl);
+      const pathParts = url.pathname.split('/');
+      const fileName = pathParts[pathParts.length - 1];
+      const filePath = `product-variants/${fileName}`;
+      
+      await supabase.storage
+        .from('product-images')
+        .remove([filePath]);
+    } catch (error) {
+      console.error('Error deleting image from storage:', error);
+    }
   };
 
   const saveVariant = async () => {
     if (!editingData || !editingVariant) return;
 
     try {
+      setIsUpdatingImage(true);
+      let newImageUrl = null;
+      let shouldUpdateImage = false;
+
+      // If a new image file is selected, upload it and delete the old one
+      if (editingFile) {
+        newImageUrl = await uploadVariantImage(editingFile);
+        if (!newImageUrl) return;
+        shouldUpdateImage = true;
+
+        // Delete old image from storage
+        const currentVariant = variants.find(v => v.id === editingVariant);
+        if (currentVariant?.image) {
+          await deleteImageFromStorage(currentVariant.image);
+        }
+      }
+
+      const updateData: any = {
+        color: editingData.color,
+        size: editingData.size,
+        stock_quantity: editingData.stock_quantity,
+        price: editingData.price
+      };
+
+      if (shouldUpdateImage) {
+        updateData.image = newImageUrl;
+      }
+
       const { error } = await supabase
         .from('product_variants')
-        .update({
-          color: editingData.color,
-          size: editingData.size,
-          stock_quantity: editingData.stock_quantity,
-          price: editingData.price
-        })
+        .update(updateData)
         .eq('id', editingVariant);
 
       if (error) {
@@ -185,15 +229,28 @@ const ProductVariantForm = ({ productId, variants, onVariantsChange }: ProductVa
       }
 
       const updatedVariants = variants.map(v => 
-        v.id === editingVariant ? { ...v, ...editingData } : v
+        v.id === editingVariant ? { 
+          ...v, 
+          ...editingData,
+          ...(shouldUpdateImage && { image: newImageUrl })
+        } : v
       );
       onVariantsChange(updatedVariants);
       setEditingVariant(null);
       setEditingData(null);
+      setEditingFile(null);
       toast.success('Variant updated successfully');
     } catch (error) {
       console.error('Error updating variant:', error);
       toast.error('Failed to update variant');
+    } finally {
+      setIsUpdatingImage(false);
+    }
+  };
+
+  const handleEditingFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setEditingFile(e.target.files[0]);
     }
   };
 
@@ -278,12 +335,45 @@ const ProductVariantForm = ({ productId, variants, onVariantsChange }: ProductVa
               {variants.map((variant) => (
                 <TableRow key={variant.id}>
                   <TableCell>
-                    {variant.image && (
-                      <img 
-                        src={variant.image} 
-                        alt={`${variant.color} ${variant.size}`}
-                        className="w-12 h-12 object-cover rounded"
-                      />
+                    {editingVariant === variant.id ? (
+                      <div className="flex flex-col gap-2">
+                        {variant.image && (
+                          <img 
+                            src={variant.image} 
+                            alt={`${variant.color} ${variant.size}`}
+                            className="w-12 h-12 object-cover rounded"
+                          />
+                        )}
+                        <div className="flex gap-1">
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleEditingFileChange}
+                            className="hidden"
+                            id={`editing-variant-image-${variant.id}`}
+                          />
+                          <Button 
+                            type="button" 
+                            variant="outline" 
+                            size="sm" 
+                            disabled={isUpdatingImage}
+                            onClick={() => document.getElementById(`editing-variant-image-${variant.id}`)?.click()}
+                          >
+                            <Upload className="h-3 w-3" />
+                          </Button>
+                          {editingFile && (
+                            <span className="text-xs text-green-600">New image selected</span>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      variant.image && (
+                        <img 
+                          src={variant.image} 
+                          alt={`${variant.color} ${variant.size}`}
+                          className="w-12 h-12 object-cover rounded"
+                        />
+                      )
                     )}
                   </TableCell>
                   <TableCell>
@@ -336,6 +426,7 @@ const ProductVariantForm = ({ productId, variants, onVariantsChange }: ProductVa
                           variant="outline"
                           size="sm"
                           onClick={saveVariant}
+                          disabled={isUpdatingImage}
                         >
                           <Check className="h-4 w-4" />
                         </Button>
