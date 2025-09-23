@@ -135,6 +135,25 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               <span className="sr-only">{t('Admin Panel')}</span>
             </Button>
             
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size={isCollapsed ? "icon" : "default"}
+                  className={cn(
+                    "rounded-lg transition-all duration-300",
+                    isCollapsed ? "w-10 h-10" : "w-full justify-start"
+                  )}
+                  onClick={() => navigate('/')}
+                >
+                  <Home className="h-5 w-5" />
+                  {!isCollapsed && <span className="ml-2">{t('Home')}</span>}
+                  <span className="sr-only">{t('Home')}</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">{t('Home')}</TooltipContent>
+            </Tooltip>
+            
             {navigation.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.href;
@@ -163,15 +182,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           </nav>
           
           <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-lg" onClick={() => navigate('/')}>
-                  <Home className="h-5 w-5" />
-                  <span className="sr-only">{t('Home')}</span>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right">{t('Home')}</TooltipContent>
-            </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-lg">
