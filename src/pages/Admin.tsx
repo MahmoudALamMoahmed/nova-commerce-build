@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react';
 import { useUser } from '@/context/UserContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Navigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Package, Users, ShoppingCart, DollarSign, TrendingUp } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface Stats {
   totalProducts: number;
@@ -13,6 +14,11 @@ interface Stats {
   totalRevenue: number;
   totalProductsSold: number;
   topProduct: string;
+}
+
+interface SalesData {
+  date: string;
+  sales: number;
 }
 
 const Admin = () => {
@@ -25,6 +31,7 @@ const Admin = () => {
     totalProductsSold: 0, 
     topProduct: 'Loading...' 
   });
+  const [salesData, setSalesData] = useState<SalesData[]>([]);
 
   // Check if user is admin
   if (isLoading) {
@@ -83,8 +90,45 @@ const Admin = () => {
     }
   };
 
+  const fetchSalesData = async () => {
+    try {
+      const { data: ordersData, error } = await supabase
+        .from('orders')
+        .select('created_at, total_price')
+        .not('total_price', 'is', null)
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+
+      // Group orders by day and sum total sales
+      const salesByDay = new Map<string, number>();
+      
+      ordersData?.forEach(order => {
+        const date = new Date(order.created_at).toISOString().split('T')[0];
+        const currentSales = salesByDay.get(date) || 0;
+        salesByDay.set(date, currentSales + Number(order.total_price));
+      });
+
+      // Convert to array and format for chart
+      const chartData: SalesData[] = Array.from(salesByDay.entries())
+        .map(([date, sales]) => ({
+          date: new Date(date).toLocaleDateString('en-US', { 
+            month: 'short', 
+            day: 'numeric' 
+          }),
+          sales: Math.round(sales * 100) / 100 // Round to 2 decimal places
+        }))
+        .slice(-30); // Show last 30 days
+
+      setSalesData(chartData);
+    } catch (error) {
+      console.error('Error fetching sales data:', error);
+    }
+  };
+
   useEffect(() => {
     fetchStats();
+    fetchSalesData();
   }, []);
 
   return (
@@ -151,6 +195,61 @@ const Admin = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Sales Analytics Chart */}
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle>Sales Over Time</CardTitle>
+          <CardDescription className="text-muted-foreground">Daily sales performance over the last 30 days</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="h-80 w-full">
+            {salesData.length === 0 ? (
+              <div className="h-full bg-muted/30 rounded-lg flex items-center justify-center">
+                <div className="text-center">
+                  <TrendingUp className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-medium text-muted-foreground mb-2">No sales data</h3>
+                  <p className="text-sm text-muted-foreground">Sales data will appear here when orders are placed.</p>
+                </div>
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={salesData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                  <XAxis 
+                    dataKey="date" 
+                    className="text-sm text-muted-foreground"
+                    tick={{ fontSize: 12 }}
+                  />
+                  <YAxis 
+                    className="text-sm text-muted-foreground"
+                    tick={{ fontSize: 12 }}
+                    tickFormatter={(value) => `$${value}`}
+                  />
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '6px',
+                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                    }}
+                    formatter={(value: number) => [`$${value.toFixed(2)}`, 'Sales']}
+                    labelStyle={{ color: 'hsl(var(--foreground))' }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="sales" 
+                    stroke="hsl(var(--primary))" 
+                    strokeWidth={2}
+                    dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 4 }}
+                    activeDot={{ r: 6, stroke: 'hsl(var(--primary))', strokeWidth: 2, fill: 'hsl(var(--background))' }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
