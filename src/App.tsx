@@ -25,7 +25,7 @@ import Favorites from '@/pages/Favorites';
 import Orders from '@/pages/Orders';
 import NotFound from '@/pages/NotFound';
 import Admin from '@/pages/Admin';
-import Dashboard from '@/pages/admin/Dashboard';
+
 import AdminProducts from '@/pages/admin/AdminProducts';
 import AdminCategories from '@/pages/admin/AdminCategories';
 import AdminOrders from '@/pages/admin/AdminOrders';
@@ -85,7 +85,7 @@ function App() {
                       
                       {/* Admin routes with admin layout (no navbar/footer) */}
                       <Route path="/admin" element={<AdminLayout><Admin /></AdminLayout>} />
-                      <Route path="/admin/dashboard" element={<AdminLayout><Dashboard /></AdminLayout>} />
+                      
                       <Route path="/admin/products" element={<AdminLayout><AdminProducts /></AdminLayout>} />
                       <Route path="/admin/categories" element={<AdminLayout><AdminCategories /></AdminLayout>} />
                       <Route path="/admin/orders" element={<AdminLayout><AdminOrders /></AdminLayout>} />
