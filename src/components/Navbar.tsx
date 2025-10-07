@@ -86,8 +86,8 @@ const Navbar = ({ currentPath }: NavbarProps) => {
           <div className="flex items-center space-x-4 rtl:space-x-reverse">
             {/* Language Toggle */}
             <LanguageToggle />
-            {/* Favorites icon */}
-            <Link to="/favorites" className="relative p-2">
+            {/* Favorites icon - hidden on mobile (sm) when bottom navbar is visible */}
+            <Link to="/favorites" className="relative p-2 hidden sm:block">
               <Heart className="h-6 w-6 text-gray-700 hover:text-brand-accent transition-colors" />
               {totalFavorites > 0 && (
                 <span className="absolute top-0 right-0 bg-brand-accent text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
@@ -96,8 +96,8 @@ const Navbar = ({ currentPath }: NavbarProps) => {
               )}
             </Link>
             
-            {/* Cart icon */}
-            <Link to="/cart" className="relative p-2">
+            {/* Cart icon - hidden on mobile (sm) when bottom navbar is visible */}
+            <Link to="/cart" className="relative p-2 hidden sm:block">
               <ShoppingCart className="h-6 w-6 text-gray-700 hover:text-brand-accent transition-colors" />
               {totalItems > 0 && (
                 <span className="absolute top-0 right-0 bg-brand-accent text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
