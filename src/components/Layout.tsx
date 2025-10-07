@@ -17,10 +17,10 @@ export const Layout = ({ children }: LayoutProps) => {
   
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="fixed top-0 left-0 right-0 z-[80] md:relative md:top-auto md:left-auto md:right-auto">
+      <div className="fixed top-0 left-0 right-0 z-[80]">
         <Navbar currentPath={location.pathname} />
       </div>
-      <main className="flex-grow pt-20 pb-16 md:pt-0 md:pb-0">
+      <main className="flex-grow pt-20 pb-16">
         {children}
       </main>
       <Footer />
