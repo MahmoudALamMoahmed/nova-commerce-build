@@ -3,7 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
+/* html,
 body {
   scrollbar-gutter: stable;
   overflow-y: scroll;
@@ -12,7 +12,7 @@ body {
 body[data-radix-scroll-lock="true"] {
   padding-right: 0 !important;
   overflow-y: scroll !important;
-}
+} */
 
 @layer base {
   :root {
