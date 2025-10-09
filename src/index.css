@@ -9,10 +9,8 @@ body {
   overflow-y: scroll;
 }
 
-body[data-radix-scroll-lock="true"],
-body[data-scroll-locked="1"] {
+body[data-radix-scroll-lock="true"] {
   padding-right: 0 !important;
-  margin-right: 0 !important;
   overflow-y: scroll !important;
 }
 
