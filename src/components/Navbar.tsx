@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Menu, ShoppingCart, X, Heart, User, LogOut, Package, Shield } from 'lucide-react';
 import { Button } from './ui/button';
@@ -37,143 +36,151 @@ const Navbar = ({ currentPath }: NavbarProps) => {
   };
 
   return (
-    <nav className="bg-white shadow-sm md:fixed w-full z-40 md:top-0">
-      <div className="container mx-auto px-6 md:px-8 rtl:px-6 ltr:px-8 py-4">
-        <div className="flex justify-between items-center">
-          {/* Logo */}
-          <Link to="/" className="text-2xl font-bold text-brand-DEFAULT">
-            NOVA<span className="text-brand-accent">SHOP</span>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex space-x-8 rtl:space-x-reverse">
-            <Link 
-              to="/" 
-              className={`nav-link ${isActive('/') ? 'text-brand-accent font-semibold border-b-2 border-brand-accent' : ''}`}
-            >
-              {t('nav.home')}
+    <>
+      {/* Fixed Navbar -- بيكون ثابت في كل الأحجام */}
+      <nav className="bg-white shadow-sm fixed top-0 w-full z-40 lg:sticky">
+        <div className="container mx-auto px-6 md:px-8 rtl:px-6 ltr:px-8 py-4">
+          <div className="flex justify-between items-center">
+            {/* Logo */}
+            <Link to="/" className="text-2xl font-bold text-brand-DEFAULT">
+              NOVA<span className="text-brand-accent">SHOP</span>
             </Link>
-            <Link 
-              to="/products" 
-              className={`nav-link ${isActive('/products') ? 'text-brand-accent font-semibold border-b-2 border-brand-accent' : ''}`}
-            >
-              {t('nav.products')}
-            </Link>
-            <Link 
-              to="/about" 
-              className={`nav-link ${isActive('/about') ? 'text-brand-accent font-semibold border-b-2 border-brand-accent' : ''}`}
-            >
-              {t('nav.about')}
-            </Link>
-            <Link 
-              to="/contact" 
-              className={`nav-link ${isActive('/contact') ? 'text-brand-accent font-semibold border-b-2 border-brand-accent' : ''}`}
-            >
-              {t('nav.contact')}
-            </Link>
-            {/* Admin link for admin users */}
-            {userProfile?.is_admin && (
+ 
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex space-x-8 rtl:space-x-reverse">
               <Link 
-                to="/admin" 
-                className={`nav-link ${isActive('/admin') ? 'text-brand-accent font-semibold border-b-2 border-brand-accent' : ''}`}
+                to="/" 
+                className={`nav-link ${isActive('/') ? 'text-brand-accent font-semibold border-b-2 border-brand-accent' : ''}`}
               >
-                {t('nav.admin')}
+                {t('nav.home')}
               </Link>
-            )}
-          </div>
+              <Link 
+                to="/products" 
+                className={`nav-link ${isActive('/products') ? 'text-brand-accent font-semibold border-b-2 border-brand-accent' : ''}`}
+              >
+                {t('nav.products')}
+              </Link>
+              <Link 
+                to="/about" 
+                className={`nav-link ${isActive('/about') ? 'text-brand-accent font-semibold border-b-2 border-brand-accent' : ''}`}
+              >
+                {t('nav.about')}
+              </Link>
+              <Link 
+                to="/contact" 
+                className={`nav-link ${isActive('/contact') ? 'text-brand-accent font-semibold border-b-2 border-brand-accent' : ''}`}
+              >
+                {t('nav.contact')}
+              </Link>
+              {/* Admin link for admin users */}
+              {userProfile?.is_admin && (
+                <Link 
+                  to="/admin" 
+                  className={`nav-link ${isActive('/admin') ? 'text-brand-accent font-semibold border-b-2 border-brand-accent' : ''}`}
+                >
+                  {t('nav.admin')}
+                </Link>
+              )}
+            </div>
 
-          {/* Language Toggle, Cart, Favorites, and User Menu */}
-          <div className="flex items-center space-x-4 rtl:space-x-reverse">
-            {/* Language Toggle */}
-            <LanguageToggle />
-            {/* Favorites icon - hidden on mobile (sm) when bottom navbar is visible */}
-            <Link to="/favorites" className="relative p-2 hidden sm:block">
-              <Heart className="h-6 w-6 text-gray-700 hover:text-brand-accent transition-colors" />
-              {totalFavorites > 0 && (
-                <span className="absolute top-0 right-0 bg-brand-accent text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {totalFavorites}
-                </span>
-              )}
-            </Link>
-            
-            {/* Cart icon - hidden on mobile (sm) when bottom navbar is visible */}
-            <Link to="/cart" className="relative p-2 hidden sm:block">
-              <ShoppingCart className="h-6 w-6 text-gray-700 hover:text-brand-accent transition-colors" />
-              {totalItems > 0 && (
-                <span className="absolute top-0 right-0 bg-brand-accent text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {totalItems}
-                </span>
-              )}
-            </Link>
-            
-            {/* User Menu */}
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <div className="relative p-2 text-gray-700 hover:text-brand-accent transition-colors cursor-pointer">
-                    <User className="h-6 w-6" />
-                  </div>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <div className="px-4 py-2 text-sm">
-                    <p className="font-medium">Hello, {user.email}</p>
-                    {userProfile?.is_admin && (
-                      <p className="text-xs text-brand-accent mt-1">Administrator</p>
-                    )}
-                  </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link to="/profile" className="flex items-center cursor-pointer">
-                      <User className="mr-2 h-4 w-4" />
-                      <span>{t('nav.profile')}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/orders" className="flex items-center cursor-pointer">
-                      <Package className="mr-2 h-4 w-4" />
-                      <span>{t('nav.orders')}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  {userProfile?.is_admin && (
+            {/* Language Toggle, Cart, Favorites, and User Menu */}
+            <div className="flex items-center space-x-4 rtl:space-x-reverse">
+              {/* Language Toggle */}
+              <LanguageToggle />
+              
+              {/* Favorites icon - hidden on mobile (sm) when bottom navbar is visible */}
+              <Link to="/favorites" className="relative p-2 hidden sm:block">
+                <Heart className="h-6 w-6 text-gray-700 hover:text-brand-accent transition-colors" />
+                {totalFavorites > 0 && (
+                  <span className="absolute top-0 right-0 bg-brand-accent text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {totalFavorites}
+                  </span>
+                )}
+              </Link>
+              
+              {/* Cart icon - hidden on mobile (sm) when bottom navbar is visible */}
+              <Link to="/cart" className="relative p-2 hidden sm:block">
+                <ShoppingCart className="h-6 w-6 text-gray-700 hover:text-brand-accent transition-colors" />
+                {totalItems > 0 && (
+                  <span className="absolute top-0 right-0 bg-brand-accent text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+              </Link>
+              
+              {/* User Menu */}
+              {user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <div className="relative p-2 text-gray-700 hover:text-brand-accent transition-colors cursor-pointer">
+                      <User className="h-6 w-6" />
+                    </div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <div className="px-4 py-2 text-sm">
+                      <p className="font-medium">Hello, {user.email}</p>
+                      {userProfile?.is_admin && (
+                        <p className="text-xs text-brand-accent mt-1">Administrator</p>
+                      )}
+                    </div>
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link to="/admin" className="flex items-center cursor-pointer">
-                        <Shield className="mr-2 h-4 w-4" />
-                        <span>{t('nav.adminPanel')}</span>
+                      <Link to="/profile" className="flex items-center cursor-pointer">
+                        <User className="mr-2 h-4 w-4" />
+                        <span>{t('nav.profile')}</span>
                       </Link>
                     </DropdownMenuItem>
-                  )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="cursor-pointer" onClick={logout}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>{t('nav.logout')}</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <div className="hidden md:flex space-x-2 rtl:space-x-reverse">
-                <Link to="/login">
-                  <Button variant="ghost">{t('nav.login')}</Button>
-                </Link>
-                <Link to="/register">
-                  <Button>{t('nav.signup')}</Button>
-                </Link>
-              </div>
-            )}
-            
-            <button
-              className="md:hidden p-2"
-              onClick={toggleMenu}
-              aria-label="Toggle menu"
-            >
-              {isMenuOpen ? (
-                <X className="h-6 w-6 text-gray-700" />
+                    <DropdownMenuItem asChild>
+                      <Link to="/orders" className="flex items-center cursor-pointer">
+                        <Package className="mr-2 h-4 w-4" />
+                        <span>{t('nav.orders')}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    {userProfile?.is_admin && (
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin" className="flex items-center cursor-pointer">
+                          <Shield className="mr-2 h-4 w-4" />
+                          <span>{t('nav.adminPanel')}</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="cursor-pointer" onClick={logout}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>{t('nav.logout')}</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               ) : (
-                <Menu className="h-6 w-6 text-gray-700" />
+                <div className="hidden md:flex space-x-2 rtl:space-x-reverse">
+                  <Link to="/login">
+                    <Button variant="ghost">{t('nav.login')}</Button>
+                  </Link>
+                  <Link to="/register">
+                    <Button>{t('nav.signup')}</Button>
+                  </Link>
+                </div>
               )}
-            </button>
+              
+              <button
+                className="md:hidden p-2"
+                onClick={toggleMenu}
+                aria-label="Toggle menu"
+              >
+                {isMenuOpen ? (
+                  <X className="h-6 w-6 text-gray-700" />
+                ) : (
+                  <Menu className="h-6 w-6 text-gray-700" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </nav>
+
+      {/* Spacer - عشان المحتوى ميبقاش تحت الـ navbar */}
+      
+      {/* <div className="h-[72px]" /> */}
 
       {/* Mobile Navigation */}
       <div
@@ -182,7 +189,7 @@ const Navbar = ({ currentPath }: NavbarProps) => {
           isMenuOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
-        <div className="flex flex-col h-full p-6">
+        <div className="flex flex-col h-full p-6 overflow-y-auto">
           <div className="flex justify-between items-center mb-8">
             <Link to="/" className="text-2xl font-bold text-brand-DEFAULT">
               NOVA<span className="text-brand-accent">SHOP</span>
@@ -267,7 +274,7 @@ const Navbar = ({ currentPath }: NavbarProps) => {
               </div>
             )}
           </div>
-          <div className="mt-auto flex flex-col gap-3">
+          <div className="mt-auto flex flex-col gap-3 pt-6">
             <Link to="/favorites" onClick={toggleMenu}>
               <Button className="w-full bg-brand-DEFAULT hover:bg-brand-DEFAULT/90">
                 <Heart className="mr-2 h-5 w-5" /> {t('favorites.title')} ({totalFavorites})
@@ -281,7 +288,7 @@ const Navbar = ({ currentPath }: NavbarProps) => {
           </div>
         </div>
       </div>
-    </nav>
+    </>
   );
 };
 
