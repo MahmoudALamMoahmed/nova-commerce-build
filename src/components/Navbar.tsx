@@ -38,7 +38,9 @@ const Navbar = ({ currentPath }: NavbarProps) => {
   return (
     <>
       {/* Fixed Navbar - بيكون ثابت في كل الأحجام */}
-      <nav className="bg-white shadow-sm relative lg:fixed lg:top-0 w-full z-40">
+<<<<<<< HEAD
+      <nav className="bg-white shadow-sm fixed top-0 w-full z-40 lg:sticky">
+=======
         <div className="container mx-auto px-6 md:px-8 rtl:px-6 ltr:px-8 py-4">
           <div className="flex justify-between items-center">
             {/* Logo */}
@@ -179,7 +181,11 @@ const Navbar = ({ currentPath }: NavbarProps) => {
       </nav>
 
       {/* Spacer - عشان المحتوى ميبقاش تحت الـ navbar */}
+<<<<<<< HEAD
+      {/* <div className="h-[72px]" /> */}
+=======
       <div className="h-0 lg:h-[72px]" />
+>>>>>>> 6d801af906bd623b04dd27abb7c29f9668df3da4
 
       {/* Mobile Navigation */}
       <div
