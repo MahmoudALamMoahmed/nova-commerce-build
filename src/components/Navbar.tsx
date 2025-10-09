@@ -38,7 +38,7 @@ const Navbar = ({ currentPath }: NavbarProps) => {
   return (
     <>
       {/* Fixed Navbar - بيكون ثابت في كل الأحجام */}
-      <nav className="fixed top-0 left-0 right-0 bg-white shadow-sm w-full z-40">
+      <nav className="bg-white shadow-sm fixed md:relative top-0 left-0 right-0 w-full z-40">
         <div className="container mx-auto px-6 md:px-8 rtl:px-6 ltr:px-8 py-4">
           <div className="flex justify-between items-center">
             {/* Logo */}
