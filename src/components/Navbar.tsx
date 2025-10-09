@@ -179,11 +179,8 @@ const Navbar = ({ currentPath }: NavbarProps) => {
       </nav>
 
       {/* Spacer - عشان المحتوى ميبقاش تحت الـ navbar */}
-<<<<<<< HEAD
+      
       {/* <div className="h-[72px]" /> */}
-=======
-      <div className="h-0 lg:h-[72px]" />
->>>>>>> 6d801af906bd623b04dd27abb7c29f9668df3da4
 
       {/* Mobile Navigation */}
       <div
