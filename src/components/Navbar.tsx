@@ -45,7 +45,7 @@ const Navbar = ({ currentPath }: NavbarProps) => {
             <Link to="/" className="text-2xl font-bold text-brand-DEFAULT">
               NOVA<span className="text-brand-accent">SHOP</span>
             </Link>
-
+ 
             {/* Desktop Navigation */}
             <div className="hidden md:flex space-x-8 rtl:space-x-reverse">
               <Link 
