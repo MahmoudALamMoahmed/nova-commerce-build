@@ -16,7 +16,7 @@ const LanguageToggle = () => {
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="sm" className="gap-2">
           <Globe className="h-4 w-4" />
@@ -25,7 +25,7 @@ const LanguageToggle = () => {
           </span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="z-[100] bg-white dark:bg-gray-800">
+      <DropdownMenuContent align="end" className="z-[100] bg-white">
         <DropdownMenuItem
           onClick={() => changeLanguage('ar')}
           className={`cursor-pointer ${i18n.language === 'ar' ? 'bg-accent' : ''}`}

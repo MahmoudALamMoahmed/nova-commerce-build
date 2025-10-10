@@ -84,7 +84,9 @@ const Navbar = ({ currentPath }: NavbarProps) => {
           {/* Language Toggle, Cart, Favorites, and User Menu */}
           <div className="flex items-center space-x-4 rtl:space-x-reverse">
             {/* Language Toggle */}
-            <LanguageToggle />
+            <div className="flex items-center">
+              <LanguageToggle />
+            </div>
             {/* Favorites icon - hidden on mobile (sm) when bottom navbar is visible */}
             <Link to="/favorites" className="relative p-2 hidden sm:block">
               <Heart className="h-6 w-6 text-gray-700 hover:text-brand-accent transition-colors" />
@@ -107,13 +109,13 @@ const Navbar = ({ currentPath }: NavbarProps) => {
             
             {/* User Menu */}
             {user ? (
-              <DropdownMenu>
+              <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
                   <div className="relative p-2 text-gray-700 hover:text-brand-accent transition-colors cursor-pointer">
                     <User className="h-6 w-6" />
                   </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="z-[100] bg-white">
                   <div className="px-4 py-2 text-sm">
                     <p className="font-medium">Hello, {user.email}</p>
                     {userProfile?.is_admin && (

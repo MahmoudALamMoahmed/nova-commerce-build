@@ -1,22 +1,27 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* html,
-body {
+/* Fix for scrollbar disappearing and layout shift */
+html {
   scrollbar-gutter: stable;
+}
+
+body {
   overflow-y: scroll;
 }
 
-body[data-radix-scroll-lock="true"] {
+/* Prevent layout shift when Radix UI locks scroll */
+body[data-radix-scroll-lock] {
   padding-right: 0 !important;
+  margin-right: 0 !important;
   overflow-y: scroll !important;
 }
 
-* {
-  outline: 1px solid red;
-} */
+/* Ensure dropdowns don't cause layout shift */
+[data-radix-popper-content-wrapper] {
+  z-index: 100 !important;
+}
 
 @layer base {
   :root {
