@@ -151,12 +151,9 @@ const Navbar = ({ currentPath }: NavbarProps) => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <div className="hidden md:flex space-x-2 rtl:space-x-reverse">
+              <div className="hidden md:flex">
                 <Link to="/login">
                   <Button variant="ghost">{t('nav.login')}</Button>
-                </Link>
-                <Link to="/register">
-                  <Button>{t('nav.signup')}</Button>
                 </Link>
               </div>
             )}
@@ -258,12 +255,9 @@ const Navbar = ({ currentPath }: NavbarProps) => {
                 </div>
               </>
             ) : (
-              <div className="pt-4 border-t flex flex-col gap-3">
+              <div className="pt-4 border-t">
                 <Link to="/login" onClick={toggleMenu}>
-                  <Button className="w-full" variant="outline">{t('nav.login')}</Button>
-                </Link>
-                <Link to="/register" onClick={toggleMenu}>
-                  <Button className="w-full">{t('nav.signup')}</Button>
+                  <Button className="w-full">{t('nav.login')}</Button>
                 </Link>
               </div>
             )}

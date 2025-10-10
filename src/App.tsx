@@ -18,7 +18,6 @@ import ProductDetails from '@/pages/ProductDetails';
 import About from '@/pages/About';
 import Contact from '@/pages/Contact';
 import Login from '@/pages/Login';
-import Register from '@/pages/Register';
 import Profile from '@/pages/Profile';
 import Cart from '@/pages/Cart';
 import Favorites from '@/pages/Favorites';
@@ -77,7 +76,6 @@ function App() {
                       <Route path="/about" element={<Layout><About /></Layout>} />
                       <Route path="/contact" element={<Layout><Contact /></Layout>} />
                       <Route path="/login" element={<Layout><Login /></Layout>} />
-                      <Route path="/register" element={<Layout><Register /></Layout>} />
                       <Route path="/profile" element={<Layout><Profile /></Layout>} />
                       <Route path="/cart" element={<Layout><Cart /></Layout>} />
                       <Route path="/favorites" element={<Layout><Favorites /></Layout>} />
