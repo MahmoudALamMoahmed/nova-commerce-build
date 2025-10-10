@@ -33,18 +33,37 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   // Fetch user profile from Supabase
   const fetchUserProfile = async (userId: string) => {
     try {
-      const { data, error } = await supabase
+      // Fetch user data
+      const { data: userData, error: userError } = await supabase
         .from('users')
         .select('*')
         .eq('id', userId)
         .single();
 
-      if (error) {
-        console.error('Error fetching user profile:', error);
+      if (userError) {
+        console.error('Error fetching user profile:', userError);
         return;
       }
 
-      setUserProfile(data);
+      // Check if user has admin role
+      const { data: rolesData, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+      if (rolesError) {
+        console.error('Error fetching user roles:', rolesError);
+      }
+
+      // Combine user data with admin status from roles table
+      const profileWithRole = {
+        ...userData,
+        is_admin: rolesData?.role === 'admin'
+      };
+
+      setUserProfile(profileWithRole);
     } catch (error) {
       console.error('Error fetching user profile:', error);
     }
@@ -136,8 +155,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
             .upsert({
               id: data.user.id,
               email: data.user.email!,
-              name: name,
-              is_admin: false
+              name: name
             });
         } catch (profileError) {
           console.log('Profile creation handled by trigger:', profileError);

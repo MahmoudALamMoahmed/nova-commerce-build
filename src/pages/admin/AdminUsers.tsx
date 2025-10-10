@@ -45,18 +45,38 @@ const AdminUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      const { data, error } = await supabase
+      // Fetch all users
+      const { data: usersData, error: usersError } = await supabase
         .from('users')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Error fetching users:', error);
+      if (usersError) {
+        console.error('Error fetching users:', usersError);
         toast.error('Failed to fetch users');
         return;
       }
 
-      setUsers(data || []);
+      // Fetch all user roles
+      const { data: rolesData, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('user_id, role')
+        .eq('role', 'admin');
+
+      if (rolesError) {
+        console.error('Error fetching roles:', rolesError);
+      }
+
+      // Create a set of admin user IDs for quick lookup
+      const adminUserIds = new Set(rolesData?.map(r => r.user_id) || []);
+
+      // Combine user data with admin status
+      const usersWithRoles = (usersData || []).map(user => ({
+        ...user,
+        is_admin: adminUserIds.has(user.id)
+      }));
+
+      setUsers(usersWithRoles);
     } catch (error) {
       console.error('Error fetching users:', error);
       toast.error('Failed to fetch users');
@@ -77,14 +97,26 @@ const AdminUsers = () => {
     }
 
     try {
-      const { error } = await supabase
-        .from('users')
-        .update({ is_admin: !currentAdminStatus })
-        .eq('id', userId);
+      if (!currentAdminStatus) {
+        // Add admin role
+        const { error } = await supabase
+          .from('user_roles')
+          .insert({ user_id: userId, role: 'admin' });
 
-      if (error) throw error;
+        if (error) throw error;
+        toast.success('User promoted to admin');
+      } else {
+        // Remove admin role
+        const { error } = await supabase
+          .from('user_roles')
+          .delete()
+          .eq('user_id', userId)
+          .eq('role', 'admin');
 
-      toast.success(`User ${!currentAdminStatus ? 'promoted to' : 'demoted from'} admin`);
+        if (error) throw error;
+        toast.success('User demoted from admin');
+      }
+
       fetchUsers(); // Refresh the list
     } catch (error) {
       console.error('Error updating user admin status:', error);

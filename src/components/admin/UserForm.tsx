@@ -90,7 +90,6 @@ const UserForm = ({ isOpen, onClose, user, onSuccess }: UserFormProps) => {
           .update({
             name: data.name,
             email: data.email,
-            is_admin: data.is_admin,
           })
           .eq('id', user.id);
 
@@ -104,6 +103,31 @@ const UserForm = ({ isOpen, onClose, user, onSuccess }: UserFormProps) => {
           
           if (authError) {
             console.error('Auth email update error:', authError);
+          }
+        }
+
+        // Update admin role separately in user_roles table
+        if (data.is_admin !== user.is_admin) {
+          if (data.is_admin) {
+            // Add admin role
+            const { error: roleError } = await supabase
+              .from('user_roles')
+              .insert({ user_id: user.id, role: 'admin' });
+
+            if (roleError && !roleError.message.includes('duplicate')) {
+              console.error('Error adding admin role:', roleError);
+            }
+          } else {
+            // Remove admin role
+            const { error: roleError } = await supabase
+              .from('user_roles')
+              .delete()
+              .eq('user_id', user.id)
+              .eq('role', 'admin');
+
+            if (roleError) {
+              console.error('Error removing admin role:', roleError);
+            }
           }
         }
 
@@ -127,17 +151,27 @@ const UserForm = ({ isOpen, onClose, user, onSuccess }: UserFormProps) => {
         if (authError) throw authError;
 
         if (authData.user) {
-          // Create user profile
+          // Create user profile (without is_admin)
           const { error: profileError } = await supabase
             .from('users')
             .insert({
               id: authData.user.id,
               name: data.name,
               email: data.email,
-              is_admin: data.is_admin,
             });
 
           if (profileError) throw profileError;
+
+          // Add admin role if needed
+          if (data.is_admin) {
+            const { error: roleError } = await supabase
+              .from('user_roles')
+              .insert({ user_id: authData.user.id, role: 'admin' });
+
+            if (roleError) {
+              console.error('Error adding admin role:', roleError);
+            }
+          }
         }
 
         toast.success('User created successfully!');
