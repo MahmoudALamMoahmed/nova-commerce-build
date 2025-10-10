@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Menu, ShoppingCart, X, Heart, User, LogOut, Package, Shield } from 'lucide-react';
 import { Button } from './ui/button';
@@ -36,7 +37,7 @@ const Navbar = ({ currentPath }: NavbarProps) => {
   };
 
   return (
-    <nav className="bg-white shadow-sm absolute top-0 w-full z-40 md:sticky">
+    <nav className="bg-white shadow-sm fixed top-0 w-full z-40 lg:sticky">
       <div className="container mx-auto px-6 md:px-8 rtl:px-6 ltr:px-8 py-4">
         <div className="flex justify-between items-center">
           {/* Logo */}
