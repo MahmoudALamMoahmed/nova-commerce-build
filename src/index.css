@@ -23,6 +23,37 @@ body[data-radix-scroll-lock] {
   z-index: 100 !important;
 }
 
+/* Modern Custom Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--primary)) hsl(var(--muted));
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary));
+  border-radius: 10px;
+  border: 2px solid hsl(var(--muted));
+  transition: background 0.3s ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.8);
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background: hsl(var(--primary) / 0.9);
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
