@@ -1,11 +1,8 @@
-
 import React from 'react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import BottomNavbar from './BottomNavbar';
 import { useLocation } from 'react-router-dom';
-
-import { cn } from '@/lib/utils';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -14,15 +11,18 @@ interface LayoutProps {
 export const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
   
-  
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="fixed top-0 left-0 right-0 z-[80] md:relative md:top-auto md:left-auto md:right-auto">
+      {/* Navbar - sticky on md and above, absolute on mobile */}
+      <div className="md:sticky md:top-0 md:z-[80]">
         <Navbar currentPath={location.pathname} />
       </div>
+      
+      {/* Main content with padding only on mobile to account for absolute navbar */}
       <main className="flex-grow pt-20 pb-16 md:pt-0 md:pb-0">
         {children}
       </main>
+      
       <Footer />
       <BottomNavbar />
     </div>
