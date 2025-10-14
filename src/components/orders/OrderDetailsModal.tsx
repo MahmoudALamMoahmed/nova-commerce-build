@@ -5,6 +5,7 @@ import { MapPin, Package } from 'lucide-react';
 import { Order } from '@/context/OrderContext';
 import { OrderStatus } from './OrderStatus';
 import { PaymentMethod } from './PaymentMethod';
+import { useTranslation } from 'react-i18next';
 
 interface OrderDetailsModalProps {
   order: Order | null;
@@ -12,6 +13,7 @@ interface OrderDetailsModalProps {
 }
 
 export const OrderDetailsModal = ({ order, onClose }: OrderDetailsModalProps) => {
+  const { t } = useTranslation();
   if (!order) return null;
 
   return (
@@ -19,7 +21,7 @@ export const OrderDetailsModal = ({ order, onClose }: OrderDetailsModalProps) =>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">
-            Order Details #{order.id.slice(0, 8).toUpperCase()}
+            {t('orders.orderDetails')} #{order.id.slice(0, 8).toUpperCase()}
           </DialogTitle>
         </DialogHeader>
 
@@ -27,21 +29,21 @@ export const OrderDetailsModal = ({ order, onClose }: OrderDetailsModalProps) =>
           {/* Order Info */}
           <div className="grid grid-cols-2 gap-4 p-6 bg-gradient-to-r from-muted/50 to-muted rounded-lg border">
             <div>
-              <p className="text-sm text-muted-foreground mb-1">Order Date</p>
+              <p className="text-sm text-muted-foreground mb-1">{t('orders.orderDate')}</p>
               <p className="font-semibold">{format(new Date(order.created_at), 'MMMM d, yyyy')}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground mb-1">Status</p>
+              <p className="text-sm text-muted-foreground mb-1">{t('orders.status')}</p>
               <OrderStatus status={order.status} />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground mb-1">Payment Method</p>
+              <p className="text-sm text-muted-foreground mb-1">{t('orders.paymentMethod')}</p>
               <div className="font-medium">
                 <PaymentMethod method={order.payment_method || 'cash'} />
               </div>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground mb-1">Total Amount</p>
+              <p className="text-sm text-muted-foreground mb-1">{t('orders.totalAmount')}</p>
               <p className="font-bold text-xl text-primary">
                 ${order.total_price?.toFixed(2) || '0.00'}
               </p>
@@ -54,7 +56,7 @@ export const OrderDetailsModal = ({ order, onClose }: OrderDetailsModalProps) =>
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <MapPin className="h-5 w-5 text-primary" />
-                  Delivery Address
+                  {t('orders.deliveryAddress')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
@@ -63,7 +65,7 @@ export const OrderDetailsModal = ({ order, onClose }: OrderDetailsModalProps) =>
                   <p className="text-muted-foreground mt-1">{order.addresses.street}</p>
                   <p className="text-muted-foreground">{order.addresses.city}, {order.addresses.postal_code}</p>
                   <p className="text-muted-foreground mt-2 flex items-center gap-2">
-                    <span className="font-medium">Phone:</span> {order.addresses.phone_number}
+                    <span className="font-medium">{t('orders.phone')}:</span> {order.addresses.phone_number}
                   </p>
                 </div>
               </CardContent>
@@ -75,7 +77,7 @@ export const OrderDetailsModal = ({ order, onClose }: OrderDetailsModalProps) =>
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center gap-2 text-lg">
                 <Package className="h-5 w-5 text-primary" />
-                Order Items ({order.order_items?.length || 0} items)
+                {t('orders.orderItems')} ({order.order_items?.length || 0} {t('orders.items')})
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
@@ -103,11 +105,11 @@ export const OrderDetailsModal = ({ order, onClose }: OrderDetailsModalProps) =>
                         <h4 className="font-semibold text-foreground">{productTitle}</h4>
                         {item.product_variants && (
                           <p className="text-xs text-muted-foreground">
-                            Color: {item.product_variants.color} • Size: {item.product_variants.size}
+                            {t('orders.color')}: {item.product_variants.color} • {t('orders.size')}: {item.product_variants.size}
                           </p>
                         )}
                         <p className="text-sm text-muted-foreground mt-1">
-                          ${item.price.toFixed(2)} × {item.quantity} {item.quantity > 1 ? 'items' : 'item'}
+                          ${item.price.toFixed(2)} × {item.quantity} {item.quantity > 1 ? t('orders.items') : t('orders.item')}
                         </p>
                       </div>
                       <div className="text-right">

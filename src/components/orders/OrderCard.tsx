@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { Order } from '@/context/OrderContext';
 import { OrderStatus } from './OrderStatus';
 import { PaymentMethod } from './PaymentMethod';
+import { useTranslation } from 'react-i18next';
 
 interface OrderCardProps {
   order: Order;
@@ -13,6 +14,7 @@ interface OrderCardProps {
 }
 
 export const OrderCard = ({ order, onShowDetails }: OrderCardProps) => {
+  const { t } = useTranslation();
   const totalItems = order.order_items?.reduce((acc, item) => acc + item.quantity, 0) || 0;
 
   return (
@@ -22,7 +24,7 @@ export const OrderCard = ({ order, onShowDetails }: OrderCardProps) => {
         <div className="flex items-start justify-between mb-4">
           <div className="space-y-2">
             <h3 className="text-lg font-semibold text-foreground">
-              Order #{order.id.slice(0, 8).toUpperCase()}
+              {t('orders.orderNumber')} #{order.id.slice(0, 8).toUpperCase()}
             </h3>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="h-4 w-4" />
@@ -34,7 +36,7 @@ export const OrderCard = ({ order, onShowDetails }: OrderCardProps) => {
               ${order.total_price?.toFixed(2) || '0.00'}
             </div>
             <div className="text-sm text-muted-foreground">
-              {totalItems} item{totalItems !== 1 ? 's' : ''}
+              {totalItems} {totalItems !== 1 ? t('orders.items') : t('orders.item')}
             </div>
           </div>
         </div>
@@ -49,7 +51,7 @@ export const OrderCard = ({ order, onShowDetails }: OrderCardProps) => {
           <div className="mb-4">
             <div className="flex items-center gap-2 mb-3 text-sm font-medium text-foreground">
               <Package className="h-4 w-4" />
-              Items ({order.order_items.length})
+              {t('orders.items')} ({order.order_items.length})
             </div>
             <div className="flex gap-2 overflow-x-auto">
               {order.order_items.slice(0, 3).map((item) => (
@@ -83,7 +85,7 @@ export const OrderCard = ({ order, onShowDetails }: OrderCardProps) => {
           <div className="space-y-1">
             <div className="text-xs font-medium text-muted-foreground flex items-center gap-1">
               <CreditCard className="h-3 w-3" />
-              Payment
+              {t('orders.payment')}
             </div>
             <PaymentMethod method={order.payment_method || 'cash'} compact />
           </div>
@@ -92,7 +94,7 @@ export const OrderCard = ({ order, onShowDetails }: OrderCardProps) => {
             <div className="space-y-1">
               <div className="text-xs font-medium text-muted-foreground flex items-center gap-1">
                 <MapPin className="h-3 w-3" />
-                Delivery
+                {t('orders.delivery')}
               </div>
               <div className="text-sm text-foreground">
                 {order.addresses.city}
@@ -110,7 +112,7 @@ export const OrderCard = ({ order, onShowDetails }: OrderCardProps) => {
             className="flex items-center gap-2"
           >
             <Eye className="h-4 w-4" />
-            Show Details
+            {t('orders.showDetails')}
           </Button>
         </div>
       </CardContent>
