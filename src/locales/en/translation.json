@@ -36,7 +36,9 @@
     "addToFavorites": "Add to Favorites",
     "removeFromFavorites": "Remove from Favorites",
     "category": "Category",
-    "noDescription": "No description available."
+    "noDescription": "No description available.",
+    "selectOptions": "Select Options",
+    "notAvailable": "Out of Stock"
   },
   "cart": {
     "title": "Shopping Cart",

@@ -139,7 +139,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
           <Link
             to={`/products/${product.id}`}
-            className="w-full bg-brand-accent hover:bg-brand-accent/90 disabled:opacity-50 disabled:cursor-not-allowed text-white flex items-center justify-center py-2 rounded-md transition-colors"
+            className="w-full bg-brand-accent hover:bg-brand-accent/90 disabled:opacity-50 disabled:cursor-not-allowed text-white flex items-center justify-center py-2 rounded-md transition-colors text-sm sm:text-xs"
             onClick={(e) => {
               e.stopPropagation();
               if (totalStock === 0) {
@@ -148,7 +148,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             }}
           >
             <ShoppingCart size={16} className={`${isRTL ? 'ml-2' : 'mr-2'}`} /> 
-            {totalStock === 0 ? 'Out of Stock' : 'Select Options'}
+            {totalStock === 0 ? t('products.notAvailable') : t('products.selectOptions')}
           </Link>
         </div>
       </div>

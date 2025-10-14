@@ -36,7 +36,9 @@
     "addToFavorites": "أضف إلى المفضلة",
     "removeFromFavorites": "إزالة من المفضلة",
     "category": "الفئة",
-    "noDescription": "لا يوجد وصف متاح."
+    "noDescription": "لا يوجد وصف متاح.",
+    "selectOptions": "اختر المنتج",
+    "notAvailable": "غير متاح"
   },
   "cart": {
     "title": "سلة التسوق",
