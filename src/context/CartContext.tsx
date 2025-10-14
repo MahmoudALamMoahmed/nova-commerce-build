@@ -169,7 +169,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
       // Refresh cart items
       await fetchCartItems();
-      toast.success('Item added to cart');
+      // Toast notification is handled by the calling component
     } catch (error) {
       console.error('Error adding to cart:', error);
       toast.error('Failed to add item to cart');
