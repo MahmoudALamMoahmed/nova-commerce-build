@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AddressSelector from '@/components/AddressSelector';
 import PaymentMethodSelector from '@/components/PaymentMethodSelector';
+import { Separator } from '@/components/ui/separator';
 
 import {
   AlertDialog,
@@ -123,7 +124,8 @@ const Cart = () => {
           <div className="lg:col-span-7 space-y-6">
             {/* Cart items */}
             <div className="bg-white rounded-lg shadow-sm border p-6">
-              <h2 className="text-xl font-bold mb-4">{t('cart.title')}</h2>
+              <h2 className="text-xl font-bold mb-4">{t('cart.cartItems')}</h2>
+              <Separator className="mb-6 mx-4" />
               {cartItems.map((item) => (
                 <div key={item.id} className="flex flex-col sm:flex-row items-start sm:items-center py-6 border-b last:border-b-0 last:pb-0 gap-4">
                   <div className="w-24 h-24 flex-shrink-0">
