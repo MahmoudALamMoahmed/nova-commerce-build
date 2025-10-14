@@ -139,7 +139,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
           <Link
             to={`/products/${product.id}`}
-            className="w-full bg-brand-accent hover:bg-brand-accent/90 disabled:opacity-50 disabled:cursor-not-allowed text-white flex items-center justify-center py-2 rounded-md transition-colors text-sm sm:text-xs"
+            className="w-full bg-brand-accent hover:bg-brand-accent/90 disabled:opacity-50 disabled:cursor-not-allowed text-white flex items-center justify-center py-2 rounded-md transition-colors text-xs sm:text-sm"
             onClick={(e) => {
               e.stopPropagation();
               if (totalStock === 0) {
