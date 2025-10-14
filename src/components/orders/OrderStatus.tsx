@@ -1,42 +1,51 @@
 import { Badge } from "@/components/ui/badge";
-import { Calendar, CheckCircle, Truck, Package } from 'lucide-react';
+import { Calendar, CheckCircle, Truck, Package, XCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface OrderStatusProps {
   status: string;
 }
 
 export const OrderStatus = ({ status }: OrderStatusProps) => {
+  const { t } = useTranslation();
+  
   const getStatusConfig = (status: string) => {
     switch (status) {
       case 'pending':
         return {
-          color: 'bg-amber-50 text-amber-700 border-amber-200',
+          variant: 'warning' as const,
           icon: <Calendar className="h-4 w-4" />,
-          label: 'Pending'
+          label: t('orders.pending')
         };
       case 'confirmed':
         return {
-          color: 'bg-blue-50 text-blue-700 border-blue-200',
+          variant: 'info' as const,
           icon: <CheckCircle className="h-4 w-4" />,
-          label: 'Confirmed'
+          label: t('orders.confirmed')
         };
       case 'shipped':
         return {
-          color: 'bg-purple-50 text-purple-700 border-purple-200',
+          variant: 'secondary' as const,
           icon: <Truck className="h-4 w-4" />,
-          label: 'Shipped'
+          label: t('orders.shipped')
         };
       case 'cancelled':
         return {
-          color: 'bg-red-50 text-red-700 border-red-200',
-          icon: <Package className="h-4 w-4" />,
-          label: 'Cancelled'
+          variant: 'destructive' as const,
+          icon: <XCircle className="h-4 w-4" />,
+          label: t('orders.cancelled')
+        };
+      case 'delivered':
+        return {
+          variant: 'success' as const,
+          icon: <CheckCircle className="h-4 w-4" />,
+          label: t('orders.delivered')
         };
       default:
         return {
-          color: 'bg-gray-50 text-gray-700 border-gray-200',
+          variant: 'outline' as const,
           icon: <Package className="h-4 w-4" />,
-          label: 'Unknown'
+          label: status
         };
     }
   };
@@ -44,9 +53,12 @@ export const OrderStatus = ({ status }: OrderStatusProps) => {
   const config = getStatusConfig(status);
 
   return (
-    <Badge className={`${config.color} flex items-center gap-1.5 w-fit px-3 py-1`}>
+    <Badge 
+      variant={config.variant}
+      className="flex items-center gap-1.5 w-fit px-3 py-1.5 transition-all duration-200 hover:scale-105 hover:shadow-md"
+    >
       {config.icon}
-      {config.label}
+      <span className="font-medium">{config.label}</span>
     </Badge>
   );
 };

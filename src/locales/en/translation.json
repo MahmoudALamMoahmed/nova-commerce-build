@@ -99,7 +99,12 @@
     "orderDetails": "Order Details",
     "phone": "Phone",
     "color": "Color",
-    "size": "Size"
+    "size": "Size",
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "shipped": "Shipped",
+    "cancelled": "Cancelled",
+    "delivered": "Delivered"
   },
   "auth": {
     "welcome": "Welcome Back",

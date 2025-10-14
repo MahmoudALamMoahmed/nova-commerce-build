@@ -98,7 +98,12 @@
     "orderDetails": "تفاصيل الطلب",
     "phone": "الهاتف",
     "color": "اللون",
-    "size": "المقاس"
+    "size": "المقاس",
+    "pending": "قيد الانتظار",
+    "confirmed": "مؤكد",
+    "shipped": "تم الشحن",
+    "cancelled": "ملغي",
+    "delivered": "تم التوصيل"
   },
   "auth": {
     "welcome": "مرحباً بعودتك",
