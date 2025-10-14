@@ -84,94 +84,55 @@ const UserForm = ({ isOpen, onClose, user, onSuccess }: UserFormProps) => {
     setIsSubmitting(true);
     try {
       if (isEditing && user) {
-        // Update existing user
-        const { error } = await supabase
-          .from('users')
-          .update({
+        // Update existing user via edge function
+        const { data: result, error } = await supabase.functions.invoke('admin-manage-user', {
+          body: {
+            action: 'update',
+            userId: user.id,
             name: data.name,
             email: data.email,
-          })
-          .eq('id', user.id);
+            isAdmin: data.is_admin,
+          },
+        });
 
-        if (error) throw error;
-
-        // Update email in auth if it changed
-        if (data.email !== user.email) {
-          const { error: authError } = await supabase.auth.admin.updateUserById(user.id, {
-            email: data.email,
-          });
-          
-          if (authError) {
-            console.error('Auth email update error:', authError);
-          }
+        if (error) {
+          console.error('Error updating user:', error);
+          toast.error('Failed to update user');
+          return;
         }
 
-        // Update admin role separately in user_roles table
-        if (data.is_admin !== user.is_admin) {
-          if (data.is_admin) {
-            // Add admin role
-            const { error: roleError } = await supabase
-              .from('user_roles')
-              .insert({ user_id: user.id, role: 'admin' });
-
-            if (roleError && !roleError.message.includes('duplicate')) {
-              console.error('Error adding admin role:', roleError);
-            }
-          } else {
-            // Remove admin role
-            const { error: roleError } = await supabase
-              .from('user_roles')
-              .delete()
-              .eq('user_id', user.id)
-              .eq('role', 'admin');
-
-            if (roleError) {
-              console.error('Error removing admin role:', roleError);
-            }
-          }
+        if (result?.error) {
+          toast.error(result.error);
+          return;
         }
 
         toast.success('User updated successfully!');
       } else {
-        // Create new user
+        // Create new user via edge function
         if (!data.password) {
           toast.error('Password is required for new users');
           return;
         }
 
-        const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-          email: data.email,
-          password: data.password,
-          email_confirm: true,
-          user_metadata: {
+        const { data: result, error } = await supabase.functions.invoke('admin-manage-user', {
+          body: {
+            action: 'create',
             name: data.name,
+            email: data.email,
+            password: data.password,
+            isAdmin: data.is_admin,
           },
         });
 
-        if (authError) throw authError;
+        if (error) {
+          console.error('Error creating user:', error);
+          toast.error('Failed to create user');
+          return;
+        }
 
-        if (authData.user) {
-          // Create user profile (without is_admin)
-          const { error: profileError } = await supabase
-            .from('users')
-            .insert({
-              id: authData.user.id,
-              name: data.name,
-              email: data.email,
-            });
-
-          if (profileError) throw profileError;
-
-          // Add admin role if needed
-          if (data.is_admin) {
-            const { error: roleError } = await supabase
-              .from('user_roles')
-              .insert({ user_id: authData.user.id, role: 'admin' });
-
-            if (roleError) {
-              console.error('Error adding admin role:', roleError);
-            }
-          }
+        if (result?.error) {
+          toast.error(result.error);
+          return;
         }
 
         toast.success('User created successfully!');

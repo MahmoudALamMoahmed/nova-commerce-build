@@ -6,6 +6,13 @@ import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { z } from 'zod';
+
+const contactSchema = z.object({
+  name: z.string().trim().min(1, 'Name is required').max(100, 'Name must be less than 100 characters'),
+  email: z.string().email('Invalid email address').max(255, 'Email must be less than 255 characters'),
+  message: z.string().trim().min(1, 'Message is required').max(1000, 'Message must be less than 1000 characters')
+});
 
 const Contact = () => {
   const { t } = useTranslation();
@@ -29,18 +36,26 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
+      // Validate input data
+      const result = contactSchema.safeParse(formData);
+      if (!result.success) {
+        const firstError = result.error.errors[0];
+        toast.error(firstError.message);
+        setIsSubmitting(false);
+        return;
+      }
+
       const { error } = await supabase
         .from('messages')
         .insert([
           {
-            name: formData.name,
-            email: formData.email,
-            message: formData.message
+            name: result.data.name,
+            email: result.data.email,
+            message: result.data.message
           }
         ]);
 
       if (error) {
-        console.error('Error submitting message:', error);
         toast.error('Failed to send message. Please try again.');
         return;
       }
@@ -52,7 +67,6 @@ const Contact = () => {
         message: ''
       });
     } catch (error) {
-      console.error('Error submitting message:', error);
       toast.error('Failed to send message. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -76,21 +90,53 @@ const Contact = () => {
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                   {t('contact.name')}
                 </label>
-                <input id="name" name="name" type="text" required value={formData.name} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent" placeholder={t('contact.name')} />
+                <input 
+                  id="name" 
+                  name="name" 
+                  type="text" 
+                  required 
+                  value={formData.name} 
+                  onChange={handleChange} 
+                  maxLength={100}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent" 
+                  placeholder={t('contact.name')} 
+                />
+                <p className="text-xs text-gray-500 mt-1">{formData.name.length}/100</p>
               </div>
               
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                   {t('contact.email')}
                 </label>
-                <input id="email" name="email" type="email" required value={formData.email} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent" placeholder={t('contact.email')} />
+                <input 
+                  id="email" 
+                  name="email" 
+                  type="email" 
+                  required 
+                  value={formData.email} 
+                  onChange={handleChange} 
+                  maxLength={255}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent" 
+                  placeholder={t('contact.email')} 
+                />
+                <p className="text-xs text-gray-500 mt-1">{formData.email.length}/255</p>
               </div>
               
               <div>
                 <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
                   {t('contact.message')}
                 </label>
-                <Textarea id="message" name="message" required value={formData.message} onChange={handleChange} className="w-full min-h-[150px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent" placeholder={t('contact.message')} />
+                <Textarea 
+                  id="message" 
+                  name="message" 
+                  required 
+                  value={formData.message} 
+                  onChange={handleChange} 
+                  maxLength={1000}
+                  className="w-full min-h-[150px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent" 
+                  placeholder={t('contact.message')} 
+                />
+                <p className="text-xs text-gray-500 mt-1">{formData.message.length}/1000</p>
               </div>
               
               <Button type="submit" disabled={isSubmitting} className="w-full md:w-auto bg-brand-accent hover:bg-brand-accent/90">

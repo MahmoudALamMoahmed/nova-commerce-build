@@ -136,16 +136,23 @@ const AdminUsers = () => {
     }
 
     try {
-      // Delete from auth first, then from users table
-      const { error: authError } = await supabase.auth.admin.deleteUser(userId);
-      if (authError) throw authError;
+      const { data: result, error } = await supabase.functions.invoke('admin-manage-user', {
+        body: {
+          action: 'delete',
+          userId: userId,
+        },
+      });
 
-      const { error } = await supabase
-        .from('users')
-        .delete()
-        .eq('id', userId);
+      if (error) {
+        console.error('Error deleting user:', error);
+        toast.error('Failed to delete user');
+        return;
+      }
 
-      if (error) throw error;
+      if (result?.error) {
+        toast.error(result.error);
+        return;
+      }
 
       toast.success('User deleted successfully');
       fetchUsers(); // Refresh the list
