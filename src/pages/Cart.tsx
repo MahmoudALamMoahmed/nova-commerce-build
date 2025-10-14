@@ -184,41 +184,41 @@ const Cart = () => {
           </div>
 
           <div className="lg:col-span-5">
-            <div className="bg-white rounded-lg shadow-sm border p-6 sticky top-28">
-              <h2 className="text-xl font-bold mb-4">{t('cart.orderSummary')}</h2>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span>Items ({cartItems.reduce((acc, item) => acc + item.quantity, 0)})</span>
-                  <span>{t('common.currency')}{totalPrice.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>{t('cart.shipping')}</span>
-                  <span>{t('cart.free')}</span>
-                </div>
-                <div className="border-t pt-3 mt-3 flex justify-between font-bold">
-                  <span>{t('cart.total')}</span>
-                  <span>{t('common.currency')}{totalPrice.toFixed(2)}</span>
-                </div>
-              </div>
-              <Button 
-                className="w-full mt-6 bg-brand-accent hover:bg-brand-accent/90"
-                onClick={handleCheckout}
-                disabled={isCreatingOrder || !selectedAddressId || !selectedPaymentMethod}
-              >
-                {isCreatingOrder ? 'Processing...' : t('cart.proceedToCheckout')}
-              </Button>
+            <div className="bg-white rounded-lg shadow-sm border p-6 sticky top-28 space-y-6">
+              {/* Payment Method Selection - moved to top */}
+              <PaymentMethodSelector 
+                selectedMethod={selectedPaymentMethod}
+                onMethodSelect={setSelectedPaymentMethod}
+              />
               
-              {/* Payment Method Selection - moved here */}
-              <div className="mt-6">
-                <PaymentMethodSelector 
-                  selectedMethod={selectedPaymentMethod}
-                  onMethodSelect={setSelectedPaymentMethod}
-                />
+              <div>
+                <h2 className="text-xl font-bold mb-4">{t('cart.orderSummary')}</h2>
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span>Items ({cartItems.reduce((acc, item) => acc + item.quantity, 0)})</span>
+                    <span>{t('common.currency')}{totalPrice.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>{t('cart.shipping')}</span>
+                    <span>{t('cart.free')}</span>
+                  </div>
+                  <div className="border-t pt-3 mt-3 flex justify-between font-bold">
+                    <span>{t('cart.total')}</span>
+                    <span>{t('common.currency')}{totalPrice.toFixed(2)}</span>
+                  </div>
+                </div>
+                <Button 
+                  className="w-full mt-6 bg-brand-accent hover:bg-brand-accent/90"
+                  onClick={handleCheckout}
+                  disabled={isCreatingOrder || !selectedAddressId || !selectedPaymentMethod}
+                >
+                  {isCreatingOrder ? 'Processing...' : t('cart.proceedToCheckout')}
+                </Button>
+                
+                <p className="text-sm text-muted-foreground mt-4 text-center">
+                  {t('cart.secureText')}
+                </p>
               </div>
-              
-              <p className="text-sm text-muted-foreground mt-4 text-center">
-                {t('cart.secureText')}
-              </p>
             </div>
           </div>
         </div>
