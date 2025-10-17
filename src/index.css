@@ -5,6 +5,7 @@
 /* Fix for scrollbar disappearing and layout shift */
 html {
   scrollbar-gutter: stable;
+  overflow-y: scroll;
 }
 
 body {
