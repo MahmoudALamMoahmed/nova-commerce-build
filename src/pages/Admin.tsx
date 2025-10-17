@@ -132,7 +132,7 @@ const Admin = () => {
   }, []);
 
   return (
-    <div>
+    <AdminLayout>
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
         <p className="text-gray-600">Manage your store and view statistics</p>
@@ -250,7 +250,7 @@ const Admin = () => {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </AdminLayout>
   );
 };
 
