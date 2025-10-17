@@ -2,42 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* CRITICAL: Fix for scrollbar disappearing and layout shift */
+/* Fix for scrollbar disappearing and layout shift - CORRECT SOLUTION */
 html {
-  scrollbar-gutter: stable;
   overflow-y: scroll;
-}
-
-body {
-  overflow-y: scroll;
-  width: 100vw;
-  position: relative;
-}
-
-/* CRITICAL: Prevent Radix UI from locking scroll and causing layout shift */
-body[data-scroll-locked] {
-  overflow-y: scroll !important;
-  padding-right: 0 !important;
-  margin-right: 0 !important;
-}
-
-/* Also handle the radix-ui data attribute */
-body[data-radix-scroll-lock] {
-  overflow-y: scroll !important;
-  padding-right: 0 !important;
-  margin-right: 0 !important;
-}
-
-/* Ensure body keeps scrollbar space reserved */
-body:has([role="dialog"]),
-body:has([role="alertdialog"]) {
-  overflow-y: scroll !important;
-  padding-right: 0 !important;
-}
-
-/* Ensure dropdowns don't cause layout shift */
-[data-radix-popper-content-wrapper] {
-  z-index: 100 !important;
+  overflow-x: hidden;
 }
 
 /* Modern Custom Scrollbar */
