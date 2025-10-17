@@ -290,7 +290,7 @@ const Profile = () => {
                       {t('profile.addAddress')}
                     </Button>
                   </DialogTrigger>
-                  <DialogContent>
+                  <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
                     <DialogHeader>
                       <DialogTitle>
                         {editingAddress ? t('profile.editAddress') : t('profile.addAddress')}
@@ -421,7 +421,6 @@ const Profile = () => {
                     </Card>
                   ))}
                 </div>
-
               )}
             </CardContent>
           </Card>
