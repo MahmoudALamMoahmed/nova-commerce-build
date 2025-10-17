@@ -29,7 +29,7 @@
     "allCategories": "All Categories",
     "noProducts": "No products found",
     "noProductsMessage": "We couldn't find any products matching your search criteria.",
-    "backToProducts": "Return to Products",
+    "backToProducts": "Back to products",
     "productNotFound": "Product not found",
     "addToCart": "Add to Cart",
     "viewDetails": "View Details",
@@ -38,7 +38,12 @@
     "category": "Category",
     "noDescription": "No description available.",
     "selectOptions": "Select Options",
-    "notAvailable": "Out of Stock"
+    "notAvailable": "Out of Stock",
+    "color": "Color",
+    "size": "Size",
+    "returnToProducts": "Return to Products",
+    "inStock": "in stock",
+    "outOfStock": "Out of Stock"
   },
   "cart": {
     "title": "Shopping Cart",
@@ -71,7 +76,8 @@
     "card":"Card",
     "notSpecified":"Not specified",
     "addAddress":"Add Address",
-    "selectShippingAddress":"Select Shipping Address"
+    "selectShippingAddress":"Select Shipping Address",
+    "addedToCart": "added to cart!"
   },
   "favorites": {
     "title": "My Favorites",

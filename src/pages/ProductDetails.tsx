@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { useCart } from '@/context/CartContext';
+import { useTranslation } from 'react-i18next';
 
 interface Product {
   id: string;
@@ -33,6 +34,7 @@ interface ProductVariant {
 }
 
 const ProductDetails = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [category, setCategory] = useState<Category | null>(null);
@@ -110,9 +112,9 @@ const ProductDetails = () => {
     return (
       <div className="container mx-auto px-6 py-24">
         <div className="flex flex-col items-center justify-center">
-          <h2 className="text-2xl font-bold mb-4">Product not found</h2>
+          <h2 className="text-2xl font-bold mb-4">{t('products.productNotFound')}</h2>
           <Link to="/products" className="bg-brand-accent text-white py-2 px-4 rounded-md hover:bg-brand-accent/90 transition-colors">
-            Return to Products
+            {t('products.returnToProducts')}
           </Link>
         </div>
       </div>
@@ -164,13 +166,13 @@ const ProductDetails = () => {
     };
     
     addToCart(cartProduct);
-    toast.success(`${product.title} added to cart!`);
+    toast.success(`${product.title} ${t('cart.addedToCart')}`);
   };
 
   return (
     <div className="container mx-auto px-6 py-24">
       <Link to="/products" className="inline-flex items-center text-brand-accent hover:underline mb-8">
-        <ArrowLeft size={16} className="mr-2" /> Back to products
+        <ArrowLeft size={16} className="mr-2" /> {t('products.backToProducts')}
       </Link>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -209,7 +211,7 @@ const ProductDetails = () => {
         <div className="flex flex-col">
           <h1 className="text-3xl font-bold mb-2">{product.title}</h1>
           {category && (
-            <p className="text-sm text-gray-500 mb-2">Category: {category.name}</p>
+            <p className="text-sm text-gray-500 mb-2">{t('products.category')}: {category.name}</p>
           )}
           <p className="text-2xl text-brand-accent font-semibold mb-2">
             {currentPrice.toFixed(2)}  ج.م
@@ -221,7 +223,7 @@ const ProductDetails = () => {
               {/* Color Selection */}
               {availableColors.length > 0 && (
                 <div>
-                  <label className="block text-sm font-medium mb-2">Color</label>
+                  <label className="block text-sm font-medium mb-2">{t('products.color')}</label>
                   <div className="flex gap-2">
                     {availableColors.map((color) => (
                       <button
@@ -243,7 +245,7 @@ const ProductDetails = () => {
               {/* Size Selection */}
               {availableSizes.length > 0 && (
                 <div>
-                  <label className="block text-sm font-medium mb-2">Size</label>
+                  <label className="block text-sm font-medium mb-2">{t('products.size')}</label>
                   <div className="flex gap-2">
                     {availableSizes.map((size) => (
                       <button
@@ -272,7 +274,7 @@ const ProductDetails = () => {
                 ? 'bg-yellow-100 text-yellow-800' 
                 : 'bg-green-100 text-green-800'
             }`}>
-              {currentStock === 0 ? 'Out of Stock' : `${currentStock} in stock`}
+              {currentStock === 0 ? t('products.outOfStock') : `${currentStock} ${t('products.inStock')}`}
             </span>
           </div>
           <div className="border-t border-gray-200 my-4 pt-4">
@@ -284,7 +286,7 @@ const ProductDetails = () => {
             className="bg-brand-accent hover:bg-brand-accent/90 text-white py-3 px-6 rounded-md font-medium transition-all inline-flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ShoppingCart className="mr-2" size={18} />
-            {currentStock === 0 ? 'Out of Stock' : (variants.length > 0 && !selectedVariant) ? 'Select Options' : 'Add to Cart'}
+            {currentStock === 0 ? t('products.outOfStock') : (variants.length > 0 && !selectedVariant) ? t('products.selectOptions') : t('products.addToCart')}
           </Button>
         </div>
       </div>

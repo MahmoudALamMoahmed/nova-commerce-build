@@ -38,7 +38,12 @@
     "category": "الفئة",
     "noDescription": "لا يوجد وصف متاح.",
     "selectOptions": "اختر المنتج",
-    "notAvailable": "غير متاح"
+    "notAvailable": "غير متاح",
+    "color": "اللون",
+    "size": "المقاس",
+    "returnToProducts": "العودة إلى المنتجات",
+    "inStock": "متوفر",
+    "outOfStock": "نفذ من المخزون"
   },
   "cart": {
     "title": "سلة التسوق",
@@ -70,7 +75,8 @@
     "cash":"كاش",
     "card":"بطاقة",
     "notSpecified":"غير محدد",
-    "selectShippingAddress":"اختر عنوان التوصيل"
+    "selectShippingAddress":"اختر عنوان التوصيل",
+    "addedToCart": "تمت الإضافة إلى السلة!"
   },
   "favorites": {
     "title": "المفضلة",
