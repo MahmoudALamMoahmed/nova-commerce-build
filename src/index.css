@@ -18,6 +18,20 @@ body[data-radix-scroll-lock] {
   overflow-y: scroll !important;
 }
 
+/* Add after line 17 in index.css */
+
+/* Force prevent layout shift from Radix dialogs */
+body:has([data-radix-portal]) {
+  overflow-y: scroll !important;
+  padding-right: 0 !important;
+}
+
+/* Ensure dialog portal doesn't affect body */
+[data-radix-portal] {
+  position: fixed;
+  z-index: 9999;
+}
+
 /* Ensure dropdowns don't cause layout shift */
 [data-radix-popper-content-wrapper] {
   z-index: 100 !important;
