@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useAddresses, Address } from '@/context/AddressContext';
 import { useTranslation } from 'react-i18next';
@@ -57,11 +58,11 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
               {t('profile.addAddress')}
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-md">
+          <DialogContent>
             <DialogHeader>
               <DialogTitle>{t('profile.addNewAddress')}</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleAddAddress} className="space-y-4 max-h-[70vh] overflow-y-auto">
+            <form onSubmit={handleAddAddress} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="full_name" className="block text-sm font-medium text-gray-700">
                   {t('profile.fullName')}
@@ -125,6 +126,8 @@ const AddressSelector = ({ selectedAddressId, onAddressSelect }: AddressSelector
             </form>
           </DialogContent>
         </Dialog>
+
+
       </div>
 
       {addresses.length === 0 ? (

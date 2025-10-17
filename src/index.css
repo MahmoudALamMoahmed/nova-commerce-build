@@ -5,7 +5,6 @@
 /* Fix for scrollbar disappearing and layout shift */
 html {
   scrollbar-gutter: stable;
-  overflow-y: scroll;
 }
 
 body {
@@ -15,31 +14,13 @@ body {
 /* Prevent layout shift when Radix UI locks scroll */
 body[data-radix-scroll-lock] {
   padding-right: 0 !important;
-  padding-inline-end: 0 !important;
   margin-right: 0 !important;
-  margin-inline-end: 0 !important;
   overflow-y: scroll !important;
 }
 
 /* Ensure dropdowns don't cause layout shift */
 [data-radix-popper-content-wrapper] {
   z-index: 100 !important;
-}
-
-/* Fix Dialog and Alert Dialog scroll lock */
-[role="alertdialog"],
-[role="dialog"] {
-  position: fixed;
-}
-
-/* Prevent body scroll when dialog is open */
-body:has([role="alertdialog"][data-state="open"]),
-body:has([role="dialog"][data-state="open"]) {
-  padding-right: 0 !important;
-  padding-inline-end: 0 !important;
-  margin-right: 0 !important;
-  margin-inline-end: 0 !important;
-  overflow-y: scroll !important;
 }
 
 /* Modern Custom Scrollbar */
