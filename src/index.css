@@ -4,7 +4,6 @@
 
 /* Fix for scrollbar disappearing and layout shift - CORRECT SOLUTION */
 html {
-  overflow-y: scroll;
   overflow-x: hidden;
 }
 
