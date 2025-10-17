@@ -15,7 +15,6 @@ import {
   Tag,
   BarChart3,
   Menu,
-  Search,
   CircleUser,
   Home,
   MoreHorizontal,
@@ -134,25 +133,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               {!isCollapsed && <span className="ml-2">{t('Admin Panel')}</span>}
               <span className="sr-only">{t('Admin Panel')}</span>
             </Button>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size={isCollapsed ? "icon" : "default"}
-                  className={cn(
-                    "rounded-lg transition-all duration-300",
-                    isCollapsed ? "w-10 h-10" : "w-full justify-start"
-                  )}
-                  onClick={() => navigate('/')}
-                >
-                  <Home className="h-5 w-5" />
-                  {!isCollapsed && <span className="ml-2">{t('Home')}</span>}
-                  <span className="sr-only">{t('Home')}</span>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right">{t('Home')}</TooltipContent>
-            </Tooltip>
             
             {navigation.map((item) => {
               const Icon = item.icon;
@@ -273,38 +253,45 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               </BreadcrumbList>
             </Breadcrumb>
 
-            {/* Search and User Menu */}
-            <div className="relative ml-auto flex-1 md:grow-0">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder={t('Search...')}
-                className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-              />
+            {/* User Menu */}
+            <div className="ml-auto flex items-center gap-2">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    size="icon"
+                    onClick={() => navigate('/')}
+                  >
+                    <Home className="h-5 w-5" />
+                    <span className="sr-only">{t('Home')}</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{t('Home')}</TooltipContent>
+              </Tooltip>
+              
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="icon" className="overflow-hidden rounded-full">
+                    <CircleUser className="h-5 w-5" />
+                    <span className="sr-only">{t('Toggle user menu')}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate('/profile')}>
+                    {t('Profile')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/admin/settings')}>
+                    {t('Settings')}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout}>
+                    {t('Logout')}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
-            
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="overflow-hidden rounded-full">
-                  <CircleUser className="h-5 w-5" />
-                  <span className="sr-only">{t('Toggle user menu')}</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate('/profile')}>
-                  {t('Profile')}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/admin/settings')}>
-                  {t('Settings')}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout}>
-                  {t('Logout')}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
           </header>
 
           {/* Main Content */}
