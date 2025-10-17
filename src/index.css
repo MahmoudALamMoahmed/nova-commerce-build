@@ -4,22 +4,37 @@
 
 /* Fix for scrollbar disappearing and layout shift */
 html {
+  /* keep a stable gutter where supported */
   scrollbar-gutter: stable;
+}
+
+/* make sure page always reserves vertical scrollbar space as a fallback */
+:root {
+  --removed-body-scroll-bar-size: 0px; /* fallback; can be set via JS if you want exact width */
 }
 
 body {
   overflow-y: scroll;
 }
 
-/* Prevent layout shift when Radix UI locks scroll */
-body[data-radix-scroll-lock] {
-  padding-right: 0 !important;
+/* Prevent layout shift when Radix UI locks scroll
+   Support multiple attribute names Radix uses in different versions
+   We compensate the removed scrollbar by adding equivalent padding-right. */
+body[data-radix-scroll-lock],
+body[data-scroll-locked],
+body[data-radix-lock-scroll],
+body[data-scroll-lock] {
+  padding-right: var(--removed-body-scroll-bar-size, 0px) !important;
   margin-right: 0 !important;
-  overflow-y: scroll !important;
+  /* lock scrolling but keep layout stable */
+  overflow: hidden !important;
+  position: relative; /* prevents some browsers from jumping */
 }
 
-/* Ensure dropdowns don't cause layout shift */
-[data-radix-popper-content-wrapper] {
+/* Ensure dropdowns/popovers stay above content */
+[data-radix-popper-content-wrapper],
+[data-radix-popper-content],
+[data-radix-popper] {
   z-index: 100 !important;
 }
 
