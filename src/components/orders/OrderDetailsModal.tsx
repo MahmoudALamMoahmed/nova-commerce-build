@@ -6,6 +6,7 @@ import { Order } from '@/context/OrderContext';
 import { OrderStatus } from './OrderStatus';
 import { PaymentMethod } from './PaymentMethod';
 import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react'; // ✅ أضف دي
 
 interface OrderDetailsModalProps {
   order: Order | null;
@@ -14,6 +15,20 @@ interface OrderDetailsModalProps {
 
 export const OrderDetailsModal = ({ order, onClose }: OrderDetailsModalProps) => {
   const { t } = useTranslation();
+
+   // ✅ أضف الكود ده هنا
+  useEffect(() => {
+    if (order) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [order]);
+  
   if (!order) return null;
 
   return (
