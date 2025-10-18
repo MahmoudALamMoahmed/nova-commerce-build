@@ -8,20 +8,20 @@ import { cn } from "@/lib/utils"
 /*حل مشكلة تحريك الصفحه حته بسيطه */
 const Dialog = ({ children, ...props }: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Root>) => {
   React.useEffect(() => {
-    const handleBody = (open: boolean) => {
-      if (open) {
-        document.body.style.overflow = "hidden"
-        document.body.style.paddingRight = "0px"
-      } else {
+    if (props.open) {
+      // يمنع السكرول أثناء فتح الديالوج
+      document.body.style.overflow = "hidden"
+      document.body.style.paddingRight = "0px"
+    } else {
+      // يرجع الوضع الطبيعي بعد غلق الديالوج
+      const timeout = setTimeout(() => {
         document.body.style.overflow = ""
         document.body.style.paddingRight = ""
-      }
-    }
-
-    if (props.open !== undefined) {
-      handleBody(props.open)
+      }, 300) // مهلة صغيرة تضمن تنفيذ الأنيميشن قبل استرجاع السكرول
+      return () => clearTimeout(timeout)
     }
   }, [props.open])
+
 
   return <DialogPrimitive.Root {...props}>{children}</DialogPrimitive.Root>
 }
