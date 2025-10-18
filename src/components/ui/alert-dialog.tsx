@@ -4,7 +4,27 @@ import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 
-const AlertDialog = AlertDialogPrimitive.Root
+/*حل مشكلة تحريك الصفحه حته بسيطه */
+const AlertDialog = ({ children, ...props }: React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Root>) => {
+  React.useEffect(() => {
+    const handleBody = (open: boolean) => {
+      if (open) {
+        document.body.style.overflow = "hidden"
+        document.body.style.paddingRight = "0px"
+      } else {
+        document.body.style.overflow = ""
+        document.body.style.paddingRight = ""
+      }
+    }
+
+    if (props.open !== undefined) {
+      handleBody(props.open)
+    }
+  }, [props.open])
+
+  return <AlertDialogPrimitive.Root {...props}>{children}</AlertDialogPrimitive.Root>
+}
+
 
 const AlertDialogTrigger = AlertDialogPrimitive.Trigger
 
