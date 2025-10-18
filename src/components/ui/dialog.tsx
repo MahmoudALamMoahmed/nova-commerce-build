@@ -5,27 +5,7 @@ import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-/*حل مشكلة تحريك الصفحه حته بسيطه */
-const Dialog = ({ children, ...props }: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Root>) => {
-  React.useEffect(() => {
-    const handleBody = (open: boolean) => {
-      if (open) {
-        document.body.style.overflow = "hidden"
-        document.body.style.paddingRight = "0px"
-      } else {
-        document.body.style.overflow = ""
-        document.body.style.paddingRight = ""
-      }
-    }
-
-    if (props.open !== undefined) {
-      handleBody(props.open)
-    }
-  }, [props.open])
-
-  return <DialogPrimitive.Root {...props}>{children}</DialogPrimitive.Root>
-}
-
+const Dialog = DialogPrimitive.Root
 
 const DialogTrigger = DialogPrimitive.Trigger
 
