@@ -17,7 +17,7 @@ export const OrderDetailsModal = ({ order, onClose }: OrderDetailsModalProps) =>
   if (!order) return null;
 
   return (
-    <Dialog open={true} onOpenChange={onClose}>
+    <Dialog open={!!order} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">
